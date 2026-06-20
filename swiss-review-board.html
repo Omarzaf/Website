@@ -1,0 +1,1252 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="Editable Swiss-grid review board for Umar Zafar's personal website direction."
+    >
+    <title>Umar Zafar - Editable Review Board</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #ffffff;
+        --text: #050505;
+        --muted: #8e8e8e;
+        --grid: rgba(5, 5, 5, 0.052);
+        --grid-strong: rgba(5, 5, 5, 0.088);
+        --rule: #c6c6c6;
+        --accent: #ffae00;
+        --grid-step: 10px;
+        --grid-major: 50px;
+        --gravity-strength: 1;
+        --symmetry-level: 0;
+        --collapse-level: 0;
+        --max: 1920px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+        overflow-x: hidden;
+      }
+
+      body {
+        min-width: 320px;
+        margin: 0;
+        overflow-x: hidden;
+        background: var(--bg);
+        color: var(--text);
+        font-family: Helvetica, Arial, "Inter", sans-serif;
+        letter-spacing: 0;
+      }
+
+      body::before {
+        position: fixed;
+        inset: 0;
+        z-index: 4;
+        pointer-events: none;
+        content: "";
+        opacity: var(--collapse-level);
+        background:
+          radial-gradient(circle at 50% 58%, rgba(255, 174, 0, 0.22), transparent 0 18%, rgba(5, 5, 5, 0.08) 18% 18.4%, transparent 18.6%),
+          repeating-linear-gradient(87deg, transparent 0 13px, rgba(5, 5, 5, 0.09) 14px, transparent 15px);
+        mix-blend-mode: multiply;
+        transform: scale(calc(1 + var(--collapse-level) * 0.2)) rotate(calc(var(--collapse-level) * -1.4deg));
+        transition: opacity 240ms ease, transform 360ms ease;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin: 0;
+      }
+
+      .skip-link {
+        position: fixed;
+        top: 8px;
+        left: 8px;
+        z-index: 30;
+        transform: translateY(-160%);
+        background: var(--text);
+        color: var(--bg);
+        padding: 8px 10px;
+        font-family: "SFMono-Regular", "Roboto Mono", "Courier New", monospace;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .skip-link:focus {
+        transform: translateY(0);
+      }
+
+      .grid-field,
+      #liquid-grid,
+      .column-rules {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+      }
+
+      .grid-field {
+        z-index: 0;
+        opacity: calc(1 - (var(--collapse-level) * 0.38));
+        background:
+          linear-gradient(var(--grid) 1px, transparent 1px),
+          linear-gradient(90deg, var(--grid) 1px, transparent 1px),
+          linear-gradient(var(--grid-strong) 1px, transparent 1px),
+          linear-gradient(90deg, var(--grid-strong) 1px, transparent 1px),
+          var(--bg);
+        background-size:
+          var(--grid-step) var(--grid-step),
+          var(--grid-step) var(--grid-step),
+          var(--grid-major) var(--grid-major),
+          var(--grid-major) var(--grid-major),
+          auto;
+        transform:
+          scale(calc(1 - var(--collapse-level) * 0.06))
+          rotate(calc(var(--collapse-level) * 0.55deg));
+        transition: opacity 260ms ease, transform 360ms ease;
+      }
+
+      #liquid-grid {
+        z-index: 1;
+        width: 100vw;
+        height: 100vh;
+        opacity: 0.92;
+        mix-blend-mode: multiply;
+      }
+
+      .column-rules {
+        z-index: 2;
+      }
+
+      .column-rules span {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 1px;
+        background: var(--rule);
+      }
+
+      .column-rules span:nth-child(1) {
+        left: 25%;
+      }
+
+      .column-rules span:nth-child(2) {
+        left: 50%;
+      }
+
+      .column-rules span:nth-child(3) {
+        left: 75%;
+      }
+
+      .preview-header,
+      main {
+        position: relative;
+        z-index: 3;
+      }
+
+      [data-chaos] {
+        transition:
+          margin 360ms ease,
+          padding 360ms ease,
+          transform 360ms cubic-bezier(0.2, 0.8, 0.2, 1),
+          letter-spacing 360ms ease;
+        will-change: transform, margin, padding;
+      }
+
+      [data-chaos="hero-title"] {
+        transform:
+          translate(
+            calc(var(--symmetry-level) * var(--chaos-x, 0px)),
+            calc(var(--symmetry-level) * var(--chaos-y, 0px))
+          )
+          rotate(calc(var(--symmetry-level) * var(--chaos-rotate, 0deg)))
+          translate(
+            calc(var(--collapse-level) * var(--collapse-x, 0px)),
+            calc(var(--collapse-level) * var(--collapse-y, 0px))
+          )
+          rotate(calc(var(--collapse-level) * var(--collapse-rotate, 0deg)))
+          scale(calc(1 - var(--collapse-level) * var(--collapse-scale, 0)));
+        transform-origin: 8% 82%;
+      }
+
+      [data-chaos="hero-subtitle"],
+      [data-chaos="micro"],
+      [data-chaos="nav"],
+      [data-chaos="section-title"],
+      [data-chaos="section-number"],
+      [data-chaos="work-item"],
+      [data-chaos="writing-item"],
+      [data-chaos="contact-link"] {
+        transform:
+          translate(
+            calc(var(--symmetry-level) * var(--chaos-x, 0px)),
+            calc(var(--symmetry-level) * var(--chaos-y, 0px))
+          )
+          rotate(calc(var(--symmetry-level) * var(--chaos-rotate, 0deg)))
+          translate(
+            calc(var(--collapse-level) * var(--collapse-x, 0px)),
+            calc(var(--collapse-level) * var(--collapse-y, 0px))
+          )
+          rotate(calc(var(--collapse-level) * var(--collapse-rotate, 0deg)))
+          scale(calc(1 - var(--collapse-level) * var(--collapse-scale, 0)));
+        transform-origin: var(--chaos-origin, center center);
+      }
+
+      [data-chaos] {
+        opacity: calc(1 - (var(--collapse-level) * var(--collapse-fade, 0.22)));
+        filter: blur(calc(var(--collapse-level) * var(--collapse-blur, 0px)));
+        text-shadow:
+          calc(var(--collapse-level) * var(--ghost-a-x, 0px))
+          calc(var(--collapse-level) * var(--ghost-a-y, 0px))
+          0 rgba(5, 5, 5, 0.18),
+          calc(var(--collapse-level) * var(--ghost-b-x, 0px))
+          calc(var(--collapse-level) * var(--ghost-b-y, 0px))
+          0 rgba(255, 174, 0, 0.34);
+      }
+
+      [data-chaos="hero-title"],
+      [data-chaos="section-title"],
+      [data-chaos="work-item"] h3 {
+        letter-spacing: calc(-0.035em + (var(--symmetry-level) * var(--chaos-track, 0em)));
+      }
+
+      .preview-header {
+        position: sticky;
+        top: 0;
+        z-index: 15;
+        background: rgba(255, 255, 255, 0.94);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--rule);
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: start;
+        width: min(var(--max), 100%);
+        min-height: 36px;
+        margin: 0 auto;
+        padding: 18px 14px 0;
+        font-family: "SFMono-Regular", "Roboto Mono", "Courier New", monospace;
+        font-size: clamp(12px, 1vw, 16px);
+        font-weight: 800;
+        line-height: 1;
+      }
+
+      .preview-nav {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(82px, 1fr));
+        width: 50vw;
+      }
+
+      .preview-nav a {
+        padding-left: 8px;
+      }
+
+      .preview-nav a:hover,
+      .preview-nav a:focus-visible {
+        background: var(--text);
+        color: var(--bg);
+        outline: 0;
+      }
+
+      .hero {
+        position: relative;
+        width: min(var(--max), 100%);
+        min-height: calc(82svh - 54px);
+        margin: 0 auto;
+        overflow: hidden;
+      }
+
+      .hero-monogram {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -56%);
+        font-size: clamp(200px, 26vw, 480px);
+        font-weight: 700;
+        line-height: 1;
+        letter-spacing: -0.06em;
+        color: var(--text);
+        opacity: 0.028;
+        pointer-events: none;
+        user-select: none;
+        white-space: nowrap;
+      }
+
+      .hero-scroll-hint {
+        position: absolute;
+        bottom: clamp(18px, 3vh, 36px);
+        right: calc(280px + 46px);
+        font-family: "SFMono-Regular", "Roboto Mono", "Courier New", monospace;
+        font-size: 12px;
+        font-weight: 800;
+        opacity: 0.26;
+        pointer-events: none;
+        letter-spacing: 0.05em;
+      }
+
+      .hero-eyebrow {
+        position: absolute;
+        top: 18px;
+        left: 14px;
+        right: calc(280px + 32px);
+        font-family: "SFMono-Regular", "Roboto Mono", "Courier New", monospace;
+        font-size: 12px;
+        font-weight: 800;
+        opacity: 0.32;
+        pointer-events: none;
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .micro-label {
+        position: absolute;
+        top: 18px;
+        font-family: "SFMono-Regular", "Roboto Mono", "Courier New", monospace;
+        font-size: clamp(12px, 1vw, 16px);
+        font-weight: 800;
+      }
+
+      .hero-label-left {
+        left: 25%;
+        padding-left: 8px;
+      }
+
+      .hero-label-mid {
+        left: 50%;
+        padding-left: 8px;
+      }
+
+      .hero-label-right {
+        left: 75%;
+        padding-left: 8px;
+        max-width: calc(25% - 310px);
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+
+      .hero-copy {
+        position: absolute;
+        left: 14px;
+        right: 14px;
+        bottom: clamp(36px, 7vh, 86px);
+        transform:
+          translate(
+            calc(var(--symmetry-level) * var(--hero-copy-x, 0px)),
+            calc(var(--symmetry-level) * var(--hero-copy-y, 0px))
+          )
+          skewX(calc(var(--symmetry-level) * var(--hero-copy-skew, 0deg)));
+        opacity: calc(1 - (var(--collapse-level) * 0.12));
+        transition: opacity 260ms ease, transform 360ms cubic-bezier(0.2, 0.8, 0.2, 1);
+      }
+
+      .hero-copy h1 {
+        max-width: 1480px;
+        color: var(--accent);
+        font-size: clamp(78px, 7.5vw, 142px);
+        font-weight: 500;
+        line-height: 0.94;
+        letter-spacing: -0.035em;
+      }
+
+      .hero-copy p {
+        max-width: calc(50% - 310px);
+        min-width: 240px;
+        margin-top: 22px;
+        margin-left: 50%;
+        padding-left: 8px;
+        font-family: "SFMono-Regular", "Roboto Mono", "Courier New", monospace;
+        font-size: clamp(13px, 1vw, 16px);
+        font-weight: 700;
+        line-height: 1.35;
+      }
+
+      .panel-section,
+      .statement-section,
+      .contact-section {
+        position: relative;
+        display: grid;
+        grid-template-columns:
+          calc(25% + (var(--symmetry-level) * var(--col-one, 0px)))
+          calc(25% + (var(--symmetry-level) * var(--col-two, 0px)))
+          calc(25% + (var(--symmetry-level) * var(--col-three, 0px)))
+          calc(25% + (var(--symmetry-level) * var(--col-four, 0px)));
+        width: min(var(--max), 100%);
+        margin: 0 auto;
+        padding: clamp(96px, 12vh, 150px) 14px;
+        transition: grid-template-columns 360ms ease, padding 360ms ease;
+      }
+
+      .section-number {
+        font-family: "SFMono-Regular", "Roboto Mono", "Courier New", monospace;
+        font-size: 14px;
+        font-weight: 800;
+      }
+
+      .panel-section h2,
+      .statement-section h2,
+      .contact-section h2 {
+        grid-column: 2 / 5;
+        padding: 0 0 clamp(54px, 8vh, 96px);
+        font-size: clamp(64px, 6.8vw, 128px);
+        font-weight: 500;
+        line-height: 0.94;
+        letter-spacing: -0.035em;
+      }
+
+      .work-list {
+        grid-column: 1 / 5;
+        display: grid;
+        grid-template-columns:
+          minmax(0, var(--work-col-one, 1fr))
+          minmax(0, var(--work-col-two, 1fr))
+          minmax(0, var(--work-col-three, 1fr));
+        gap: clamp(28px, 4vw, 72px);
+        margin-top: clamp(60px, 10vh, 124px);
+        transform: translateY(calc(var(--symmetry-level) * -34px));
+        transition: gap 360ms ease, transform 360ms ease;
+      }
+
+      .work-list article {
+        min-height: 200px;
+      }
+
+      .work-list article:nth-child(2) {
+        margin-top: calc(var(--symmetry-level) * -62px);
+      }
+
+      .work-list article:nth-child(3) {
+        margin-left: calc(var(--symmetry-level) * -74px);
+        margin-top: calc(var(--symmetry-level) * 38px);
+      }
+
+      .work-list span,
+      .writing-grid p {
+        font-family: "SFMono-Regular", "Roboto Mono", "Courier New", monospace;
+        font-size: 13px;
+        font-weight: 800;
+        line-height: 1.2;
+      }
+
+      .writing-grid p {
+        border-top: 2px solid var(--text);
+        padding-top: 12px;
+      }
+
+      .work-list h3 {
+        margin-top: clamp(48px, 6vh, 86px);
+        font-size: clamp(34px, 3.1vw, 58px);
+        font-weight: 500;
+        line-height: 0.95;
+        letter-spacing: -0.03em;
+      }
+
+      .work-list p {
+        max-width: 410px;
+        margin-top: 14px;
+        font-family: "SFMono-Regular", "Roboto Mono", "Courier New", monospace;
+        font-size: 13px;
+        font-weight: 700;
+        line-height: 1.35;
+        color: #4f4f4f;
+      }
+
+      .statement-section {
+        min-height: 72vh;
+        align-items: end;
+      }
+
+      .statement-section h2 {
+        grid-column: 1 / 5;
+        padding-top: 16vh;
+      }
+
+      .panel-section-alt h2 {
+        grid-column: 1 / 4;
+      }
+
+      .writing-grid {
+        grid-column: 1 / 5;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: clamp(24px, 3vw, 48px);
+        min-height: 220px;
+      }
+
+      .contact-section {
+        min-height: 76vh;
+        align-items: end;
+      }
+
+      .contact-section a {
+        grid-column: 1 / 2;
+        align-self: end;
+        font-family: "SFMono-Regular", "Roboto Mono", "Courier New", monospace;
+        font-size: 14px;
+        font-weight: 800;
+        text-decoration: underline;
+      }
+
+      .collapse-shards {
+        position: fixed;
+        inset: 0;
+        z-index: 5;
+        overflow: hidden;
+        pointer-events: none;
+        opacity: var(--collapse-level);
+        mix-blend-mode: multiply;
+      }
+
+      .collapse-shards span {
+        position: absolute;
+        left: calc(var(--origin-x) * 1px);
+        top: calc(var(--origin-y) * 1px);
+        color: var(--shard-color, #050505);
+        font-family: "SFMono-Regular", "Roboto Mono", "Courier New", monospace;
+        font-size: var(--shard-size, 14px);
+        font-weight: 800;
+        line-height: 1;
+        opacity: calc(var(--collapse-level) * var(--shard-alpha, 0.72));
+        transform:
+          translate(
+            calc(var(--collapse-level) * var(--shard-x, 0px)),
+            calc(var(--collapse-level) * var(--shard-y, 0px))
+          )
+          rotate(calc(var(--collapse-level) * var(--shard-rotate, 0deg)))
+          scale(calc(1 - var(--collapse-level) * var(--shard-scale, 0)));
+        transform-origin: center;
+      }
+
+      .review-tools {
+        position: fixed;
+        right: 14px;
+        top: 60px;
+        z-index: 20;
+        width: min(280px, calc(100vw - 28px));
+        border: 1px solid var(--text);
+        background: rgba(255, 255, 255, 0.94);
+        color: var(--text);
+        font-family: "SFMono-Regular", "Roboto Mono", "Courier New", monospace;
+        font-size: 12px;
+        font-weight: 800;
+        line-height: 1.2;
+        backdrop-filter: blur(8px);
+      }
+
+      .review-tools header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid var(--text);
+        padding: 8px;
+      }
+
+      .review-tools button,
+      .review-tools input {
+        font: inherit;
+      }
+
+      .review-tools button {
+        border: 1px solid var(--text);
+        background: var(--bg);
+        color: var(--text);
+        padding: 6px 8px;
+        cursor: pointer;
+      }
+
+      .review-tools button[aria-pressed="true"] {
+        background: var(--text);
+        color: var(--bg);
+      }
+
+      .review-fields {
+        display: grid;
+        gap: 10px;
+        padding: 10px 8px 8px;
+      }
+
+      .review-fields label {
+        display: grid;
+        gap: 5px;
+      }
+
+      .review-fields input[type="range"] {
+        width: 100%;
+      }
+
+      .review-field-line {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+      }
+
+      .review-value {
+        color: #6a6a6a;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .review-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        padding: 0 8px 8px;
+      }
+
+      [contenteditable="true"] {
+        cursor: text;
+        outline: 1px dashed rgba(255, 174, 0, 0.8);
+        outline-offset: 3px;
+      }
+
+      [contenteditable="true"]:focus {
+        background: rgba(255, 174, 0, 0.12);
+        outline: 2px solid var(--accent);
+      }
+
+      @media (max-width: 820px) {
+        .column-rules,
+        .panel-section,
+        .statement-section,
+        .contact-section,
+        .work-list,
+        .writing-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .preview-header {
+          grid-template-columns: 1fr;
+          gap: 12px;
+          padding: 12px 12px 0;
+        }
+
+        .preview-nav {
+          grid-template-columns: repeat(2, 1fr);
+          width: 100%;
+        }
+
+        .hero {
+          min-height: 780px;
+        }
+
+        .hero-label-left {
+          left: 0;
+        }
+
+        .hero-label-mid {
+          left: 50%;
+        }
+
+        .hero-label-right {
+          display: none;
+        }
+
+        .hero-copy {
+          right: 0;
+          left: 12px;
+          bottom: 32px;
+          padding: 0;
+        }
+
+        .hero-copy h1 {
+          max-width: calc(100vw - 16px);
+          font-size: clamp(48px, 15.8vw, 78px);
+          letter-spacing: -0.045em;
+        }
+
+        .hero-copy p {
+          margin-left: 0;
+          padding-right: 0;
+        }
+
+        .panel-section h2,
+        .statement-section h2,
+        .contact-section h2,
+        .panel-section-alt h2 {
+          grid-column: 1 / 3;
+        }
+
+        .work-list,
+        .writing-grid {
+          grid-column: 1 / 3;
+        }
+
+        .work-list article {
+          min-height: 250px;
+        }
+
+        .work-list article:last-child {
+          grid-column: 1 / 3;
+        }
+
+        .contact-section a {
+          grid-column: 1 / 3;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to main content</a>
+
+    <div class="grid-field" aria-hidden="true"></div>
+    <canvas id="liquid-grid" aria-hidden="true"></canvas>
+    <div class="column-rules" aria-hidden="true">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    <div class="collapse-shards" aria-hidden="true"></div>
+
+    <aside class="review-tools" aria-label="Review controls">
+      <header>
+        <span>review</span>
+        <button id="edit-toggle" type="button" aria-pressed="false">edit</button>
+      </header>
+      <div class="review-fields">
+        <label>
+          accent
+          <input id="accent-control" type="color" value="#ffae00" autocomplete="off">
+        </label>
+        <label>
+          grid
+          <input id="grid-control" type="range" min="8" max="18" value="10" autocomplete="off">
+        </label>
+        <label>
+          gravity
+          <input id="gravity-control" type="range" min="60" max="180" value="100" autocomplete="off">
+        </label>
+        <label>
+          <span class="review-field-line">
+            tension
+            <span id="symmetry-value" class="review-value">0</span>
+          </span>
+          <input id="symmetry-control" type="range" min="0" max="100" value="0" autocomplete="off" title="0–82: layout displacement · 83–100: collapse animation (use reset all to recover)">
+        </label>
+      </div>
+      <div class="review-actions">
+        <button id="reset-review" type="button">reset all</button>
+        <button id="hide-review" type="button">hide</button>
+      </div>
+    </aside>
+
+    <header class="preview-header">
+        <a class="brand" href="#main" data-edit="brand" data-chaos="nav">umar zafar</a>
+      <nav class="preview-nav" aria-label="Preview navigation">
+        <a href="#work" data-edit="nav-work" data-chaos="nav">work</a>
+        <a href="#research" data-edit="nav-research" data-chaos="nav">research</a>
+        <a href="#writing" data-edit="nav-writing" data-chaos="nav">writing</a>
+        <a href="#contact" data-edit="nav-contact" data-chaos="nav">contact</a>
+      </nav>
+    </header>
+
+    <main id="main">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-eyebrow" aria-hidden="true">
+          <span>Design Review · 2026</span>
+          <span>4 sections ↓</span>
+        </div>
+        <p class="micro-label hero-label-left" data-edit="label-portfolio" data-chaos="micro">work</p>
+        <p class="micro-label hero-label-mid" data-edit="label-systems" data-chaos="micro">research</p>
+        <p class="micro-label hero-label-right" data-edit="label-about" data-chaos="micro">writing</p>
+
+        <div class="hero-monogram" aria-hidden="true">UZ</div>
+        <div class="hero-scroll-hint" aria-hidden="true">scroll ↓</div>
+
+        <div class="hero-copy">
+          <h1 id="hero-title" data-edit="hero-title" data-chaos="hero-title">Risk, Regulation and AI Revolution</h1>
+          <p data-edit="hero-subtitle" data-chaos="hero-subtitle">Research, prototypes, and decision-ready writing for teams working before consensus has settled.</p>
+        </div>
+      </section>
+
+      <section id="work" class="panel-section" aria-labelledby="work-title">
+        <p class="section-number" data-edit="section-one" data-chaos="section-number">01</p>
+        <h2 id="work-title" data-edit="work-title" data-chaos="section-title">Work</h2>
+        <div class="work-list">
+          <article data-chaos="work-item">
+            <span data-edit="work-one-label">governance / network analysis</span>
+            <h3 data-edit="work-one-title">Revolving Door Lobbying</h3>
+            <p data-edit="work-one-copy">Mapping movement between public authority, industry, and influence.</p>
+          </article>
+          <article data-chaos="work-item">
+            <span data-edit="work-two-label">automation / local-first tooling</span>
+            <h3 data-edit="work-two-title">Career-Ops Automation</h3>
+            <p data-edit="work-two-copy">Turning application noise into tracked, reviewable next actions.</p>
+          </article>
+          <article data-chaos="work-item">
+            <span data-edit="work-three-label">research / institutional risk</span>
+            <h3 data-edit="work-three-title">AI Governance Research</h3>
+            <p data-edit="work-three-copy">Frontier risk, coordination failure, and public-interest systems.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="research" class="statement-section" aria-labelledby="research-title">
+        <p class="section-number" data-edit="section-two" data-chaos="section-number">02</p>
+        <h2 id="research-title" data-edit="research-title" data-chaos="section-title">a practical agenda for governing complex technical systems.</h2>
+      </section>
+
+      <section id="writing" class="panel-section panel-section-alt" aria-labelledby="writing-title">
+        <p class="section-number" data-edit="section-three" data-chaos="section-number">03</p>
+        <h2 id="writing-title" data-edit="writing-title" data-chaos="section-title">writing</h2>
+        <div class="writing-grid">
+          <p data-edit="writing-one" data-chaos="writing-item">AI governance</p>
+          <p data-edit="writing-two" data-chaos="writing-item">Geopolitical risk</p>
+          <p data-edit="writing-three" data-chaos="writing-item">Institutional failure</p>
+          <p data-edit="writing-four" data-chaos="writing-item">Platform power</p>
+        </div>
+      </section>
+
+      <section id="contact" class="contact-section" aria-labelledby="contact-title">
+        <p class="section-number" data-edit="section-four" data-chaos="section-number">04</p>
+        <h2 id="contact-title" data-edit="contact-title" data-chaos="section-title">available for research, prototypes, and policy systems work.</h2>
+        <a href="mailto:mumerzafer@gmail.com" data-edit="contact-link" data-chaos="contact-link">mumerzafer@gmail.com</a>
+      </section>
+    </main>
+
+    <script>
+      (function () {
+        const root = document.documentElement;
+        const storageKey = "swiss-review-board-v2";
+        const editableNodes = Array.from(document.querySelectorAll("[data-edit]"));
+        const editToggle = document.querySelector("#edit-toggle");
+        const accentControl = document.querySelector("#accent-control");
+        const gridControl = document.querySelector("#grid-control");
+        const gravityControl = document.querySelector("#gravity-control");
+        const symmetryControl = document.querySelector("#symmetry-control");
+        const symmetryValue = document.querySelector("#symmetry-value");
+        const resetReview = document.querySelector("#reset-review");
+        const hideReview = document.querySelector("#hide-review");
+        const reviewTools = document.querySelector(".review-tools");
+        const chaosNodes = Array.from(document.querySelectorAll("[data-chaos]"));
+        const collapseShards = document.querySelector(".collapse-shards");
+        const liquidCanvas = document.querySelector("#liquid-grid");
+        const liquidContext = liquidCanvas ? liquidCanvas.getContext("2d") : null;
+        const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+        const liquid = {
+          active: false,
+          animationId: 0,
+          height: 0,
+          intensity: 0,
+          scale: 1,
+          targetX: 0,
+          targetY: 0,
+          time: 0,
+          width: 0,
+          x: 0,
+          y: 0,
+        };
+
+        function readState() {
+          try {
+            return JSON.parse(window.localStorage.getItem(storageKey)) || {};
+          } catch (error) {
+            return {};
+          }
+        }
+
+        function writeState(nextState) {
+          window.localStorage.setItem(storageKey, JSON.stringify(nextState));
+        }
+
+        function getStateFromPage() {
+          return editableNodes.reduce(
+            (state, node) => {
+              state.copy[node.dataset.edit] = node.textContent;
+              return state;
+            },
+            {
+              accent: accentControl.value,
+              copy: {},
+              gravity: gravityControl.value,
+              grid: gridControl.value,
+              symmetry: symmetryControl.value,
+            }
+          );
+        }
+
+        function seededNoise(seed, salt) {
+          const x = Math.sin(seed * 97.13 + salt * 43.71) * 10000;
+          return x - Math.floor(x);
+        }
+
+        function signedNoise(seed, salt) {
+          return seededNoise(seed, salt) * 2 - 1;
+        }
+
+        function setChaosVar(node, name, value) {
+          node.style.setProperty(name, value);
+        }
+
+        function smoothStep(value) {
+          const t = Math.max(0, Math.min(1, value));
+          return t * t * (3 - 2 * t);
+        }
+
+        function createCollapseShards() {
+          if (!collapseShards || collapseShards.children.length) {
+            return;
+          }
+
+          const source = "Risk Regulation AI Revolution Work research writing contact 01020304";
+
+          for (let index = 0; index < 92; index += 1) {
+            const shard = document.createElement("span");
+            shard.textContent = source[index % source.length];
+            shard.style.setProperty("--shard-color", seededNoise(index, 1) > 0.72 ? "#ffae00" : "#050505");
+            shard.style.setProperty("--shard-size", `${(10 + seededNoise(index, 2) * 18).toFixed(1)}px`);
+            shard.style.setProperty("--shard-alpha", `${(0.28 + seededNoise(index, 3) * 0.62).toFixed(2)}`);
+            collapseShards.appendChild(shard);
+          }
+        }
+
+        function updateCollapseShards(raw, collapse) {
+          if (!collapseShards) {
+            return;
+          }
+
+          createCollapseShards();
+          const width = Math.max(1, window.innerWidth);
+          const height = Math.max(1, window.innerHeight);
+          const centerX = width * (0.5 + signedNoise(raw, 71) * 0.05 * collapse);
+          const centerY = height * (0.56 + signedNoise(raw, 72) * 0.07 * collapse);
+
+          Array.from(collapseShards.children).forEach((shard, index) => {
+            const originX = seededNoise(index, 10) * width;
+            const originY = seededNoise(index, 11) * height;
+            const scatter = 34 + seededNoise(index, 12) * 310;
+            const spiral = index * 0.42 + raw * 0.08;
+            const targetX = centerX + Math.cos(spiral) * scatter * signedNoise(index, 13);
+            const targetY = centerY + Math.sin(spiral) * scatter * signedNoise(index, 14);
+
+            shard.style.setProperty("--origin-x", originX.toFixed(1));
+            shard.style.setProperty("--origin-y", originY.toFixed(1));
+            shard.style.setProperty("--shard-x", `${(targetX - originX).toFixed(1)}px`);
+            shard.style.setProperty("--shard-y", `${(targetY - originY).toFixed(1)}px`);
+            shard.style.setProperty("--shard-rotate", `${(signedNoise(index, raw + 15) * 540).toFixed(1)}deg`);
+            shard.style.setProperty("--shard-scale", `${(0.08 + seededNoise(index, 16) * 0.78).toFixed(2)}`);
+          });
+        }
+
+        function applySymmetryChaos(value) {
+          const raw = Math.max(0, Math.min(100, Number(value || 0)));
+          const level = raw / 100;
+          const eased = level * level * (3 - 2 * level);
+          const collapse = smoothStep((raw - 82) / 18);
+          const width = Math.max(1, window.innerWidth);
+          const height = Math.max(1, window.innerHeight);
+          const collapseCenterX = width * (0.5 + signedNoise(raw, 31) * 0.035);
+          const collapseCenterY = height * (0.56 + signedNoise(raw, 32) * 0.055);
+
+          symmetryControl.value = String(raw);
+          symmetryValue.textContent = String(raw);
+          root.style.setProperty("--symmetry-level", eased.toFixed(3));
+          root.style.setProperty("--collapse-level", collapse.toFixed(3));
+          root.style.setProperty("--col-one", `${(signedNoise(raw, 1) * 86).toFixed(1)}px`);
+          root.style.setProperty("--col-two", `${(signedNoise(raw, 2) * -70).toFixed(1)}px`);
+          root.style.setProperty("--col-three", `${(signedNoise(raw, 3) * 74).toFixed(1)}px`);
+          root.style.setProperty("--col-four", `${(signedNoise(raw, 4) * -52).toFixed(1)}px`);
+          root.style.setProperty("--work-col-one", `${(1 + signedNoise(raw, 5) * 0.34 * eased).toFixed(3)}fr`);
+          root.style.setProperty("--work-col-two", `${(1 + signedNoise(raw, 6) * 0.28 * eased).toFixed(3)}fr`);
+          root.style.setProperty("--work-col-three", `${(1 + signedNoise(raw, 7) * 0.32 * eased).toFixed(3)}fr`);
+          root.style.setProperty("--hero-copy-x", `${(signedNoise(raw, 8) * 96).toFixed(1)}px`);
+          root.style.setProperty("--hero-copy-y", `${(signedNoise(raw, 9) * -42).toFixed(1)}px`);
+          root.style.setProperty("--hero-copy-skew", `${(signedNoise(raw, 10) * 3.2).toFixed(2)}deg`);
+
+          chaosNodes.forEach((node, index) => {
+            const type = node.dataset.chaos;
+            const scale =
+              type === "hero-title" ? 118 :
+              type === "section-title" ? 92 :
+              type === "work-item" ? 76 :
+              type === "hero-subtitle" ? 62 :
+              type === "writing-item" ? 44 :
+              32;
+            const rotateScale =
+              type === "hero-title" ? 4.6 :
+              type === "section-title" ? 3.8 :
+              type === "work-item" ? 2.7 :
+              type === "nav" || type === "micro" ? 1.2 :
+              2;
+            const seed = raw + index * 11 + type.length;
+            const mirror = index % 2 === 0 ? 1 : -1;
+            const rect = node.getBoundingClientRect();
+            const nodeCenterX = rect.left + rect.width / 2;
+            const nodeCenterY = rect.top + rect.height / 2;
+            const collapseScatter = type === "hero-title" ? 62 : type === "section-title" ? 48 : 34;
+            const collapseX = collapseCenterX - nodeCenterX + signedNoise(seed, 21) * collapseScatter;
+            const collapseY = collapseCenterY - nodeCenterY + signedNoise(seed, 22) * collapseScatter;
+            const collapseScale =
+              type === "hero-title" ? 0.72 :
+              type === "section-title" ? 0.62 :
+              type === "work-item" ? 0.54 :
+              type === "hero-subtitle" ? 0.45 :
+              0.36;
+
+            setChaosVar(node, "--chaos-x", `${(signedNoise(seed, 1) * scale * mirror).toFixed(1)}px`);
+            setChaosVar(node, "--chaos-y", `${(signedNoise(seed, 2) * scale * 0.62).toFixed(1)}px`);
+            setChaosVar(node, "--chaos-rotate", `${(signedNoise(seed, 3) * rotateScale).toFixed(2)}deg`);
+            setChaosVar(node, "--chaos-track", `${(signedNoise(seed, 4) * 0.025).toFixed(3)}em`);
+            setChaosVar(node, "--chaos-origin", index % 3 === 0 ? "left bottom" : index % 3 === 1 ? "right top" : "center center");
+            setChaosVar(node, "--collapse-x", `${collapseX.toFixed(1)}px`);
+            setChaosVar(node, "--collapse-y", `${collapseY.toFixed(1)}px`);
+            setChaosVar(node, "--collapse-rotate", `${(signedNoise(seed, 23) * 28).toFixed(2)}deg`);
+            setChaosVar(node, "--collapse-scale", collapseScale.toFixed(2));
+            setChaosVar(node, "--collapse-fade", `${(0.18 + seededNoise(seed, 24) * 0.5).toFixed(2)}`);
+            setChaosVar(node, "--collapse-blur", `${(seededNoise(seed, 25) * 2.8).toFixed(2)}px`);
+            setChaosVar(node, "--ghost-a-x", `${(signedNoise(seed, 26) * 38).toFixed(1)}px`);
+            setChaosVar(node, "--ghost-a-y", `${(signedNoise(seed, 27) * 28).toFixed(1)}px`);
+            setChaosVar(node, "--ghost-b-x", `${(signedNoise(seed, 28) * -52).toFixed(1)}px`);
+            setChaosVar(node, "--ghost-b-y", `${(signedNoise(seed, 29) * 44).toFixed(1)}px`);
+          });
+
+          updateCollapseShards(raw, collapse);
+        }
+
+        function applyControls(state) {
+          const grid = Number(state.grid || 10);
+          const gravity = Number(state.gravity || 100);
+          const accent = state.accent || "#ffae00";
+          const symmetry = Number(state.symmetry || 0);
+
+          accentControl.value = accent;
+          gridControl.value = String(grid);
+          gravityControl.value = String(gravity);
+          root.style.setProperty("--accent", accent);
+          root.style.setProperty("--grid-step", `${grid}px`);
+          root.style.setProperty("--grid-major", `${grid * 5}px`);
+          root.style.setProperty("--gravity-strength", String(gravity / 100));
+          applySymmetryChaos(symmetry);
+        }
+
+        function applyState(state) {
+          applyControls(state);
+          editableNodes.forEach((node) => {
+            const value = state.copy && state.copy[node.dataset.edit];
+
+            if (typeof value === "string") {
+              node.textContent = value;
+            }
+          });
+        }
+
+        function persist() {
+          writeState(getStateFromPage());
+        }
+
+        function setEditMode(enabled) {
+          editToggle.setAttribute("aria-pressed", String(enabled));
+          editableNodes.forEach((node) => {
+            node.setAttribute("contenteditable", String(enabled));
+            node.toggleAttribute("spellcheck", enabled);
+          });
+        }
+
+        function resizeLiquidGrid() {
+          if (!liquidCanvas || !liquidContext) {
+            return;
+          }
+
+          liquid.scale = Math.min(window.devicePixelRatio || 1, 2);
+          liquid.width = Math.max(1, window.innerWidth);
+          liquid.height = Math.max(1, window.innerHeight);
+          liquidCanvas.width = Math.floor(liquid.width * liquid.scale);
+          liquidCanvas.height = Math.floor(liquid.height * liquid.scale);
+          liquidCanvas.style.width = `${liquid.width}px`;
+          liquidCanvas.style.height = `${liquid.height}px`;
+          liquidContext.setTransform(liquid.scale, 0, 0, liquid.scale, 0, 0);
+        }
+
+        function smoothFalloff(distance, radius) {
+          const t = Math.max(0, Math.min(1, 1 - distance / radius));
+          return t * t * (3 - 2 * t);
+        }
+
+        function gravityPoint(x, y, radius) {
+          const strength = Number(getComputedStyle(root).getPropertyValue("--gravity-strength")) || 1;
+          const dx = x - liquid.x;
+          const dy = y - liquid.y;
+          const distance = Math.hypot(dx, dy);
+          const pull = smoothFalloff(distance, radius) * liquid.intensity * strength;
+          const wave = Math.sin(distance * 0.025 - liquid.time) * 4.8 * pull;
+
+          return {
+            x: x - dx * 0.22 * pull + (dy / Math.max(distance, 1)) * wave,
+            y: y - dy * 0.22 * pull - (dx / Math.max(distance, 1)) * wave,
+          };
+        }
+
+        function drawWarpedVerticalLine(baseX, minY, maxY, radius, alphaScale, color, alphaBase, step) {
+          liquidContext.strokeStyle = `rgba(${color}, ${alphaBase * alphaScale})`;
+          liquidContext.beginPath();
+
+          for (let y = minY; y <= maxY; y += step) {
+            const point = gravityPoint(baseX, y, radius);
+
+            if (y === minY) {
+              liquidContext.moveTo(point.x, point.y);
+            } else {
+              liquidContext.lineTo(point.x, point.y);
+            }
+          }
+
+          liquidContext.stroke();
+        }
+
+        function drawWarpedHorizontalLine(baseY, minX, maxX, radius, alphaScale, color, alphaBase, step) {
+          liquidContext.strokeStyle = `rgba(${color}, ${alphaBase * alphaScale})`;
+          liquidContext.beginPath();
+
+          for (let x = minX; x <= maxX; x += step) {
+            const point = gravityPoint(x, baseY, radius);
+
+            if (x === minX) {
+              liquidContext.moveTo(point.x, point.y);
+            } else {
+              liquidContext.lineTo(point.x, point.y);
+            }
+          }
+
+          liquidContext.stroke();
+        }
+
+        function drawLocalGrid(minX, maxX, minY, maxY, radius, alpha, step) {
+          const startGridX = Math.floor(minX / step) * step;
+          const startGridY = Math.floor(minY / step) * step;
+
+          liquidContext.lineWidth = 0.85;
+
+          for (let x = startGridX; x <= maxX; x += step) {
+            const distance = Math.abs(x - liquid.x);
+            drawWarpedVerticalLine(x, minY, maxY, radius, smoothFalloff(distance, radius) * alpha, "82, 82, 82", 0.09, step);
+          }
+
+          for (let y = startGridY; y <= maxY; y += step) {
+            const distance = Math.abs(y - liquid.y);
+            drawWarpedHorizontalLine(y, minX, maxX, radius, smoothFalloff(distance, radius) * alpha, "82, 82, 82", 0.09, step);
+          }
+        }
+
+        function drawLiquidGrid() {
+          if (!liquidCanvas || !liquidContext || reduceMotion.matches) {
+            return;
+          }
+
+          const strength = Number(getComputedStyle(root).getPropertyValue("--gravity-strength")) || 1;
+          const step = Number(getComputedStyle(root).getPropertyValue("--grid-step").replace("px", "")) || 10;
+          liquid.x += (liquid.targetX - liquid.x) * 0.09;
+          liquid.y += (liquid.targetY - liquid.y) * 0.09;
+          liquid.intensity += ((liquid.active ? 1 : 0) - liquid.intensity) * 0.055;
+          liquid.time += 0.026;
+
+          liquidContext.clearRect(0, 0, liquid.width, liquid.height);
+
+          if (liquid.intensity < 0.012) {
+            liquid.animationId = 0;
+            return;
+          }
+
+          const radius = (128 + liquid.intensity * 44) * Math.max(0.7, strength);
+          const alpha = liquid.intensity;
+          const minX = liquid.x - radius * 1.05;
+          const maxX = liquid.x + radius * 1.05;
+          const minY = liquid.y - radius * 1.25;
+          const maxY = liquid.y + radius * 1.25;
+          const ruleXs = [liquid.width * 0.25, liquid.width * 0.5, liquid.width * 0.75];
+          const activeRules = ruleXs.filter((x) => Math.abs(x - liquid.x) < radius);
+
+          liquidContext.save();
+          const glow = liquidContext.createRadialGradient(liquid.x, liquid.y, 0, liquid.x, liquid.y, radius);
+          glow.addColorStop(0, `rgba(255, 174, 0, ${0.08 * alpha})`);
+          glow.addColorStop(0.68, `rgba(255, 174, 0, ${0.026 * alpha})`);
+          glow.addColorStop(1, "rgba(255, 174, 0, 0)");
+          liquidContext.fillStyle = glow;
+          liquidContext.fillRect(liquid.x - radius, liquid.y - radius, radius * 2, radius * 2);
+
+          liquidContext.lineCap = "round";
+          liquidContext.lineJoin = "round";
+          drawLocalGrid(minX, maxX, minY, maxY, radius, alpha, step);
+
+          liquidContext.lineWidth = 1.3;
+          activeRules.forEach((x) => {
+            const distance = Math.abs(x - liquid.x);
+            drawWarpedVerticalLine(x, minY, maxY, radius, smoothFalloff(distance, radius) * alpha, "255, 174, 0", 0.26, step);
+          });
+
+          liquidContext.restore();
+          liquid.animationId = window.requestAnimationFrame(drawLiquidGrid);
+        }
+
+        function startLiquidGrid() {
+          if (!liquid.animationId && !reduceMotion.matches) {
+            liquid.animationId = window.requestAnimationFrame(drawLiquidGrid);
+          }
+        }
+
+        applyState(readState());
+
+        editToggle.addEventListener("click", () => {
+          setEditMode(editToggle.getAttribute("aria-pressed") !== "true");
+        });
+
+        editableNodes.forEach((node) => {
+          node.addEventListener("input", persist);
+          node.addEventListener("blur", persist);
+        });
+
+        [accentControl, gridControl, gravityControl, symmetryControl].forEach((control) => {
+          control.addEventListener("input", () => {
+            applyControls(getStateFromPage());
+            persist();
+            liquid.active = true;
+            startLiquidGrid();
+          });
+        });
+
+        resetReview.addEventListener("click", () => {
+          window.localStorage.removeItem(storageKey);
+          window.location.reload();
+        });
+
+        hideReview.addEventListener("click", () => {
+          reviewTools.hidden = true;
+        });
+
+        window.addEventListener("pointermove", (event) => {
+          liquid.active = true;
+          liquid.targetX = event.clientX;
+          liquid.targetY = event.clientY;
+
+          if (!liquid.x && !liquid.y) {
+            liquid.x = liquid.targetX;
+            liquid.y = liquid.targetY;
+          }
+
+          startLiquidGrid();
+        });
+
+        window.addEventListener("pointerleave", () => {
+          liquid.active = false;
+          startLiquidGrid();
+        });
+
+        window.addEventListener("resize", () => {
+          resizeLiquidGrid();
+          applySymmetryChaos(symmetryControl.value);
+        });
+
+        resizeLiquidGrid();
+      })();
+    </script>
+  </body>
+</html>

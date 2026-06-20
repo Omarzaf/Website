@@ -1,0 +1,8 @@
+.playwright-mcp/
+.superpowers/
+.DS_Store
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.gif
