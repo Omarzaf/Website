@@ -1,43 +1,188 @@
 (function () {
   document.documentElement.classList.add("js");
 
+  const root = document.documentElement;
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   const canvas = document.querySelector("#signal-canvas");
   const context = canvas ? canvas.getContext("2d") : null;
+  const tensionControl = document.querySelector("#tension-control");
+  const tensionValue = document.querySelector("#tension-value");
+  const signalTitle = document.querySelector("#signal-title");
+  const signalCopy = document.querySelector("#signal-copy");
+  const themeToggles = Array.from(document.querySelectorAll("[data-theme-toggle]"));
+  const themeStorageKey = "uz-theme";
 
-  const pointer = {
-    x: 0.62,
-    y: 0.34,
+  const field = {
     active: false,
+    animationId: 0,
+    goldHue: 40,
+    goldLightness: 54,
+    height: 0,
+    idleTimeoutId: 0,
+    intensity: 0,
+    scale: 1,
+    targetX: 0,
+    targetY: 0,
+    tension: 0.24,
+    time: 0,
+    width: 0,
+    x: 0,
+    y: 0,
   };
 
-  let width = 0;
-  let height = 0;
-  let scale = 1;
-  let nodes = [];
-  let frame = 0;
-  let animationId = 0;
+  const signalStates = [
+    {
+      max: 34,
+      title: "technical systems",
+      copy: "Move the control or pointer to bend the grid around code, capital, and regulation.",
+    },
+    {
+      max: 68,
+      title: "political institutions",
+      copy: "The field tightens where incentives, jurisdictions, and infrastructure begin to shape each other.",
+    },
+    {
+      max: 100,
+      title: "decisions under pressure",
+      copy: "At high pressure the map stops being neutral and starts showing where governance has to act.",
+    },
+  ];
 
-  function createNodes() {
-    const area = width * height;
-    const count = Math.max(92, Math.min(260, Math.floor(area / 7200)));
+  function requestSignalFrame() {
+    if (!canvas || !context || reduceMotion.matches || field.animationId) {
+      return;
+    }
 
-    return Array.from({ length: count }, (_, index) => {
-      const t = count <= 1 ? 0 : index / (count - 1);
-      const lane = index % 5;
-      const sweep = Math.sin(t * Math.PI * 2.15);
-      const offset = Math.sin(index * 12.9898) * 0.07;
+    field.animationId = window.requestAnimationFrame(drawSignalField);
+  }
 
-      return {
-        baseX: width * (0.18 + t * 0.72 + offset),
-        baseY: height * (0.17 + lane * 0.11 + sweep * 0.055),
-        orbit: 5 + (index % 11) * 0.72,
-        phase: index * 0.63,
-        speed: 0.0014 + (index % 7) * 0.0002,
-        size: 0.7 + (index % 4) * 0.22,
-        alpha: 0.16 + (index % 6) * 0.035,
-      };
+  function clearSignalIdleTimer() {
+    if (!field.idleTimeoutId) {
+      return;
+    }
+
+    window.clearTimeout(field.idleTimeoutId);
+    field.idleTimeoutId = 0;
+  }
+
+  function settleSignalField() {
+    clearSignalIdleTimer();
+    field.active = false;
+    requestSignalFrame();
+  }
+
+  function markSignalActive() {
+    clearSignalIdleTimer();
+    field.active = true;
+    field.idleTimeoutId = window.setTimeout(() => {
+      field.idleTimeoutId = 0;
+      field.active = false;
+      requestSignalFrame();
+    }, 900);
+    requestSignalFrame();
+  }
+
+  function getStoredTheme() {
+    try {
+      return window.localStorage.getItem(themeStorageKey);
+    } catch {
+      return null;
+    }
+  }
+
+  function storeTheme(theme) {
+    try {
+      window.localStorage.setItem(themeStorageKey, theme);
+    } catch {
+      // localStorage can be unavailable in private or restricted browser contexts.
+    }
+  }
+
+  function updateThemeControls(theme) {
+    const isDark = theme === "dark";
+
+    themeToggles.forEach((toggle) => {
+      const label = toggle.querySelector("[data-theme-label]");
+
+      toggle.setAttribute("aria-pressed", String(isDark));
+      toggle.setAttribute("aria-label", `Switch to ${isDark ? "light" : "dark"} mode`);
+
+      if (label) {
+        label.textContent = isDark ? "light" : "dark";
+      }
     });
+  }
+
+  function applyTheme(theme) {
+    const nextTheme = theme === "dark" ? "dark" : "light";
+
+    root.dataset.theme = nextTheme;
+    updateThemeControls(nextTheme);
+    updateCursorGold();
+  }
+
+  function initThemeToggle() {
+    applyTheme(getStoredTheme() || "light");
+
+    themeToggles.forEach((toggle) => {
+      toggle.addEventListener("click", () => {
+        const nextTheme = root.dataset.theme === "dark" ? "light" : "dark";
+
+        applyTheme(nextTheme);
+        storeTheme(nextTheme);
+      });
+    });
+  }
+
+  function setTension(value) {
+    const raw = Math.max(0, Math.min(100, Number(value || 0)));
+    const tension = raw / 100;
+    const state = signalStates.find((item) => raw <= item.max) || signalStates[signalStates.length - 1];
+
+    field.tension = tension;
+    root.style.setProperty("--tension", tension.toFixed(3));
+    root.style.setProperty("--grid-step", `${Math.max(7, 13 - tension * 5).toFixed(1)}px`);
+    root.style.setProperty("--grid-major", `${Math.max(36, 65 - tension * 24).toFixed(1)}px`);
+
+    if (tensionValue) {
+      tensionValue.textContent = String(Math.round(raw));
+    }
+
+    if (signalTitle) {
+      signalTitle.textContent = state.title;
+    }
+
+    if (signalCopy) {
+      signalCopy.textContent = state.copy;
+    }
+
+    requestSignalFrame();
+  }
+
+  function updateCursorGold() {
+    const xRatio = field.width ? Math.max(0, Math.min(1, field.x / field.width)) : 0.62;
+    const yRatio = field.height ? Math.max(0, Math.min(1, field.y / field.height)) : 0.42;
+    const isDark = root.dataset.theme === "dark";
+    const hue = 35 + xRatio * 14 - yRatio * 3;
+    const lightness = (isDark ? 56 : 43) + (1 - yRatio) * 8;
+    const softAlpha = isDark ? 0.055 + field.intensity * 0.075 : 0.035 + field.intensity * 0.055;
+
+    field.goldHue = hue;
+    field.goldLightness = lightness;
+    root.style.setProperty("--cursor-x", `${(xRatio * 100).toFixed(2)}%`);
+    root.style.setProperty("--cursor-y", `${(yRatio * 100).toFixed(2)}%`);
+    root.style.setProperty(
+      "--cursor-gold-soft",
+      `hsla(${hue.toFixed(1)}, 100%, ${lightness.toFixed(1)}%, ${softAlpha.toFixed(3)})`
+    );
+  }
+
+  function goldStroke(alpha) {
+    return `hsla(${field.goldHue.toFixed(1)}, 100%, ${field.goldLightness.toFixed(1)}%, ${alpha})`;
+  }
+
+  function gridStroke(alpha) {
+    return root.dataset.theme === "dark" ? `rgba(255, 246, 228, ${alpha})` : `rgba(5, 5, 5, ${alpha})`;
   }
 
   function resizeCanvas() {
@@ -45,156 +190,170 @@
       return;
     }
 
-    scale = Math.min(window.devicePixelRatio || 1, 2);
-    width = Math.max(1, window.innerWidth);
-    height = Math.max(1, window.innerHeight);
-    canvas.width = Math.floor(width * scale);
-    canvas.height = Math.floor(height * scale);
-    canvas.style.width = `${width}px`;
-    canvas.style.height = `${height}px`;
-    context.setTransform(scale, 0, 0, scale, 0, 0);
-    nodes = createNodes();
+    field.scale = Math.min(window.devicePixelRatio || 1, 2);
+    field.width = Math.max(1, window.innerWidth);
+    field.height = Math.max(1, window.innerHeight);
+    field.targetX = field.width * 0.62;
+    field.targetY = field.height * 0.42;
+    field.x = field.targetX;
+    field.y = field.targetY;
+    canvas.width = Math.floor(field.width * field.scale);
+    canvas.height = Math.floor(field.height * field.scale);
+    canvas.style.width = `${field.width}px`;
+    canvas.style.height = `${field.height}px`;
+    context.setTransform(field.scale, 0, 0, field.scale, 0, 0);
+    updateCursorGold();
   }
 
-  function drawBackground() {
-    const gradient = context.createRadialGradient(
-      width * 0.74,
-      height * 0.2,
-      0,
-      width * 0.74,
-      height * 0.2,
-      width * 0.48
-    );
-
-    gradient.addColorStop(0, "rgba(217, 133, 79, 0.1)");
-    gradient.addColorStop(0.48, "rgba(242, 180, 93, 0.04)");
-    gradient.addColorStop(1, "rgba(7, 5, 4, 0)");
-
-    context.fillStyle = gradient;
-    context.fillRect(0, 0, width, height);
+  function smoothFalloff(distance, radius) {
+    const t = Math.max(0, Math.min(1, 1 - distance / radius));
+    return t * t * (3 - 2 * t);
   }
 
-  function drawSignalRibbon(time) {
-    context.beginPath();
-    context.strokeStyle = "rgba(247, 210, 171, 0.13)";
-    context.lineWidth = 1;
+  function warpPoint(x, y, radius) {
+    const dx = x - field.x;
+    const dy = y - field.y;
+    const distance = Math.hypot(dx, dy);
+    const pull = smoothFalloff(distance, radius) * field.intensity * (0.45 + field.tension * 1.8);
+    const wave = Math.sin(distance * 0.028 - field.time) * 5.5 * pull;
 
-    for (let i = 0; i < 96; i += 1) {
-      const t = i / 95;
-      const x = width * (0.1 + t * 0.82);
-      const y = height * (0.28 + Math.sin(t * Math.PI * 2.4 + time * 0.0018) * 0.065);
-
-      if (i === 0) {
-        context.moveTo(x, y);
-      } else {
-        context.lineTo(x, y);
-      }
-    }
-
-    context.stroke();
+    return {
+      x: x - dx * 0.18 * pull + (dy / Math.max(distance, 1)) * wave,
+      y: y - dy * 0.18 * pull - (dx / Math.max(distance, 1)) * wave,
+    };
   }
 
-  function drawField(time) {
+  function drawWarpedLine(base, min, max, radius, isVertical, tone, alpha) {
     if (!context) {
       return;
     }
 
-    context.clearRect(0, 0, width, height);
-    drawBackground();
+    const step = 11;
+    let previousPoint = null;
+    let previousRaw = null;
 
-    const influenceX = (pointer.x - 0.5) * (pointer.active ? 22 : 8);
-    const influenceY = (pointer.y - 0.5) * (pointer.active ? 16 : 5);
-    const points = nodes.map((node) => {
-      const drift = time * node.speed + node.phase;
+    for (let value = min; value <= max; value += step) {
+      const raw = isVertical ? { x: base, y: value } : { x: value, y: base };
+      const point = isVertical ? warpPoint(base, value, radius) : warpPoint(value, base, radius);
 
-      return {
-        x: node.baseX + Math.cos(drift) * node.orbit + influenceX,
-        y: node.baseY + Math.sin(drift * 1.35) * node.orbit + influenceY,
-        size: node.size,
-        alpha: node.alpha,
-      };
+      if (previousPoint && previousRaw) {
+        const midX = (raw.x + previousRaw.x) * 0.5;
+        const midY = (raw.y + previousRaw.y) * 0.5;
+        const distance = Math.hypot(midX - field.x, midY - field.y);
+        const fade = Math.pow(smoothFalloff(distance, radius), 1.45);
+        const segmentAlpha = alpha * fade;
+
+        if (segmentAlpha > 0.004) {
+          context.strokeStyle = tone === "gold" ? goldStroke(segmentAlpha) : gridStroke(segmentAlpha);
+          context.beginPath();
+          context.moveTo(previousPoint.x, previousPoint.y);
+          context.lineTo(point.x, point.y);
+          context.stroke();
+        }
+      }
+
+      previousPoint = point;
+      previousRaw = raw;
+    }
+  }
+
+  function drawSignalField() {
+    if (!canvas || !context || reduceMotion.matches) {
+      field.animationId = 0;
+      return;
+    }
+
+    field.x += (field.targetX - field.x) * 0.1;
+    field.y += (field.targetY - field.y) * 0.1;
+    const idleIntensity = field.tension * 0.42;
+    const targetIntensity = field.active ? 1 : idleIntensity;
+    field.intensity += (targetIntensity - field.intensity) * 0.055;
+    field.time += 0.03 + field.tension * 0.035;
+    updateCursorGold();
+
+    context.clearRect(0, 0, field.width, field.height);
+
+    const radius = 128 + field.tension * 230 + field.intensity * 60;
+    const minX = Math.max(0, field.x - radius * 1.08);
+    const maxX = Math.min(field.width, field.x + radius * 1.08);
+    const minY = Math.max(0, field.y - radius * 1.08);
+    const maxY = Math.min(field.height, field.y + radius * 1.08);
+    const step = Math.max(8, 16 - field.tension * 7);
+    const alpha = 0.05 + field.intensity * 0.18;
+
+    context.save();
+    context.lineWidth = 0.9;
+    context.lineCap = "round";
+    context.lineJoin = "round";
+
+    const glow = context.createRadialGradient(field.x, field.y, 0, field.x, field.y, radius);
+    glow.addColorStop(0, goldStroke(0.11 * field.intensity));
+    glow.addColorStop(0.58, goldStroke(0.035 * field.intensity));
+    glow.addColorStop(1, goldStroke(0));
+    context.fillStyle = glow;
+    context.beginPath();
+    context.arc(field.x, field.y, radius, 0, Math.PI * 2);
+    context.fill();
+
+    for (let x = Math.floor(minX / step) * step; x <= maxX; x += step) {
+      drawWarpedLine(x, minY, maxY, radius, true, "gold", alpha);
+    }
+
+    for (let y = Math.floor(minY / step) * step; y <= maxY; y += step) {
+      drawWarpedLine(y, minX, maxX, radius, false, "gold", alpha);
+    }
+
+    [field.width * 0.25, field.width * 0.5, field.width * 0.75].forEach((x) => {
+      if (Math.abs(x - field.x) < radius) {
+        drawWarpedLine(x, minY, maxY, radius, true, "grid", 0.08 + field.tension * 0.11);
+      }
     });
 
-    for (let index = 0; index < points.length; index += 1) {
-      const point = points[index];
+    context.restore();
 
-      context.beginPath();
-      context.fillStyle = `rgba(247, 210, 171, ${point.alpha})`;
-      context.arc(point.x, point.y, point.size, 0, Math.PI * 2);
-      context.fill();
+    const pointerSettled = Math.hypot(field.targetX - field.x, field.targetY - field.y) < 0.6;
+    const intensitySettled = Math.abs(field.intensity - targetIntensity) < 0.003;
 
-      if (index % 3 !== 0) {
-        continue;
-      }
-
-      const next = points[index + 9];
-      if (!next) {
-        continue;
-      }
-
-      const distance = Math.hypot(point.x - next.x, point.y - next.y);
-      if (distance < 150) {
-        context.beginPath();
-        context.strokeStyle = `rgba(217, 133, 79, ${Math.max(0, 0.1 - distance / 1600)})`;
-        context.lineWidth = 0.55;
-        context.moveTo(point.x, point.y);
-        context.lineTo(next.x, next.y);
-        context.stroke();
-      }
-    }
-
-    drawSignalRibbon(time);
-  }
-
-  function animate() {
-    drawField(frame);
-    frame += 1;
-    animationId = window.requestAnimationFrame(animate);
-  }
-
-  function startCanvas() {
-    if (!canvas || !context) {
+    if (!field.active && pointerSettled && intensitySettled) {
+      field.animationId = 0;
       return;
     }
 
-    window.cancelAnimationFrame(animationId);
-
-    if (reduceMotion.matches) {
-      drawField(0);
-      return;
-    }
-
-    animate();
+    field.animationId = window.requestAnimationFrame(drawSignalField);
   }
 
-  function initCanvas() {
+  function initSignalField() {
     if (!canvas || !context) {
       return;
     }
 
     resizeCanvas();
-    startCanvas();
+    setTension(tensionControl ? tensionControl.value : 24);
 
     window.addEventListener("resize", () => {
       resizeCanvas();
-      startCanvas();
+      setTension(tensionControl ? tensionControl.value : 24);
     });
 
     window.addEventListener("pointermove", (event) => {
-      pointer.x = event.clientX / Math.max(1, width);
-      pointer.y = event.clientY / Math.max(1, height);
-      pointer.active = true;
+      field.targetX = event.clientX;
+      field.targetY = event.clientY;
+      markSignalActive();
     });
 
-    window.addEventListener("pointerleave", () => {
-      pointer.active = false;
-    });
+    window.addEventListener("pointerleave", settleSignalField);
+  }
 
-    if (typeof reduceMotion.addEventListener === "function") {
-      reduceMotion.addEventListener("change", startCanvas);
-    } else if (typeof reduceMotion.addListener === "function") {
-      reduceMotion.addListener(startCanvas);
+  function initTensionControl() {
+    if (!tensionControl) {
+      return;
     }
+
+    tensionControl.addEventListener("input", (event) => {
+      setTension(event.target.value);
+    });
+
+    setTension(tensionControl.value);
   }
 
   function initReveals() {
@@ -221,12 +380,104 @@
         });
       },
       {
-        rootMargin: "0px 0px -12% 0px",
+        rootMargin: "0px 0px -10% 0px",
         threshold: 0.12,
       }
     );
 
     revealElements.forEach((element) => observer.observe(element));
+  }
+
+  function initFilterGroups() {
+    const groups = Array.from(document.querySelectorAll("[data-filter-group]"));
+
+    groups.forEach((group) => {
+      const controls = Array.from(group.querySelectorAll("[data-filter-control]"));
+      const items = Array.from(group.querySelectorAll("[data-filter-item]"));
+      const empty = group.querySelector("[data-filter-empty]");
+
+      if (!controls.length || !items.length) {
+        return;
+      }
+
+      function applyFilter(filter) {
+        let visibleCount = 0;
+
+        controls.forEach((control) => {
+          const isActive = control.dataset.filterControl === filter;
+          control.classList.toggle("is-active", isActive);
+          control.setAttribute("aria-pressed", String(isActive));
+        });
+
+        items.forEach((item) => {
+          const filters = (item.dataset.filterItem || "").split(" ");
+          const isVisible = filter === "all" || filters.includes(filter);
+          item.hidden = !isVisible;
+
+          if (isVisible) {
+            visibleCount += 1;
+          }
+        });
+
+        if (empty) {
+          empty.hidden = visibleCount > 0;
+        }
+      }
+
+      controls.forEach((control) => {
+        control.addEventListener("click", () => applyFilter(control.dataset.filterControl || "all"));
+      });
+
+      applyFilter(controls.find((control) => control.classList.contains("is-active"))?.dataset.filterControl || "all");
+    });
+  }
+
+  function initTabs() {
+    const tabLists = Array.from(document.querySelectorAll("[data-tabs]"));
+
+    tabLists.forEach((tabList) => {
+      const tabs = Array.from(tabList.querySelectorAll("[data-tab-control]"));
+      const panels = Array.from(tabList.querySelectorAll("[data-tab-panel]"));
+
+      if (!tabs.length || !panels.length) {
+        return;
+      }
+
+      function activate(index) {
+        tabs.forEach((tab, tabIndex) => {
+          const isActive = tabIndex === index;
+          tab.classList.toggle("is-active", isActive);
+          tab.setAttribute("aria-selected", String(isActive));
+          tab.tabIndex = isActive ? 0 : -1;
+        });
+
+        panels.forEach((panel, panelIndex) => {
+          panel.hidden = panelIndex !== index;
+        });
+      }
+
+      tabs.forEach((tab, index) => {
+        tab.addEventListener("click", () => activate(index));
+        tab.addEventListener("keydown", (event) => {
+          if (!["ArrowDown", "ArrowRight", "ArrowUp", "ArrowLeft", "Home", "End"].includes(event.key)) {
+            return;
+          }
+
+          event.preventDefault();
+
+          const direction = event.key === "ArrowDown" || event.key === "ArrowRight" ? 1 : -1;
+          const next =
+            event.key === "Home" ? 0 :
+            event.key === "End" ? tabs.length - 1 :
+            (index + direction + tabs.length) % tabs.length;
+
+          activate(next);
+          tabs[next].focus();
+        });
+      });
+
+      activate(Math.max(0, tabs.findIndex((tab) => tab.classList.contains("is-active"))));
+    });
   }
 
   function hashCell(x, y, seed) {
@@ -247,75 +498,52 @@
     const regions = {
       northAmerica: {
         label: "North America",
-        detail: "governance capacity, markets, and institutional design",
-        colors: ["#d6bd49", "#c89435", "#7b8d2f", "#44792f"],
+        detail: "AI governance capacity, markets, and institutional design",
+        colors: ["#ffae00", "#d89238", "#050505", "#737373"],
       },
-      southAmerica: {
-        label: "South America",
-        detail: "resource systems, development, and political economy",
-        colors: ["#d1b344", "#d89336", "#8d8a2f", "#4f7a35"],
+      southAsia: {
+        label: "South Asia",
+        detail: "security policy, development practice, and field experience",
+        colors: ["#ffae00", "#c97e2f", "#666666", "#050505"],
+      },
+      mena: {
+        label: "MENA",
+        detail: "geopolitical risk, digital governance, and regional institutions",
+        colors: ["#f5bd54", "#db9836", "#8a8a8a", "#303030"],
       },
       europe: {
         label: "Europe",
         detail: "regulation, standards, and alliance coordination",
-        colors: ["#d9c34e", "#d79a3a", "#748a33", "#b07a31"],
+        colors: ["#ffae00", "#d79a3a", "#c8c8c8", "#050505"],
       },
-      africa: {
-        label: "Africa",
-        detail: "infrastructure, institutional capacity, and resilience",
-        colors: ["#d4bd4a", "#d89238", "#9a8730", "#5e812f"],
-      },
-      asia: {
-        label: "Asia",
-        detail: "geopolitical competition and frontier technology systems",
-        colors: ["#d8bd4a", "#db9836", "#839135", "#5c822f"],
-      },
-      oceania: {
-        label: "Oceania",
-        detail: "security partnerships and critical supply chains",
-        colors: ["#d2aa42", "#c98a32", "#798b34", "#457334"],
+      arctic: {
+        label: "Arctic corridor",
+        detail: "critical infrastructure, supply chains, and resilience",
+        colors: ["#e5a332", "#c8c8c8", "#6e6e6e", "#050505"],
       },
     };
     const regionOrder = Object.keys(regions);
     const patches = [
-      ["northAmerica", 1, 8, 13, 4],
-      ["northAmerica", 4, 11, 20, 7],
-      ["northAmerica", 8, 18, 16, 7],
-      ["northAmerica", 13, 25, 8, 3],
-      ["northAmerica", 16, 28, 6, 4],
-      ["northAmerica", 19, 31, 4, 5],
-      ["northAmerica", 20, 6, 8, 4],
-      ["northAmerica", 27, 3, 11, 5],
-      ["northAmerica", 34, 2, 7, 4],
-      ["southAmerica", 21, 24, 9, 5],
-      ["southAmerica", 22, 28, 10, 6],
-      ["southAmerica", 24, 33, 5, 4],
-      ["europe", 41, 9, 7, 5],
-      ["europe", 46, 7, 7, 5],
-      ["europe", 49, 10, 5, 4],
-      ["africa", 40, 15, 10, 5],
-      ["africa", 42, 19, 11, 7],
-      ["africa", 45, 25, 8, 8],
-      ["africa", 49, 32, 4, 2],
-      ["asia", 50, 8, 16, 5],
-      ["asia", 55, 12, 22, 6],
-      ["asia", 52, 18, 18, 6],
-      ["asia", 60, 24, 10, 4],
-      ["asia", 67, 17, 8, 5],
-      ["asia", 70, 22, 5, 4],
-      ["asia", 59, 3, 7, 3],
-      ["asia", 64, 2, 4, 2],
-      ["oceania", 64, 28, 5, 3],
-      ["oceania", 68, 30, 9, 4],
-      ["oceania", 76, 35, 2, 2],
-      ["oceania", 71, 26, 3, 2],
+      ["northAmerica", 3, 9, 19, 7],
+      ["northAmerica", 9, 16, 15, 7],
+      ["northAmerica", 15, 24, 7, 5],
+      ["northAmerica", 27, 3, 12, 5],
+      ["southAsia", 57, 16, 7, 5],
+      ["southAsia", 61, 19, 8, 5],
+      ["southAsia", 64, 23, 6, 4],
+      ["mena", 45, 17, 9, 5],
+      ["mena", 47, 22, 8, 6],
+      ["europe", 42, 9, 11, 5],
+      ["europe", 49, 7, 7, 4],
+      ["arctic", 19, 5, 17, 4],
+      ["arctic", 50, 4, 15, 4],
     ];
     const tiles = new Map();
 
-    patches.forEach(([region, startX, startY, width, height], patchIndex) => {
-      for (let y = startY; y < startY + height; y += 1) {
-        for (let x = startX; x < startX + width; x += 1) {
-          const edge = x === startX || y === startY || x === startX + width - 1 || y === startY + height - 1;
+    patches.forEach(([region, startX, startY, patchWidth, patchHeight], patchIndex) => {
+      for (let y = startY; y < startY + patchHeight; y += 1) {
+        for (let x = startX; x < startX + patchWidth; x += 1) {
+          const edge = x === startX || y === startY || x === startX + patchWidth - 1 || y === startY + patchHeight - 1;
           const texture = hashCell(x, y, patchIndex);
 
           if ((edge && texture < 0.18) || (!edge && texture < 0.025)) {
@@ -353,14 +581,13 @@
 
     function describe(regionKey) {
       const region = regions[regionKey];
-      readout.textContent = region ? `${region.label}: ${region.detail}` : "Global systems map";
+      readout.textContent = region ? `${region.label}: ${region.detail}` : "Focus map: AI governance, South Asia, MENA, and infrastructure corridors";
     }
 
     function paint(regionKey, selectedKey) {
       cells.forEach((cell) => {
         const isActive = cell.dataset.region === regionKey;
         const isSelected = cell.dataset.region === selectedKey;
-
         cell.classList.toggle("is-active", isActive);
         cell.classList.toggle("is-selected", isSelected);
       });
@@ -420,101 +647,111 @@
     });
   }
 
-  function initResearchTabs() {
-    const tabs = Array.from(document.querySelectorAll(".research-tab"));
-    const panel = document.querySelector("#research-panel");
+  function deferPixelMap() {
+    const map = document.querySelector("#pixel-map");
 
-    if (!tabs.length || !panel) {
+    if (!map) {
       return;
     }
 
-    const content = [
-      {
-        body: "How institutions understand, constrain, and operationalize powerful AI systems when technical capacity, regulatory pressure, and organizational incentives are all moving at once.",
-        items: [
-          "AI governance research and technical-policy briefs",
-          "Institutional risk mapping and strategic writing",
-          "Frontier AI risk assessment and evaluation frameworks",
-        ],
-      },
-      {
-        body: "The geopolitics of AI development — where strategic competition, export controls, and alliance coordination shape which systems get built and by whom.",
-        items: [
-          "US-China technology competition and strategic dynamics",
-          "Export control regimes and dual-use technology governance",
-          "Alliance coordination and frontier AI standard-setting",
-        ],
-      },
-      {
-        body: "Why governance bodies fail to adapt to fast-moving technical change — the incentive structures, organizational constraints, and coordination problems that block effective oversight.",
-        items: [
-          "Regulatory capture and agency dynamics in AI oversight",
-          "Coordination failure across national and international bodies",
-          "Organizational capacity gaps in technical standard-setting",
-        ],
-      },
-      {
-        body: "Research tooling, data infrastructure, and workflow systems built for public-interest work — making complex institutions and datasets legible and inspectable.",
-        items: [
-          "Research tooling, workflow automation, and data visualization",
-          "Local-first systems for independent researchers and analysts",
-          "Prototypes that make institutional data inspectable",
-        ],
-      },
-    ];
-
-    const bodyEl = panel.querySelector("p");
-    const listEl = panel.querySelector("ul");
-
-    function activate(index) {
-      tabs.forEach((tab, i) => {
-        const isActive = i === index;
-        tab.classList.toggle("active", isActive);
-        tab.setAttribute("aria-selected", String(isActive));
-        tab.setAttribute("tabindex", isActive ? "0" : "-1");
-      });
-
-      const data = content[index];
-
-      if (bodyEl) {
-        bodyEl.textContent = data.body;
+    let initialized = false;
+    const initialize = () => {
+      if (initialized) {
+        return;
       }
 
-      if (listEl) {
-        while (listEl.firstChild) {
-          listEl.removeChild(listEl.firstChild);
-        }
-        data.items.forEach((text) => {
-          const li = document.createElement("li");
-          li.textContent = text;
-          listEl.appendChild(li);
-        });
-      }
+      initialized = true;
+      initPixelMap();
+    };
+
+    if (typeof IntersectionObserver !== "function") {
+      initialize();
+      return;
     }
 
-    tabs.forEach((tab, index) => {
-      tab.addEventListener("click", () => activate(index));
-      tab.addEventListener("keydown", (event) => {
-        if (event.key === "Enter" || event.key === " ") {
-          event.preventDefault();
-          activate(index);
-        } else if (event.key === "ArrowDown" || event.key === "ArrowRight") {
-          event.preventDefault();
-          const next = (index + 1) % tabs.length;
-          activate(next);
-          tabs[next].focus();
-        } else if (event.key === "ArrowUp" || event.key === "ArrowLeft") {
-          event.preventDefault();
-          const prev = (index - 1 + tabs.length) % tabs.length;
-          activate(prev);
-          tabs[prev].focus();
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) {
+          return;
         }
-      });
-    });
+
+        observer.disconnect();
+        initialize();
+      },
+      { rootMargin: "240px 0px" }
+    );
+
+    observer.observe(map);
   }
 
-  initCanvas();
-  initPixelMap();
+  function initImpactTimeline() {
+    const timeline = document.querySelector("[data-impact-timeline]");
+
+    if (!timeline) {
+      return;
+    }
+
+    const controls = Array.from(timeline.querySelectorAll("[data-impact-control]"));
+    const nodes = Array.from(timeline.querySelectorAll("[data-impact-node]"));
+    const title = timeline.querySelector("[data-impact-readout-title]");
+    const body = timeline.querySelector("[data-impact-readout-body]");
+
+    if (!controls.length || !nodes.length || !title || !body) {
+      return;
+    }
+
+    function activate(index) {
+      const active = controls[index];
+
+      if (!active) {
+        return;
+      }
+
+      controls.forEach((control, controlIndex) => {
+        const isActive = controlIndex === index;
+        control.classList.toggle("is-active", isActive);
+        control.setAttribute("aria-pressed", String(isActive));
+      });
+
+      nodes.forEach((node, nodeIndex) => {
+        node.classList.toggle("is-active", nodeIndex === index);
+      });
+
+      title.textContent = active.dataset.impactTitle || active.textContent.trim();
+      body.textContent = active.dataset.impactBody || "";
+    }
+
+    controls.forEach((control, index) => {
+      control.addEventListener("click", () => activate(index));
+    });
+
+    activate(Math.max(0, controls.findIndex((control) => control.classList.contains("is-active"))));
+  }
+
+  function bindMotionSetting() {
+    const restart = () => {
+      if (reduceMotion.matches && field.animationId) {
+        window.cancelAnimationFrame(field.animationId);
+        field.animationId = 0;
+      } else if (!reduceMotion.matches && !field.animationId && canvas && context) {
+        requestSignalFrame();
+      }
+    };
+
+    if (typeof reduceMotion.addEventListener === "function") {
+      reduceMotion.addEventListener("change", restart);
+    } else if (typeof reduceMotion.addListener === "function") {
+      reduceMotion.addListener(restart);
+    }
+  }
+
+  initThemeToggle();
+  initTensionControl();
+  initSignalField();
   initReveals();
-  initResearchTabs();
+  initFilterGroups();
+  initTabs();
+  deferPixelMap();
+  initImpactTimeline();
+  bindMotionSetting();
 })();

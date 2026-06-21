@@ -1,6 +1,8 @@
 .playwright-mcp/
+.claude/
 .superpowers/
 .DS_Store
+CODEX_CONTEXT.md
 *.png
 *.jpg
 *.jpeg

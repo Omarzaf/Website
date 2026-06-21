@@ -4,12 +4,14 @@
 
 This repository is a static personal website. Keep the root simple:
 
-- `index.html` contains the page structure, navigation anchors, content sections, and asset links.
+- `index.html` is the homepage and primary entry point.
+- `about.html`, `work.html`, `writing.html`, and `impact.html` are standalone detail pages that share the same header, footer, stylesheet, and script.
 - `styles.css` contains global variables, layout rules, responsive behavior, and visual treatments.
 - `script.js` controls the animated canvas background and pointer interaction.
+- `assets/` contains public images referenced by the HTML pages.
 - `.codexignore` excludes generated or irrelevant files from agent context.
 
-There is currently no build system, package manifest, test directory, or committed asset folder. Add new assets under a clearly named folder such as `assets/` only when the root starts becoming crowded.
+There is currently no build system, package manifest, or test directory. Keep local agent settings, logs, and one-off review artifacts out of the public site surface.
 
 ## Build, Test, and Development Commands
 
@@ -41,7 +43,7 @@ No automated test framework is configured. For every change, at minimum run `nod
 
 ## Commit & Pull Request Guidelines
 
-This repository has no existing commits, so there is no local convention to preserve yet. Use concise Conventional Commit-style messages, such as `feat(site): add contact section` or `fix(canvas): handle resize state`.
+Use concise Conventional Commit-style messages, such as `feat(site): add contact section` or `fix(canvas): handle resize state`.
 
 Pull requests should include a short summary, screenshots for visual changes, verification steps run, and any known limitations. Link related issues when available.
 

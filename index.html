@@ -5,275 +5,340 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta
       name="description"
-      content="Umar Zafar turns AI governance, geopolitical risk, and institutional complexity into clear research, working prototypes, and decision-ready analysis for researchers, policy teams, and startups."
+      content="Muhammad Umar Zafar is a policy-tech writer, AI governance researcher, geopolitical-risk analyst, and social-impact founder based in Washington, DC."
     >
-    <title>Umar Zafar - AI Governance, Geopolitical Risk, Public-Interest Systems</title>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23070504'/%3E%3Cpath d='M14 18v17c0 8 5 13 13 13s13-5 13-13V18h-8v17c0 4-2 6-5 6s-5-2-5-6V18zM44 18h8L40 48h-8z' fill='%23f2b45d'/%3E%3C/svg%3E">
-    <link rel="stylesheet" href="styles.css?v=20260619">
+    <title>Muhammad Umar Zafar - AI Governance, Geopolitical Risk, Public-Interest Systems</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23ffffff'/%3E%3Cpath d='M12 18v17c0 9 6 14 15 14s15-5 15-14V18h-8v17c0 4-3 7-7 7s-7-3-7-7V18zM46 18h8L41 49h-8z' fill='%23ffae00'/%3E%3C/svg%3E">
+    <link rel="stylesheet" href="styles.css?v=20260621">
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to main content</a>
 
+    <div class="grid-field" aria-hidden="true"></div>
     <canvas id="signal-canvas" aria-hidden="true"></canvas>
-    <div class="page-grid" aria-hidden="true"></div>
-    <div class="page-glow" aria-hidden="true"></div>
+    <div class="column-rules" aria-hidden="true">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
 
     <header class="site-header">
-      <a class="brand" href="#main" aria-label="Umar Zafar home">
+      <a class="brand" href="index.html" aria-label="Muhammad Umar Zafar home">
         <span class="brand-mark" aria-hidden="true">UZ</span>
-        <span>Umar Zafar</span>
+        <span>umar zafar</span>
       </a>
 
       <nav class="site-nav" aria-label="Primary navigation">
-        <a href="#work">Work</a>
-        <a href="#research">Research</a>
-        <a href="#writing">Writing</a>
-        <a href="#contact">Contact</a>
+        <a href="about.html">about</a>
+        <a href="work.html">work</a>
+        <a href="writing.html">writing</a>
+        <a href="impact.html">impact</a>
+        <a href="#contact">contact</a>
       </nav>
 
-      <a class="header-action" href="mailto:mumerzafer@gmail.com">Hire me</a>
+      <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode" aria-pressed="false">
+        <span class="theme-toggle-icon" aria-hidden="true"></span>
+        <span data-theme-label>dark</span>
+      </button>
+      <a class="header-action" href="mailto:mumerzafer@gmail.com">email</a>
     </header>
 
     <main id="main">
-      <section class="hero section-shell" aria-labelledby="hero-title">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-meta mono" aria-hidden="true">
+          <span>AI governance</span>
+          <span>geopolitical risk</span>
+          <span>public-interest systems</span>
+        </div>
+
         <div class="hero-copy reveal">
-          <p class="eyebrow">AI governance · geopolitical risk · public-interest systems</p>
-          <h1 id="hero-title">Research and prototypes for teams governing AI in real time.</h1>
+          <p class="section-number">00</p>
+          <h1 id="hero-title">I study how <br class="mobile-break">technical systems <br class="mobile-break">become political <br class="mobile-break">institutions.</h1>
           <p class="hero-body">
-            I turn institutional complexity, geopolitical risk, and governance failure into
-            clear arguments, working tools, and decision-ready analysis — for researchers,
-            policy teams, and startups operating before the rules exist.
+            I work across AI governance, geopolitical risk, writing, and field-built social impact:
+            the places where infrastructure, law, and human institutions start making each other.
           </p>
           <div class="hero-actions" aria-label="Primary actions">
-            <a class="button button-primary" href="mailto:mumerzafer@gmail.com">
-              Get in touch
-              <svg aria-hidden="true" viewBox="0 0 24 24">
-                <path d="M5 12h13M13 6l6 6-6 6"></path>
-              </svg>
-            </a>
-            <a class="button button-secondary" href="#work">
-              View work
+            <a class="button button-primary" href="work.html">
+              view work
               <svg aria-hidden="true" viewBox="0 0 24 24">
                 <path d="M12 5v14M5 12l7 7 7-7"></path>
+              </svg>
+            </a>
+            <a class="button" href="writing.html">
+              read writing
+              <svg aria-hidden="true" viewBox="0 0 24 24">
+                <path d="M5 12h13M13 6l6 6-6 6"></path>
               </svg>
             </a>
           </div>
         </div>
 
-        <div class="hero-map reveal">
+        <aside class="signal-panel reveal" aria-label="Interactive signal panel">
+          <div class="signal-header">
+            <span>signal</span>
+            <output id="tension-value" for="tension-control">24</output>
+          </div>
+          <label class="tension-control">
+            <span>pressure</span>
+            <input id="tension-control" type="range" min="0" max="100" value="24">
+          </label>
+          <div class="signal-readout">
+            <p id="signal-title">technical systems</p>
+            <span id="signal-copy">Move the control or pointer to bend the grid around code, capital, and regulation.</span>
+          </div>
+          <div class="signal-meter" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </aside>
+      </section>
+
+      <div class="proof-strip" aria-label="Public proof links">
+        <a href="https://credsverse.com/credentials/9c8f99b4-8f7f-4e11-8786-4642e0465a35">CAIDP AI Policy Clinic</a>
+        <a href="https://www.mercatus.org/students/frederic-bastiat-fellows">Mercatus Bastiat Fellow</a>
+        <a href="https://www.daadras.org/our-team">Daadras founder</a>
+        <a href="https://www.nation.com.pk/columnist/muhammad-umar-zafar">The Nation byline</a>
+        <a href="https://saisobserver.org/2024/10/16/an-educative-tribute-to-abdus-salam-daadras-foundation/">SAIS Observer writing</a>
+      </div>
+
+      <section class="feature-section" aria-labelledby="field-title">
+        <div class="feature-grid">
+          <div class="feature-copy reveal">
+            <p class="section-number">01</p>
+            <h2 id="field-title">A public profile built around proof, not polish.</h2>
+            <p>
+              The site now organizes a blended identity: AI governance research, regional risk
+              analysis, public writing, technical prototypes, and Daadras as field experience in
+              institution-building.
+            </p>
+          </div>
+          <figure class="visual-frame reveal">
+            <img src="assets/policy-systems-map.png" alt="Abstract black, white, and yellow institutional systems map">
+            <figcaption class="visual-caption">Generated editorial asset: institutional topology, policy corridors, and system pressure.</figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="panel-section" aria-labelledby="work-title">
+        <p class="section-number section-kicker reveal">02</p>
+        <div class="section-title reveal">
+          <h2 id="work-title">Selected work across policy, risk, and prototypes.</h2>
+        </div>
+
+        <div class="section-content card-grid">
+          <article class="content-card reveal">
+            <span>AI export controls / thesis</span>
+            <strong>The Epistemic Global City</strong>
+            <p>
+              A SAIS thesis on corporate co-securitization in AI export controls, using process tracing
+              and lobbying data to study how firms help produce security logic.
+            </p>
+          </article>
+          <article class="content-card reveal">
+            <span>AI governance / policy analysis</span>
+            <strong>CAIDP, BASI, Mercatus</strong>
+            <p>
+              Work across AI policy clinic research, responsible scaling, compute governance,
+              sovereign AI, and institutional resilience in technology regulation.
+            </p>
+          </article>
+          <article class="content-card reveal">
+            <span>geopolitical risk / South Asia</span>
+            <strong>Telophase analysis</strong>
+            <p>
+              Intelligence-led analysis on Bangladesh, dual-use technology, cybersecurity platforms,
+              5G infrastructure, and regional defense modernization.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="panel-section" aria-labelledby="research-title">
+        <p class="section-number section-kicker reveal">03</p>
+        <div class="section-title reveal">
+          <h2 id="research-title">A practical agenda for governing complex technical systems.</h2>
+        </div>
+
+        <div class="tab-layout" data-tabs>
+          <div class="tab-list reveal" role="tablist" aria-label="Research focus areas">
+            <button id="research-tab-1" class="tab-button is-active" type="button" role="tab" aria-selected="true" aria-controls="research-panel-1" data-tab-control>
+              <span>01</span>
+              AI governance
+            </button>
+            <button id="research-tab-2" class="tab-button" type="button" role="tab" aria-selected="false" aria-controls="research-panel-2" data-tab-control>
+              <span>02</span>
+              Geopolitics
+            </button>
+            <button id="research-tab-3" class="tab-button" type="button" role="tab" aria-selected="false" aria-controls="research-panel-3" data-tab-control>
+              <span>03</span>
+              Institutions
+            </button>
+            <button id="research-tab-4" class="tab-button" type="button" role="tab" aria-selected="false" aria-controls="research-panel-4" data-tab-control>
+              <span>04</span>
+              Public systems
+            </button>
+          </div>
+
+          <article id="research-panel-1" class="tab-panel reveal" role="tabpanel" aria-labelledby="research-tab-1" data-tab-panel>
+            <h3>How AI capacity becomes regulatory architecture.</h3>
+            <p>
+              My current research focuses on compute, export controls, democratic values, safety
+              policy, and the institutional capacity required to govern powerful technical systems.
+            </p>
+            <ul>
+              <li>AI governance and policy evaluation</li>
+              <li>Compute governance and frontier AI regulation</li>
+              <li>Trust, safety, and democratic accountability</li>
+            </ul>
+          </article>
+
+          <article id="research-panel-2" class="tab-panel reveal" role="tabpanel" aria-labelledby="research-tab-2" data-tab-panel>
+            <h3>Where infrastructure, security, and regional politics collide.</h3>
+            <p>
+              Regional analysis matters because technology competition is not abstract. It moves through
+              ports, cables, defense modernization, data rules, and alliance politics.
+            </p>
+            <ul>
+              <li>U.S.-China technology competition</li>
+              <li>South Asia and MENA risk analysis</li>
+              <li>Cybersecurity, 5G, and dual-use technology policy</li>
+            </ul>
+          </article>
+
+          <article id="research-panel-3" class="tab-panel reveal" role="tabpanel" aria-labelledby="research-tab-3" data-tab-panel>
+            <h3>Institutions fail before they admit they are failing.</h3>
+            <p>
+              The recurring question in my work is how governance bodies process technical uncertainty,
+              capture, legitimacy, and coordination failure before crisis makes the weakness obvious.
+            </p>
+            <ul>
+              <li>Regulatory design and institutional capacity</li>
+              <li>Postcolonial analysis of law and power</li>
+              <li>Organizational incentives in technical standard-setting</li>
+            </ul>
+          </article>
+
+          <article id="research-panel-4" class="tab-panel reveal" role="tabpanel" aria-labelledby="research-tab-4" data-tab-panel>
+            <h3>Programs and tools that make complexity usable.</h3>
+            <p>
+              Beyond writing, I build workflows, visualizations, and field programs that make institutional
+              problems more legible to teams that need to act.
+            </p>
+            <ul>
+              <li>D3.js and Leaflet prototypes for public-interest analysis</li>
+              <li>Local-first research and career-ops automation</li>
+              <li>Daadras education, relief, and digital-literacy programming</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="panel-section" aria-labelledby="map-title">
+        <div class="map-copy reveal">
+          <p class="section-number">04</p>
+          <h2 id="map-title">Focus map.</h2>
+          <p>
+            Hover, click, or use arrow keys to scan the terrain. This is a compact interface for
+            the regions and systems that recur across the research.
+          </p>
+        </div>
+        <div class="map-shell reveal">
           <div
             id="pixel-map"
             class="pixel-map"
             role="img"
             tabindex="0"
-            aria-label="Interactive pixelated world map showing regional focus areas"
+            aria-label="Interactive pixelated focus map of policy and regional interests"
             aria-describedby="map-readout"
           ></div>
-          <p id="map-readout" class="map-readout" aria-live="polite">Global systems map</p>
+          <p id="map-readout" class="map-readout" aria-live="polite">Focus map: AI governance, South Asia, MENA, and infrastructure corridors</p>
         </div>
       </section>
 
-      <section class="proof-strip section-shell reveal" aria-label="Credibility themes">
-        <div>
-          <span>Research</span>
-          <p>AI governance, frontier risk, institutional capacity, and geopolitical competition.</p>
+      <section class="panel-section" aria-labelledby="writing-title">
+        <p class="section-number section-kicker reveal">05</p>
+        <div class="section-title reveal">
+          <h2 id="writing-title">Writing that keeps the contradiction visible.</h2>
         </div>
-        <div>
-          <span>Systems</span>
-          <p>Public-interest prototypes, local-first tooling, workflow automation, and data visualization.</p>
-        </div>
-        <div>
-          <span>Strategy</span>
-          <p>Clear briefs and decision support for teams working before consensus has settled.</p>
-        </div>
-      </section>
-
-      <section id="work" class="section-shell work-section" aria-labelledby="work-title">
-        <div class="section-heading reveal">
-          <p class="section-index">01 / Work</p>
-          <h2 id="work-title">Projects that make hidden systems easier to inspect.</h2>
-        </div>
-
-        <div class="project-grid">
-          <article class="project-card reveal">
-            <div class="project-visual visual-network" aria-hidden="true"></div>
-            <div class="project-body">
-              <p class="project-kicker">Governance / network analysis</p>
-              <h3>Revolving Door Lobbying</h3>
-              <p>
-                An interactive network visualization mapping movement between
-                government, industry, and influence.
-              </p>
-              <div class="tag-row" aria-label="Project tags">
-                <span>Governance</span>
-                <span>Network analysis</span>
-                <span>Visualization</span>
-              </div>
-              <p class="card-status">Details available on request</p>
-            </div>
+        <div class="section-content card-grid">
+          <article class="writing-card reveal">
+            <span>published columns</span>
+            <strong>The Nation</strong>
+            <p>Opinion writing on politics, institutions, and public life under Muhammad Umar Zafar's byline.</p>
+            <a class="source-link" href="https://www.nation.com.pk/columnist/muhammad-umar-zafar">
+              author page
+              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"></path></svg>
+            </a>
           </article>
-
-          <article class="project-card reveal">
-            <div class="project-visual visual-pipeline" aria-hidden="true"></div>
-            <div class="project-body">
-              <p class="project-kicker">Automation / local-first tooling</p>
-              <h3>Career-Ops Automation</h3>
-              <p>
-                A local-first workflow system that turns job-search noise into
-                tracked, reviewable next actions.
-              </p>
-              <div class="tag-row" aria-label="Project tags">
-                <span>Automation</span>
-                <span>Local-first</span>
-                <span>Workflow design</span>
-              </div>
-              <p class="card-status">Details available on request</p>
-            </div>
+          <article class="writing-card reveal">
+            <span>essay / education and power</span>
+            <strong>Abdus Salam and Daadras</strong>
+            <p>A SAIS Observer essay on class, education, Pakistan, and the public mission behind Project Salam.</p>
+            <a class="source-link" href="https://saisobserver.org/2024/10/16/an-educative-tribute-to-abdus-salam-daadras-foundation/">
+              read essay
+              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"></path></svg>
+            </a>
           </article>
-
-          <article class="project-card reveal">
-            <div class="project-visual visual-governance" aria-hidden="true"></div>
-            <div class="project-body">
-              <p class="project-kicker">Research / institutional risk</p>
-              <h3>AI Governance Research</h3>
-              <p>
-                Research on institutional capacity, frontier AI risk, governance
-                failure, and geopolitical competition.
-              </p>
-              <div class="tag-row" aria-label="Project tags">
-                <span>AI governance</span>
-                <span>Policy research</span>
-                <span>Institutional risk</span>
-              </div>
-              <p class="card-status">Research details available on request</p>
-            </div>
+          <article class="writing-card reveal">
+            <span>research themes</span>
+            <strong>AI, security, and power</strong>
+            <p>Selected academic and policy work on compute, export controls, cyber doctrine, media systems, and postcolonial institutions.</p>
+            <a class="source-link" href="writing.html">
+              writing archive
+              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"></path></svg>
+            </a>
           </article>
         </div>
       </section>
 
-      <section class="section-shell split-section" aria-labelledby="services-title">
-        <div class="section-heading reveal">
-          <p class="section-index">02 / What I do</p>
-          <h2 id="services-title">Research, prototypes, and analysis for high-stakes AI and policy work.</h2>
-        </div>
-        <div class="service-grid">
-          <article class="service-card reveal">
-            <span class="service-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M12 3 4 7v10l8 4 8-4V7zM12 3v18M4 7l8 4 8-4"></path></svg>
-            </span>
-            <h3>Translate risk into clarity</h3>
-            <p>Turn messy institutional problems into structured arguments, briefs, and decision frameworks.</p>
-          </article>
-          <article class="service-card reveal">
-            <span class="service-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="m8 8-4 4 4 4M16 8l4 4-4 4M14 4l-4 16"></path></svg>
-            </span>
-            <h3>Build to think and decide</h3>
-            <p>Design working prototypes and research tools that surface assumptions and make trade-offs inspectable.</p>
-          </article>
-          <article class="service-card reveal">
-            <span class="service-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M6 19V5M6 5h12l-3 4 3 4H6M18 19H4"></path></svg>
-            </span>
-            <h3>Strengthen institutions</h3>
-            <p>Analyze incentives, governance failures, and operational constraints around frontier AI systems.</p>
-          </article>
-        </div>
-      </section>
-
-      <section id="research" class="section-shell research-section" aria-labelledby="research-title">
-        <div class="section-heading reveal">
-          <p class="section-index">03 / Research</p>
-          <h2 id="research-title">A practical agenda for governing complex technical systems.</h2>
-        </div>
-        <div class="research-layout">
-          <div class="research-tabs reveal" role="tablist" aria-label="Research focus areas">
-            <div class="research-tab active" role="tab" aria-selected="true" aria-controls="research-panel" data-tab="0" tabindex="0">
-              <span>01</span>
-              <p>AI governance</p>
-            </div>
-            <div class="research-tab" role="tab" aria-selected="false" aria-controls="research-panel" data-tab="1" tabindex="-1">
-              <span>02</span>
-              <p>Geopolitical risk</p>
-            </div>
-            <div class="research-tab" role="tab" aria-selected="false" aria-controls="research-panel" data-tab="2" tabindex="-1">
-              <span>03</span>
-              <p>Institutional failure</p>
-            </div>
-            <div class="research-tab" role="tab" aria-selected="false" aria-controls="research-panel" data-tab="3" tabindex="-1">
-              <span>04</span>
-              <p>Public-interest systems</p>
-            </div>
-          </div>
-          <div class="research-panel reveal" id="research-panel" role="tabpanel">
-            <p class="research-panel-body">
-              How institutions understand, constrain, and operationalize powerful AI systems
-              when technical capacity, regulatory pressure, and organizational incentives are
-              all moving at once.
+      <section class="feature-section" aria-labelledby="impact-title">
+        <div class="feature-grid">
+          <div class="feature-copy reveal">
+            <p class="section-number">06</p>
+            <h2 id="impact-title">Field work, not just commentary.</h2>
+            <p>
+              Daadras began as a grassroots response during COVID-19 and developed into education,
+              digital literacy, relief, and dialogue programming in Pakistan.
             </p>
-            <ul>
-              <li>AI governance research and technical-policy briefs</li>
-              <li>Institutional risk mapping and strategic writing</li>
-              <li>Frontier AI risk assessment and evaluation frameworks</li>
-            </ul>
+            <a class="button" href="impact.html">
+              view impact
+              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"></path></svg>
+            </a>
           </div>
+          <figure class="visual-frame reveal">
+            <img src="assets/impact-systems-map.png" alt="Abstract education and community systems map">
+            <figcaption class="visual-caption">Generated editorial asset: education, dialogue, and program architecture.</figcaption>
+          </figure>
         </div>
       </section>
 
-      <section id="writing" class="section-shell writing-section-simple" aria-labelledby="writing-title">
-        <div class="section-heading reveal">
-          <p class="section-index">04 / Writing</p>
-          <h2 id="writing-title">Writing for people who have to decide before consensus arrives.</h2>
-        </div>
-        <p class="writing-note reveal">
-          Essays and analysis on AI governance, geopolitical risk, institutional failure,
-          platform power, and public-interest systems. Archive coming soon —
-          <a href="mailto:mumerzafer@gmail.com">email to be notified</a>.
-        </p>
-        <div class="topic-row reveal" aria-label="Writing topics">
-          <span>AI governance</span>
-          <span>Geopolitical risk</span>
-          <span>Institutional failure</span>
-          <span>Platform power</span>
-          <span>Public-interest systems</span>
+      <section id="contact" class="contact-section" aria-labelledby="contact-title">
+        <p class="section-number reveal">07</p>
+        <div class="contact-copy reveal">
+          <h2 id="contact-title">Available for research, prototypes, and policy systems work.</h2>
+          <p>
+            Send a note if you need clear analysis, a working prototype, or a sharper way to explain
+            institutional risk around AI and geopolitical change.
+          </p>
+          <a class="contact-link" href="mailto:mumerzafer@gmail.com">
+            mumerzafer@gmail.com
+            <svg aria-hidden="true" viewBox="0 0 24 24">
+              <path d="M5 12h13M13 6l6 6-6 6"></path>
+            </svg>
+          </a>
         </div>
       </section>
     </main>
 
-    <footer id="contact" class="site-footer section-shell">
-      <div class="footer-cta reveal">
-        <p class="section-index">05 / Contact</p>
-        <h2>Available for research, writing, prototypes, and policy systems work.</h2>
-        <p>
-          If you're working on AI governance, geopolitical risk, or public-interest systems
-          and need clear analysis or a working prototype — get in touch.
-        </p>
-        <a class="button button-primary footer-cta-btn" href="mailto:mumerzafer@gmail.com">
-          mumerzafer@gmail.com
-          <svg aria-hidden="true" viewBox="0 0 24 24">
-            <path d="M5 12h13M13 6l6 6-6 6"></path>
-          </svg>
-        </a>
-      </div>
-      <div class="footer-links reveal">
-        <div>
-          <h3>Navigate</h3>
-          <a href="#work">Work</a>
-          <a href="#research">Research</a>
-          <a href="#writing">Writing</a>
-          <a href="#contact">Contact</a>
-        </div>
-        <div>
-          <h3>Links</h3>
-          <a href="mailto:mumerzafer@gmail.com">Email</a>
-          <span>CV available on request</span>
-          <span>LinkedIn pending</span>
-          <span>GitHub pending</span>
-        </div>
-      </div>
-      <p class="copyright">(c) 2026 Umar Zafar</p>
+    <footer class="site-footer">
+      <p>(c) 2026 Muhammad Umar Zafar</p>
+      <a href="#main">back to top</a>
     </footer>
 
-    <script src="script.js?v=20260619" defer></script>
+    <script src="script.js?v=20260621" defer></script>
   </body>
 </html>
