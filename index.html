@@ -9,7 +9,12 @@
     >
     <title>Muhammad Umar Zafar - AI Governance, Geopolitical Risk, Public-Interest Systems</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23ffffff'/%3E%3Cpath d='M12 18v17c0 9 6 14 15 14s15-5 15-14V18h-8v17c0 4-3 7-7 7s-7-3-7-7V18zM46 18h8L41 49h-8z' fill='%23ffae00'/%3E%3C/svg%3E">
-    <link rel="stylesheet" href="styles.css?v=20260621">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css?v=20260624">
+    <link rel="stylesheet" href="cube-field.css?v=20260624">
+    <link rel="stylesheet" href="gameboy-dog-layer.css?v=20260622j">
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to main content</a>
@@ -36,6 +41,24 @@
         <a href="#contact">contact</a>
       </nav>
 
+      <div class="header-social" aria-label="Social links">
+        <a class="header-social-link" href="https://substack.com/@omarzafar" target="_blank" rel="noopener noreferrer" aria-label="Substack">
+          <svg aria-hidden="true" viewBox="0 0 24 24">
+            <path d="M4 5h16v2H4zM4 9h16v2H4zM4 13h16v6l-8-4-8 4z"></path>
+          </svg>
+        </a>
+        <a class="header-social-link" href="https://github.com/Omarzaf" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+          <svg aria-hidden="true" viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.58 2 12.24c0 4.52 2.86 8.35 6.83 9.71.5.09.68-.22.68-.49v-1.9c-2.78.62-3.37-1.22-3.37-1.22-.45-1.18-1.11-1.49-1.11-1.49-.91-.64.07-.63.07-.63 1 .07 1.53 1.06 1.53 1.06.9 1.56 2.35 1.11 2.92.85.09-.66.35-1.11.64-1.37-2.22-.26-4.55-1.14-4.55-5.06 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.71 0 0 .84-.28 2.75 1.05A9.26 9.26 0 0 1 12 6.95c.85 0 1.7.12 2.5.35 1.9-1.33 2.74-1.05 2.74-1.05.55 1.41.2 2.45.1 2.71.64.72 1.03 1.63 1.03 2.75 0 3.93-2.34 4.8-4.57 5.05.36.32.68.94.68 1.9v2.8c0 .27.18.59.69.49A10.13 10.13 0 0 0 22 12.24C22 6.58 17.52 2 12 2z"></path>
+          </svg>
+        </a>
+        <a class="header-social-link" href="https://www.linkedin.com/in/umarzafar1" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+          <svg aria-hidden="true" viewBox="0 0 24 24">
+            <path d="M5 9h3v10H5zM6.5 4.8a1.8 1.8 0 1 1 0 3.6 1.8 1.8 0 0 1 0-3.6zM10 9h2.9v1.4h.1c.4-.8 1.4-1.7 3-1.7 3.2 0 3.8 2.1 3.8 4.9V19h-3v-4.8c0-1.2 0-2.7-1.7-2.7s-1.9 1.3-1.9 2.6V19H10z"></path>
+          </svg>
+        </a>
+      </div>
+
       <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode" aria-pressed="false">
         <span class="theme-toggle-icon" aria-hidden="true"></span>
         <span data-theme-label>dark</span>
@@ -45,12 +68,6 @@
 
     <main id="main">
       <section class="hero" aria-labelledby="hero-title">
-        <div class="hero-meta mono" aria-hidden="true">
-          <span>AI governance</span>
-          <span>geopolitical risk</span>
-          <span>public-interest systems</span>
-        </div>
-
         <div class="hero-copy reveal">
           <p class="section-number">00</p>
           <h1 id="hero-title">I study how <br class="mobile-break">technical systems <br class="mobile-break">become political <br class="mobile-break">institutions.</h1>
@@ -62,7 +79,7 @@
             <a class="button button-primary" href="work.html">
               view work
               <svg aria-hidden="true" viewBox="0 0 24 24">
-                <path d="M12 5v14M5 12l7 7 7-7"></path>
+                <path d="M5 12h13M13 6l6 6-6 6"></path>
               </svg>
             </a>
             <a class="button" href="writing.html">
@@ -74,27 +91,6 @@
           </div>
         </div>
 
-        <aside class="signal-panel reveal" aria-label="Interactive signal panel">
-          <div class="signal-header">
-            <span>signal</span>
-            <output id="tension-value" for="tension-control">24</output>
-          </div>
-          <label class="tension-control">
-            <span>pressure</span>
-            <input id="tension-control" type="range" min="0" max="100" value="24">
-          </label>
-          <div class="signal-readout">
-            <p id="signal-title">technical systems</p>
-            <span id="signal-copy">Move the control or pointer to bend the grid around code, capital, and regulation.</span>
-          </div>
-          <div class="signal-meter" aria-hidden="true">
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
-        </aside>
       </section>
 
       <div class="proof-strip" aria-label="Public proof links">
@@ -105,199 +101,188 @@
         <a href="https://saisobserver.org/2024/10/16/an-educative-tribute-to-abdus-salam-daadras-foundation/">SAIS Observer writing</a>
       </div>
 
-      <section class="feature-section" aria-labelledby="field-title">
-        <div class="feature-grid">
-          <div class="feature-copy reveal">
-            <p class="section-number">01</p>
-            <h2 id="field-title">A public profile built around proof, not polish.</h2>
-            <p>
-              The site now organizes a blended identity: AI governance research, regional risk
-              analysis, public writing, technical prototypes, and Daadras as field experience in
-              institution-building.
-            </p>
-          </div>
-          <figure class="visual-frame reveal">
-            <img src="assets/policy-systems-map.png" alt="Abstract black, white, and yellow institutional systems map">
-            <figcaption class="visual-caption">Generated editorial asset: institutional topology, policy corridors, and system pressure.</figcaption>
-          </figure>
-        </div>
-      </section>
-
       <section class="panel-section" aria-labelledby="work-title">
-        <p class="section-number section-kicker reveal">02</p>
-        <div class="section-title reveal">
-          <h2 id="work-title">Selected work across policy, risk, and prototypes.</h2>
-        </div>
-
-        <div class="section-content card-grid">
-          <article class="content-card reveal">
-            <span>AI export controls / thesis</span>
-            <strong>The Epistemic Global City</strong>
-            <p>
-              A SAIS thesis on corporate co-securitization in AI export controls, using process tracing
-              and lobbying data to study how firms help produce security logic.
-            </p>
-          </article>
-          <article class="content-card reveal">
-            <span>AI governance / policy analysis</span>
-            <strong>CAIDP, BASI, Mercatus</strong>
-            <p>
-              Work across AI policy clinic research, responsible scaling, compute governance,
-              sovereign AI, and institutional resilience in technology regulation.
-            </p>
-          </article>
-          <article class="content-card reveal">
-            <span>geopolitical risk / South Asia</span>
-            <strong>Telophase analysis</strong>
-            <p>
-              Intelligence-led analysis on Bangladesh, dual-use technology, cybersecurity platforms,
-              5G infrastructure, and regional defense modernization.
-            </p>
-          </article>
+        <div class="panel-split">
+          <div class="panel-split-text reveal">
+            <p class="section-number">02</p>
+            <h2 id="work-title">Selected work across policy, risk, and prototypes.</h2>
+            <div class="entry-list">
+              <article class="entry-row">
+                <span class="entry-label">AI export controls / thesis</span>
+                <div>
+                  <strong class="entry-title">The Epistemic Global City</strong>
+                  <p class="entry-body">
+                    A SAIS thesis on corporate co-securitization in AI export controls, using process tracing
+                    and lobbying data to study how firms help produce security logic.
+                  </p>
+                </div>
+                <span class="entry-meta">thesis</span>
+              </article>
+              <article class="entry-row">
+                <span class="entry-label">AI governance / policy analysis</span>
+                <div>
+                  <strong class="entry-title">CAIDP, BASI, Mercatus</strong>
+                  <p class="entry-body">
+                    Work across AI policy clinic research, responsible scaling, compute governance,
+                    sovereign AI, and institutional resilience in technology regulation.
+                  </p>
+                </div>
+                <span class="entry-meta">policy</span>
+              </article>
+              <article class="entry-row">
+                <span class="entry-label">geopolitical risk / South Asia</span>
+                <div>
+                  <strong class="entry-title">Telophase analysis</strong>
+                  <p class="entry-body">
+                    Intelligence-led analysis on Bangladesh, dual-use technology, cybersecurity platforms,
+                    5G infrastructure, and regional defense modernization.
+                  </p>
+                </div>
+                <span class="entry-meta">risk</span>
+              </article>
+            </div>
+          </div>
+          <div class="panel-split-visual reveal" data-animation="work-graph" role="img" aria-label="Animated network graph of work themes">
+            <canvas aria-hidden="true"></canvas>
+          </div>
         </div>
       </section>
 
       <section class="panel-section" aria-labelledby="research-title">
-        <p class="section-number section-kicker reveal">03</p>
-        <div class="section-title reveal">
-          <h2 id="research-title">A practical agenda for governing complex technical systems.</h2>
-        </div>
+        <div class="panel-split" data-tabs>
+          <div class="panel-split-text reveal">
+            <p class="section-number">03</p>
+            <h2 id="research-title">A practical agenda for governing complex technical systems.</h2>
+            <div class="tab-list" role="tablist" aria-label="Research focus areas">
+              <button id="research-tab-1" class="tab-button is-active" type="button" role="tab" aria-selected="true" aria-controls="research-panel-1" data-tab-control>
+                <span>01</span>
+                AI governance
+              </button>
+              <button id="research-tab-2" class="tab-button" type="button" role="tab" aria-selected="false" aria-controls="research-panel-2" data-tab-control>
+                <span>02</span>
+                Geopolitics
+              </button>
+              <button id="research-tab-3" class="tab-button" type="button" role="tab" aria-selected="false" aria-controls="research-panel-3" data-tab-control>
+                <span>03</span>
+                Institutions
+              </button>
+              <button id="research-tab-4" class="tab-button" type="button" role="tab" aria-selected="false" aria-controls="research-panel-4" data-tab-control>
+                <span>04</span>
+                Public systems
+              </button>
+            </div>
+            <div class="tab-copy-source">
+              <article id="research-panel-1" class="tab-panel" role="tabpanel" aria-labelledby="research-tab-1" data-tab-panel>
+                <h3>How AI capacity becomes regulatory architecture.</h3>
+                <p>
+                  My current research focuses on compute, export controls, democratic values, safety
+                  policy, and the institutional capacity required to govern powerful technical systems.
+                </p>
+                <ul>
+                  <li>AI governance and policy evaluation</li>
+                  <li>Compute governance and frontier AI regulation</li>
+                  <li>Trust, safety, and democratic accountability</li>
+                </ul>
+              </article>
 
-        <div class="tab-layout" data-tabs>
-          <div class="tab-list reveal" role="tablist" aria-label="Research focus areas">
-            <button id="research-tab-1" class="tab-button is-active" type="button" role="tab" aria-selected="true" aria-controls="research-panel-1" data-tab-control>
-              <span>01</span>
-              AI governance
-            </button>
-            <button id="research-tab-2" class="tab-button" type="button" role="tab" aria-selected="false" aria-controls="research-panel-2" data-tab-control>
-              <span>02</span>
-              Geopolitics
-            </button>
-            <button id="research-tab-3" class="tab-button" type="button" role="tab" aria-selected="false" aria-controls="research-panel-3" data-tab-control>
-              <span>03</span>
-              Institutions
-            </button>
-            <button id="research-tab-4" class="tab-button" type="button" role="tab" aria-selected="false" aria-controls="research-panel-4" data-tab-control>
-              <span>04</span>
-              Public systems
-            </button>
+              <article id="research-panel-2" class="tab-panel" role="tabpanel" aria-labelledby="research-tab-2" data-tab-panel>
+                <h3>Where infrastructure, security, and regional politics collide.</h3>
+                <p>
+                  Regional analysis matters because technology competition is not abstract. It moves through
+                  ports, cables, defense modernization, data rules, and alliance politics.
+                </p>
+                <ul>
+                  <li>U.S.-China technology competition</li>
+                  <li>South Asia and MENA risk analysis</li>
+                  <li>Cybersecurity, 5G, and dual-use technology policy</li>
+                </ul>
+              </article>
+
+              <article id="research-panel-3" class="tab-panel" role="tabpanel" aria-labelledby="research-tab-3" data-tab-panel>
+                <h3>Institutions fail before they admit they are failing.</h3>
+                <p>
+                  The recurring question in my work is how governance bodies process technical uncertainty,
+                  capture, legitimacy, and coordination failure before crisis makes the weakness obvious.
+                </p>
+                <ul>
+                  <li>Regulatory design and institutional capacity</li>
+                  <li>Postcolonial analysis of law and power</li>
+                  <li>Organizational incentives in technical standard-setting</li>
+                </ul>
+              </article>
+
+              <article id="research-panel-4" class="tab-panel" role="tabpanel" aria-labelledby="research-tab-4" data-tab-panel>
+                <h3>Programs and tools that make complexity usable.</h3>
+                <p>
+                  Beyond writing, I build workflows, visualizations, and field programs that make institutional
+                  problems more legible to teams that need to act.
+                </p>
+                <ul>
+                  <li>D3.js and Leaflet prototypes for public-interest analysis</li>
+                  <li>Local-first research and career-ops automation</li>
+                  <li>Daadras education, relief, and digital-literacy programming</li>
+                </ul>
+              </article>
+            </div>
           </div>
 
-          <article id="research-panel-1" class="tab-panel reveal" role="tabpanel" aria-labelledby="research-tab-1" data-tab-panel>
-            <h3>How AI capacity becomes regulatory architecture.</h3>
-            <p>
-              My current research focuses on compute, export controls, democratic values, safety
-              policy, and the institutional capacity required to govern powerful technical systems.
-            </p>
-            <ul>
-              <li>AI governance and policy evaluation</li>
-              <li>Compute governance and frontier AI regulation</li>
-              <li>Trust, safety, and democratic accountability</li>
-            </ul>
-          </article>
-
-          <article id="research-panel-2" class="tab-panel reveal" role="tabpanel" aria-labelledby="research-tab-2" data-tab-panel>
-            <h3>Where infrastructure, security, and regional politics collide.</h3>
-            <p>
-              Regional analysis matters because technology competition is not abstract. It moves through
-              ports, cables, defense modernization, data rules, and alliance politics.
-            </p>
-            <ul>
-              <li>U.S.-China technology competition</li>
-              <li>South Asia and MENA risk analysis</li>
-              <li>Cybersecurity, 5G, and dual-use technology policy</li>
-            </ul>
-          </article>
-
-          <article id="research-panel-3" class="tab-panel reveal" role="tabpanel" aria-labelledby="research-tab-3" data-tab-panel>
-            <h3>Institutions fail before they admit they are failing.</h3>
-            <p>
-              The recurring question in my work is how governance bodies process technical uncertainty,
-              capture, legitimacy, and coordination failure before crisis makes the weakness obvious.
-            </p>
-            <ul>
-              <li>Regulatory design and institutional capacity</li>
-              <li>Postcolonial analysis of law and power</li>
-              <li>Organizational incentives in technical standard-setting</li>
-            </ul>
-          </article>
-
-          <article id="research-panel-4" class="tab-panel reveal" role="tabpanel" aria-labelledby="research-tab-4" data-tab-panel>
-            <h3>Programs and tools that make complexity usable.</h3>
-            <p>
-              Beyond writing, I build workflows, visualizations, and field programs that make institutional
-              problems more legible to teams that need to act.
-            </p>
-            <ul>
-              <li>D3.js and Leaflet prototypes for public-interest analysis</li>
-              <li>Local-first research and career-ops automation</li>
-              <li>Daadras education, relief, and digital-literacy programming</li>
-            </ul>
-          </article>
-        </div>
-      </section>
-
-      <section class="panel-section" aria-labelledby="map-title">
-        <div class="map-copy reveal">
-          <p class="section-number">04</p>
-          <h2 id="map-title">Focus map.</h2>
-          <p>
-            Hover, click, or use arrow keys to scan the terrain. This is a compact interface for
-            the regions and systems that recur across the research.
-          </p>
-        </div>
-        <div class="map-shell reveal">
-          <div
-            id="pixel-map"
-            class="pixel-map"
-            role="img"
-            tabindex="0"
-            aria-label="Interactive pixelated focus map of policy and regional interests"
-            aria-describedby="map-readout"
-          ></div>
-          <p id="map-readout" class="map-readout" aria-live="polite">Focus map: AI governance, South Asia, MENA, and infrastructure corridors</p>
+          <div class="panel-split-visual terminal-feed reveal" data-animation="research-terminal" aria-live="polite" aria-label="Research terminal feed">
+            <pre data-terminal-output></pre>
+            <span class="terminal-cursor" aria-hidden="true"></span>
+          </div>
         </div>
       </section>
 
       <section class="panel-section" aria-labelledby="writing-title">
-        <p class="section-number section-kicker reveal">05</p>
-        <div class="section-title reveal">
-          <h2 id="writing-title">Writing that keeps the contradiction visible.</h2>
-        </div>
-        <div class="section-content card-grid">
-          <article class="writing-card reveal">
-            <span>published columns</span>
-            <strong>The Nation</strong>
-            <p>Opinion writing on politics, institutions, and public life under Muhammad Umar Zafar's byline.</p>
-            <a class="source-link" href="https://www.nation.com.pk/columnist/muhammad-umar-zafar">
-              author page
-              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"></path></svg>
-            </a>
-          </article>
-          <article class="writing-card reveal">
-            <span>essay / education and power</span>
-            <strong>Abdus Salam and Daadras</strong>
-            <p>A SAIS Observer essay on class, education, Pakistan, and the public mission behind Project Salam.</p>
-            <a class="source-link" href="https://saisobserver.org/2024/10/16/an-educative-tribute-to-abdus-salam-daadras-foundation/">
-              read essay
-              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"></path></svg>
-            </a>
-          </article>
-          <article class="writing-card reveal">
-            <span>research themes</span>
-            <strong>AI, security, and power</strong>
-            <p>Selected academic and policy work on compute, export controls, cyber doctrine, media systems, and postcolonial institutions.</p>
-            <a class="source-link" href="writing.html">
-              writing archive
-              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"></path></svg>
-            </a>
-          </article>
+        <div class="panel-split">
+          <div class="panel-split-text reveal">
+            <p class="section-number">05</p>
+            <h2 id="writing-title">Writing that keeps the contradiction visible.</h2>
+            <div class="entry-list">
+              <article class="entry-row">
+                <span class="entry-label">published columns</span>
+                <div>
+                  <strong class="entry-title">The Nation</strong>
+                  <p class="entry-body">Opinion writing on politics, institutions, and public life under Muhammad Umar Zafar's byline.</p>
+                </div>
+                <a class="source-link" href="https://www.nation.com.pk/columnist/muhammad-umar-zafar">
+                  author page
+                  <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"></path></svg>
+                </a>
+              </article>
+              <article class="entry-row">
+                <span class="entry-label">essay / education and power</span>
+                <div>
+                  <strong class="entry-title">Abdus Salam and Daadras</strong>
+                  <p class="entry-body">A SAIS Observer essay on class, education, Pakistan, and the public mission behind Project Salam.</p>
+                </div>
+                <a class="source-link" href="https://saisobserver.org/2024/10/16/an-educative-tribute-to-abdus-salam-daadras-foundation/">
+                  read essay
+                  <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"></path></svg>
+                </a>
+              </article>
+              <article class="entry-row">
+                <span class="entry-label">research themes</span>
+                <div>
+                  <strong class="entry-title">AI, security, and power</strong>
+                  <p class="entry-body">Selected academic and policy work on compute, export controls, cyber doctrine, media systems, and postcolonial institutions.</p>
+                </div>
+                <a class="source-link" href="writing.html">
+                  writing archive
+                  <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"></path></svg>
+                </a>
+              </article>
+            </div>
+          </div>
+          <div class="panel-split-visual reveal" data-animation="writing-document" role="img" aria-label="Animated abstract document drafting lines">
+            <canvas aria-hidden="true"></canvas>
+          </div>
         </div>
       </section>
 
       <section class="feature-section" aria-labelledby="impact-title">
-        <div class="feature-grid">
-          <div class="feature-copy reveal">
+        <div class="panel-split">
+          <div class="panel-split-text reveal">
             <p class="section-number">06</p>
             <h2 id="impact-title">Field work, not just commentary.</h2>
             <p>
@@ -309,10 +294,21 @@
               <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"></path></svg>
             </a>
           </div>
-          <figure class="visual-frame reveal">
-            <img src="assets/impact-systems-map.png" alt="Abstract education and community systems map">
-            <figcaption class="visual-caption">Generated editorial asset: education, dialogue, and program architecture.</figcaption>
-          </figure>
+          <div class="panel-split-visual impact-visual reveal" data-animation="impact-bars" role="img" aria-label="Animated impact bar chart">
+            <div class="impact-nodes" aria-hidden="true">
+              <span class="impact-node is-active" style="--node-height: 92" data-impact-node></span>
+              <span class="impact-node" style="--node-height: 118" data-impact-node></span>
+              <span class="impact-node" style="--node-height: 136" data-impact-node></span>
+              <span class="impact-node" style="--node-height: 82" data-impact-node></span>
+            </div>
+            <div class="impact-readout">
+              <h3>Education, relief, dialogue.</h3>
+              <p>
+                Program work moves from emergency response to durable learning systems, with each bar
+                marking a different mode of public-interest institution-building.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -330,15 +326,27 @@
               <path d="M5 12h13M13 6l6 6-6 6"></path>
             </svg>
           </a>
+          <div class="social-links" aria-label="Social links">
+            <a class="social-link" href="https://substack.com/@omarzafar" target="_blank" rel="noopener noreferrer">substack</a>
+            <a class="social-link" href="https://github.com/Omarzaf" target="_blank" rel="noopener noreferrer">github</a>
+            <a class="social-link" href="https://www.linkedin.com/in/umarzafar1" target="_blank" rel="noopener noreferrer">linkedin</a>
+          </div>
         </div>
       </section>
     </main>
 
     <footer class="site-footer">
       <p>(c) 2026 Muhammad Umar Zafar</p>
-      <a href="#main">back to top</a>
+      <div class="footer-links" aria-label="Footer links">
+        <a href="https://substack.com/@omarzafar" target="_blank" rel="noopener noreferrer">substack</a>
+        <a href="https://github.com/Omarzaf" target="_blank" rel="noopener noreferrer">github</a>
+        <a href="https://www.linkedin.com/in/umarzafar1" target="_blank" rel="noopener noreferrer">linkedin</a>
+        <a href="#main">back to top</a>
+      </div>
     </footer>
 
-    <script src="script.js?v=20260621" defer></script>
+    <script src="cube-field.js?v=20260624" defer></script>
+    <script src="script.js?v=20260624" defer></script>
+    <script src="gameboy-dog-layer.js?v=20260622k" defer></script>
   </body>
 </html>

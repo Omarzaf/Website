@@ -3,4 +3,14 @@
 .playwright-mcp/
 .superpowers/
 CODEX_CONTEXT.md
+dist/
+node_modules/
+coverage/
+.vercel/
+.env*
+!.env.example
 
+# Local/generated agent artifacts; keep out of a public GitHub push.
+DESIGN-IS-2026-06-22/
+docs/superpowers/
+journey-into-Website.md

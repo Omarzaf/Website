@@ -1,0 +1,44 @@
+name: Static site
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Check JavaScript syntax
+        run: |
+          node --check script.js
+          node --check gameboy-dog-layer.js
+          node --check tools/generate-brand-artifacts.cjs
+          node --check tools/build-public-site.cjs
+          node --check tools/check-static-site.cjs
+
+      - name: Run tests
+        run: node tests/gameboy-dog-layer.test.cjs
+
+      - name: Build publishable site
+        run: node tools/build-public-site.cjs
+
+      - name: Verify publish surface
+        run: node tools/check-static-site.cjs
+
+      - name: Upload public build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: static-site-dist
+          path: dist

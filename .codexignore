@@ -3,6 +3,11 @@
 .superpowers/
 .DS_Store
 CODEX_CONTEXT.md
+dist/
+node_modules/
+coverage/
+.vercel/
+.env*
 *.png
 *.jpg
 *.jpeg

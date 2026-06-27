@@ -5,10 +5,6 @@
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   const canvas = document.querySelector("#signal-canvas");
   const context = canvas ? canvas.getContext("2d") : null;
-  const tensionControl = document.querySelector("#tension-control");
-  const tensionValue = document.querySelector("#tension-value");
-  const signalTitle = document.querySelector("#signal-title");
-  const signalCopy = document.querySelector("#signal-copy");
   const themeToggles = Array.from(document.querySelectorAll("[data-theme-toggle]"));
   const themeStorageKey = "uz-theme";
 
@@ -29,24 +25,6 @@
     x: 0,
     y: 0,
   };
-
-  const signalStates = [
-    {
-      max: 34,
-      title: "technical systems",
-      copy: "Move the control or pointer to bend the grid around code, capital, and regulation.",
-    },
-    {
-      max: 68,
-      title: "political institutions",
-      copy: "The field tightens where incentives, jurisdictions, and infrastructure begin to shape each other.",
-    },
-    {
-      max: 100,
-      title: "decisions under pressure",
-      copy: "At high pressure the map stops being neutral and starts showing where governance has to act.",
-    },
-  ];
 
   function requestSignalFrame() {
     if (!canvas || !context || reduceMotion.matches || field.animationId) {
@@ -137,24 +115,11 @@
   function setTension(value) {
     const raw = Math.max(0, Math.min(100, Number(value || 0)));
     const tension = raw / 100;
-    const state = signalStates.find((item) => raw <= item.max) || signalStates[signalStates.length - 1];
 
     field.tension = tension;
     root.style.setProperty("--tension", tension.toFixed(3));
     root.style.setProperty("--grid-step", `${Math.max(7, 13 - tension * 5).toFixed(1)}px`);
     root.style.setProperty("--grid-major", `${Math.max(36, 65 - tension * 24).toFixed(1)}px`);
-
-    if (tensionValue) {
-      tensionValue.textContent = String(Math.round(raw));
-    }
-
-    if (signalTitle) {
-      signalTitle.textContent = state.title;
-    }
-
-    if (signalCopy) {
-      signalCopy.textContent = state.copy;
-    }
 
     requestSignalFrame();
   }
@@ -328,11 +293,10 @@
     }
 
     resizeCanvas();
-    setTension(tensionControl ? tensionControl.value : 24);
+    setTension(24);
 
     window.addEventListener("resize", () => {
       resizeCanvas();
-      setTension(tensionControl ? tensionControl.value : 24);
     });
 
     window.addEventListener("pointermove", (event) => {
@@ -342,18 +306,6 @@
     });
 
     window.addEventListener("pointerleave", settleSignalField);
-  }
-
-  function initTensionControl() {
-    if (!tensionControl) {
-      return;
-    }
-
-    tensionControl.addEventListener("input", (event) => {
-      setTension(event.target.value);
-    });
-
-    setTension(tensionControl.value);
   }
 
   function initReveals() {
@@ -454,6 +406,11 @@
         panels.forEach((panel, panelIndex) => {
           panel.hidden = panelIndex !== index;
         });
+
+        tabList.dispatchEvent(new CustomEvent("site:tabchange", {
+          bubbles: true,
+          detail: { index, panel: panels[index] },
+        }));
       }
 
       tabs.forEach((tab, index) => {
@@ -480,208 +437,561 @@
     });
   }
 
-  function hashCell(x, y, seed) {
-    const value = Math.sin(x * 12.9898 + y * 78.233 + seed * 37.719) * 43758.5453;
-    return value - Math.floor(value);
+  const panelAnimationStates = new WeakMap();
+
+  function cssValue(name) {
+    return window.getComputedStyle(root).getPropertyValue(name).trim();
   }
 
-  function initPixelMap() {
-    const map = document.querySelector("#pixel-map");
-    const readout = document.querySelector("#map-readout");
+  function clamp(value, min = 0, max = 1) {
+    return Math.max(min, Math.min(max, value));
+  }
 
-    if (!map || !readout) {
-      return;
-    }
+  function easeOutCubic(value) {
+    const t = clamp(value);
+    return 1 - Math.pow(1 - t, 3);
+  }
 
-    const columns = 80;
-    const rows = 38;
-    const regions = {
-      northAmerica: {
-        label: "North America",
-        detail: "AI governance capacity, markets, and institutional design",
-        colors: ["#ffae00", "#d89238", "#050505", "#737373"],
-      },
-      southAsia: {
-        label: "South Asia",
-        detail: "security policy, development practice, and field experience",
-        colors: ["#ffae00", "#c97e2f", "#666666", "#050505"],
-      },
-      mena: {
-        label: "MENA",
-        detail: "geopolitical risk, digital governance, and regional institutions",
-        colors: ["#f5bd54", "#db9836", "#8a8a8a", "#303030"],
-      },
-      europe: {
-        label: "Europe",
-        detail: "regulation, standards, and alliance coordination",
-        colors: ["#ffae00", "#d79a3a", "#c8c8c8", "#050505"],
-      },
-      arctic: {
-        label: "Arctic corridor",
-        detail: "critical infrastructure, supply chains, and resilience",
-        colors: ["#e5a332", "#c8c8c8", "#6e6e6e", "#050505"],
-      },
-    };
-    const regionOrder = Object.keys(regions);
-    const patches = [
-      ["northAmerica", 3, 9, 19, 7],
-      ["northAmerica", 9, 16, 15, 7],
-      ["northAmerica", 15, 24, 7, 5],
-      ["northAmerica", 27, 3, 12, 5],
-      ["southAsia", 57, 16, 7, 5],
-      ["southAsia", 61, 19, 8, 5],
-      ["southAsia", 64, 23, 6, 4],
-      ["mena", 45, 17, 9, 5],
-      ["mena", 47, 22, 8, 6],
-      ["europe", 42, 9, 11, 5],
-      ["europe", 49, 7, 7, 4],
-      ["arctic", 19, 5, 17, 4],
-      ["arctic", 50, 4, 15, 4],
-    ];
-    const tiles = new Map();
-
-    patches.forEach(([region, startX, startY, patchWidth, patchHeight], patchIndex) => {
-      for (let y = startY; y < startY + patchHeight; y += 1) {
-        for (let x = startX; x < startX + patchWidth; x += 1) {
-          const edge = x === startX || y === startY || x === startX + patchWidth - 1 || y === startY + patchHeight - 1;
-          const texture = hashCell(x, y, patchIndex);
-
-          if ((edge && texture < 0.18) || (!edge && texture < 0.025)) {
-            continue;
-          }
-
-          tiles.set(`${x}:${y}`, { region, x, y, seed: patchIndex });
-        }
+  function parseGraphData(panel) {
+    const read = (raw) => {
+      if (!raw) {
+        return null;
       }
-    });
 
-    const fragment = document.createDocumentFragment();
-    const cells = [];
+      try {
+        const value = JSON.parse(raw);
+        return Array.isArray(value) && value.length ? value : null;
+      } catch (error) {
+        return null;
+      }
+    };
 
-    Array.from(tiles.values()).forEach((tile) => {
-      const cell = document.createElement("span");
-      const region = regions[tile.region];
-      const colorIndex = Math.floor(hashCell(tile.x, tile.y, tile.seed + 11) * region.colors.length);
+    return {
+      nodeData: read(panel.dataset.nodes),
+      edgeData: read(panel.dataset.edges),
+    };
+  }
 
-      cell.className = "map-cell";
-      cell.dataset.region = tile.region;
-      cell.style.left = `${(tile.x / columns) * 100}%`;
-      cell.style.top = `${(tile.y / rows) * 100}%`;
-      cell.style.width = `${100 / columns}%`;
-      cell.style.height = `${100 / rows}%`;
-      cell.style.setProperty("--cell-color", region.colors[colorIndex]);
-      fragment.appendChild(cell);
-      cells.push(cell);
-    });
-
-    map.appendChild(fragment);
-
-    let selectedRegion = "";
-    let activeRegion = "";
-
-    function describe(regionKey) {
-      const region = regions[regionKey];
-      readout.textContent = region ? `${region.label}: ${region.detail}` : "Focus map: AI governance, South Asia, MENA, and infrastructure corridors";
+  function preparePanelCanvas(canvas) {
+    if (!canvas) {
+      return null;
     }
 
-    function paint(regionKey, selectedKey) {
-      cells.forEach((cell) => {
-        const isActive = cell.dataset.region === regionKey;
-        const isSelected = cell.dataset.region === selectedKey;
-        cell.classList.toggle("is-active", isActive);
-        cell.classList.toggle("is-selected", isSelected);
+    const rect = canvas.getBoundingClientRect();
+    const width = Math.max(1, rect.width);
+    const height = Math.max(1, rect.height);
+    const scale = Math.min(window.devicePixelRatio || 1, 2);
+    const pixelWidth = Math.floor(width * scale);
+    const pixelHeight = Math.floor(height * scale);
+    const drawing = canvas.getContext("2d");
+
+    if (!drawing) {
+      return null;
+    }
+
+    if (canvas.width !== pixelWidth || canvas.height !== pixelHeight) {
+      canvas.width = pixelWidth;
+      canvas.height = pixelHeight;
+    }
+
+    drawing.setTransform(scale, 0, 0, scale, 0, 0);
+    return { drawing, width, height };
+  }
+
+  function makeWorkGraphState(panel) {
+    const existing = panelAnimationStates.get(panel);
+
+    if (existing) {
+      return existing;
+    }
+
+    const canvasElement = panel.querySelector("canvas");
+    const defaultNodes = [
+      ["AI governance", 0.24, 0.32],
+      ["export controls", 0.55, 0.22],
+      ["geopolitics", 0.78, 0.42],
+      ["institutions", 0.34, 0.66],
+      ["systems", 0.58, 0.58],
+      ["writing", 0.76, 0.75],
+    ];
+    const defaultEdges = [
+      [0, 1, 1],
+      [0, 3, 0.85],
+      [1, 2, 0.78],
+      [1, 4, 0.92],
+      [2, 4, 0.7],
+      [3, 4, 0.88],
+      [3, 5, 0.58],
+      [4, 5, 0.72],
+    ];
+    const parsed = parseGraphData(panel);
+    const nodes = (parsed.nodeData || defaultNodes).map(([label, tx, ty], index) => ({
+      label,
+      tx,
+      ty,
+      x: 0.18 + ((index * 0.17) % 0.72),
+      y: 0.2 + ((index * 0.23) % 0.56),
+      vx: 0,
+      vy: 0,
+    }));
+    const edges = parsed.edgeData || defaultEdges;
+    const state = {
+      active: false,
+      canvas: canvasElement,
+      edges,
+      frame: 0,
+      hover: -1,
+      nodes,
+      startedAt: 0,
+      type: "work-graph",
+    };
+
+    if (canvasElement) {
+      canvasElement.addEventListener("pointermove", (event) => {
+        const rect = canvasElement.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+        let hover = -1;
+        let best = 28;
+
+        state.nodes.forEach((node, index) => {
+          const distance = Math.hypot(node.drawX - x, node.drawY - y);
+
+          if (distance < best) {
+            best = distance;
+            hover = index;
+          }
+        });
+
+        state.hover = hover;
+
+        if (!state.active) {
+          drawWorkGraph(state, window.performance.now(), false);
+        }
+      });
+
+      canvasElement.addEventListener("pointerleave", () => {
+        state.hover = -1;
+
+        if (!state.active) {
+          drawWorkGraph(state, window.performance.now(), false);
+        }
       });
     }
 
-    function activate(regionKey) {
-      activeRegion = regionKey;
-      describe(regionKey);
-      paint(activeRegion, selectedRegion);
-    }
-
-    function select(regionKey) {
-      selectedRegion = regionKey;
-      activate(regionKey);
-    }
-
-    map.addEventListener("pointerover", (event) => {
-      const cell = event.target.closest(".map-cell");
-
-      if (cell) {
-        activate(cell.dataset.region);
-      }
-    });
-
-    map.addEventListener("pointerleave", () => {
-      activeRegion = "";
-      describe(selectedRegion);
-      paint(activeRegion, selectedRegion);
-    });
-
-    map.addEventListener("click", (event) => {
-      const cell = event.target.closest(".map-cell");
-
-      if (cell) {
-        select(cell.dataset.region);
-      }
-    });
-
-    map.addEventListener("keydown", (event) => {
-      if (!["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Enter", " "].includes(event.key)) {
-        return;
-      }
-
-      event.preventDefault();
-
-      const existingIndex = regionOrder.indexOf(activeRegion || selectedRegion);
-      const currentIndex = existingIndex >= 0 ? existingIndex : -1;
-      const direction = event.key === "ArrowLeft" || event.key === "ArrowUp" ? -1 : 1;
-      const nextIndex = event.key === "Enter" || event.key === " " ? Math.max(0, currentIndex) : (currentIndex + direction + regionOrder.length) % regionOrder.length;
-      const nextRegion = regionOrder[nextIndex];
-
-      if (event.key === "Enter" || event.key === " ") {
-        select(nextRegion);
-      } else {
-        activate(nextRegion);
-      }
-    });
+    panelAnimationStates.set(panel, state);
+    return state;
   }
 
-  function deferPixelMap() {
-    const map = document.querySelector("#pixel-map");
+  function drawWorkGraph(state, timestamp, schedule = true) {
+    const prepared = preparePanelCanvas(state.canvas);
 
-    if (!map) {
+    if (!prepared) {
       return;
     }
 
-    let initialized = false;
-    const initialize = () => {
-      if (initialized) {
+    const { drawing, width, height } = prepared;
+    const accent = cssValue("--accent") || "#ffae00";
+    const rule = cssValue("--rule") || "rgba(5,5,5,0.18)";
+    const text = cssValue("--text") || "#050505";
+    const muted = cssValue("--muted") || "#565656";
+    const elapsed = timestamp - state.startedAt;
+
+    drawing.clearRect(0, 0, width, height);
+
+    state.nodes.forEach((node, index) => {
+      const targetX = node.tx * width;
+      const targetY = node.ty * height;
+      const settled = reduceMotion.matches || elapsed > 900;
+
+      if (reduceMotion.matches) {
+        node.x = node.tx;
+        node.y = node.ty;
+      } else if (settled) {
+        const drift = Math.sin(timestamp * 0.001 + index) * 2.5;
+        node.drawX = targetX + drift;
+        node.drawY = targetY + Math.cos(timestamp * 0.001 + index) * 2.5;
+        return;
+      } else {
+        node.vx += (node.tx - node.x) * 0.035;
+        node.vy += (node.ty - node.y) * 0.035;
+        node.vx *= 0.78;
+        node.vy *= 0.78;
+        node.x += node.vx;
+        node.y += node.vy;
+      }
+
+      node.drawX = node.x * width;
+      node.drawY = node.y * height;
+    });
+
+    drawing.save();
+    drawing.lineCap = "round";
+
+    state.edges.forEach(([from, to, weight]) => {
+      const start = state.nodes[from];
+      const end = state.nodes[to];
+      const highlighted = state.hover === from || state.hover === to;
+
+      drawing.beginPath();
+      drawing.moveTo(start.drawX, start.drawY);
+      drawing.lineTo(end.drawX, end.drawY);
+      drawing.strokeStyle = highlighted ? accent : rule;
+      drawing.globalAlpha = highlighted ? 0.95 : 0.44 + weight * 0.28;
+      drawing.lineWidth = highlighted ? 2.4 : 0.8 + weight * 1.2;
+      drawing.stroke();
+    });
+
+    drawing.globalAlpha = 1;
+    drawing.font = `700 ${Math.max(11, Math.min(13, width * 0.022))}px ${cssValue("--font-mono") || "monospace"}`;
+    drawing.textBaseline = "middle";
+
+    state.nodes.forEach((node, index) => {
+      const highlighted = state.hover === index;
+      const radius = highlighted ? 8 : 5.5;
+      const flip = node.drawX > width * 0.6;
+
+      drawing.beginPath();
+      drawing.arc(node.drawX, node.drawY, radius, 0, Math.PI * 2);
+      drawing.fillStyle = highlighted ? accent : text;
+      drawing.fill();
+      drawing.fillStyle = highlighted ? text : muted;
+      drawing.textAlign = flip ? "right" : "left";
+      drawing.fillText(node.label, node.drawX + (flip ? -12 : 12), node.drawY);
+    });
+
+    drawing.textAlign = "left";
+    drawing.restore();
+
+    if (schedule && state.active && !reduceMotion.matches) {
+      state.frame = window.requestAnimationFrame((next) => drawWorkGraph(state, next));
+    }
+  }
+
+  function startWorkGraph(panel) {
+    const state = makeWorkGraphState(panel);
+
+    if (state.frame) {
+      window.cancelAnimationFrame(state.frame);
+    }
+
+    state.active = true;
+    state.startedAt = window.performance.now();
+
+    if (reduceMotion.matches) {
+      drawWorkGraph(state, state.startedAt, false);
+      return;
+    }
+
+    state.frame = window.requestAnimationFrame((timestamp) => drawWorkGraph(state, timestamp));
+  }
+
+  function formatTerminalPanel(panel) {
+    if (!panel) {
+      return "";
+    }
+
+    const title = panel.querySelector("h3")?.textContent.trim() || "Research focus";
+    const body = panel.querySelector("p")?.textContent.trim().replace(/\s+/g, " ") || "";
+    const bullets = Array.from(panel.querySelectorAll("li")).map((item) => `- ${item.textContent.trim()}`);
+
+    return [`$ open research_focus`, "", `# ${title}`, body, "", ...bullets].join("\n");
+  }
+
+  function makeTerminalState(panel) {
+    const existing = panelAnimationStates.get(panel);
+
+    if (existing) {
+      return existing;
+    }
+
+    const output = panel.querySelector("[data-terminal-output]");
+    const tabGroup = panel.closest("[data-tabs]");
+    const sourcePanels = tabGroup ? Array.from(tabGroup.querySelectorAll("[data-tab-panel]")) : [];
+    const state = {
+      active: false,
+      frame: 0,
+      index: 0,
+      output,
+      panel,
+      sourcePanels,
+      text: "",
+      timer: 0,
+      type: "research-terminal",
+    };
+
+    if (tabGroup) {
+      tabGroup.addEventListener("site:tabchange", (event) => {
+        const nextText = formatTerminalPanel(event.detail.panel);
+
+        if (state.active) {
+          typeTerminalText(state, nextText);
+        } else if (state.output) {
+          state.output.textContent = nextText;
+        }
+      });
+    }
+
+    panelAnimationStates.set(panel, state);
+    return state;
+  }
+
+  function typeTerminalText(state, text) {
+    if (!state.output) {
+      return;
+    }
+
+    if (state.timer) {
+      window.clearTimeout(state.timer);
+      state.timer = 0;
+    }
+
+    state.text = text;
+    state.index = reduceMotion.matches ? text.length : 0;
+    state.output.textContent = text.slice(0, state.index);
+
+    function tick() {
+      if (!state.active || reduceMotion.matches) {
         return;
       }
 
-      initialized = true;
-      initPixelMap();
+      state.index = Math.min(state.text.length, state.index + 2);
+      state.output.textContent = state.text.slice(0, state.index);
+
+      if (state.index < state.text.length) {
+        state.timer = window.setTimeout(tick, 18);
+      }
+    }
+
+    tick();
+  }
+
+  function startTerminal(panel) {
+    const state = makeTerminalState(panel);
+    const activePanel = state.sourcePanels.find((source) => !source.hidden) || state.sourcePanels[0];
+
+    state.active = true;
+    typeTerminalText(state, formatTerminalPanel(activePanel));
+  }
+
+  function makeDocumentState(panel) {
+    const existing = panelAnimationStates.get(panel);
+
+    if (existing) {
+      return existing;
+    }
+
+    const canvasElement = panel.querySelector("canvas");
+    const state = {
+      active: false,
+      canvas: canvasElement,
+      frame: 0,
+      lines: [0.88, 0.62, 0.76, 0.47, 0.81, 0.69, 0.9, 0.54, 0.73, 0.42, 0.84, 0.58],
+      pulseUntil: 0,
+      startedAt: 0,
+      type: "writing-document",
     };
 
-    if (typeof IntersectionObserver !== "function") {
-      initialize();
+    if (canvasElement) {
+      canvasElement.addEventListener("pointerenter", () => {
+        state.pulseUntil = window.performance.now() + 220;
+
+        if (!state.active) {
+          drawDocumentLines(state, window.performance.now(), false);
+        }
+      });
+    }
+
+    panelAnimationStates.set(panel, state);
+    return state;
+  }
+
+  function drawDocumentLines(state, timestamp, schedule = true) {
+    const prepared = preparePanelCanvas(state.canvas);
+
+    if (!prepared) {
+      return;
+    }
+
+    const { drawing, width, height } = prepared;
+    const text = cssValue("--text") || "#050505";
+    const rule = cssValue("--rule") || "rgba(5,5,5,0.2)";
+    const accent = cssValue("--accent") || "#ffae00";
+    const progress = reduceMotion.matches ? 1 : easeOutCubic((timestamp - state.startedAt) / 680);
+    const left = width * 0.12;
+    const top = height * 0.16;
+    const gap = Math.max(17, height * 0.052);
+    const lineHeight = 2;
+    const pulse = timestamp < state.pulseUntil;
+
+    drawing.clearRect(0, 0, width, height);
+    drawing.fillStyle = cssValue("--surface-solid") || "transparent";
+    drawing.fillRect(width * 0.08, height * 0.1, width * 0.76, height * 0.78);
+    drawing.strokeStyle = rule;
+    drawing.lineWidth = 1;
+    drawing.strokeRect(width * 0.08, height * 0.1, width * 0.76, height * 0.78);
+
+    state.lines.forEach((lineWidth, index) => {
+      const local = clamp((progress - index * 0.045) / 0.46);
+      const y = top + index * gap;
+      const fade = index >= state.lines.length - 3 ? 0.32 : 0.82;
+      const breathe = 0.92 + Math.sin(timestamp * 0.002 + index) * 0.08;
+
+      drawing.globalAlpha = fade * breathe;
+      drawing.fillStyle = pulse ? accent : (index % 4 === 0 ? text : rule);
+      drawing.fillRect(left, y, width * 0.68 * lineWidth * local, lineHeight);
+    });
+
+    drawing.globalAlpha = 1;
+
+    if (schedule && state.active && !reduceMotion.matches) {
+      state.frame = window.requestAnimationFrame((next) => drawDocumentLines(state, next));
+    }
+  }
+
+  function startDocument(panel) {
+    const state = makeDocumentState(panel);
+
+    if (state.frame) {
+      window.cancelAnimationFrame(state.frame);
+    }
+
+    state.active = true;
+    state.startedAt = window.performance.now();
+
+    if (reduceMotion.matches) {
+      drawDocumentLines(state, state.startedAt, false);
+      return;
+    }
+
+    state.frame = window.requestAnimationFrame((timestamp) => drawDocumentLines(state, timestamp));
+  }
+
+  function makeImpactBarsState(panel) {
+    const existing = panelAnimationStates.get(panel);
+
+    if (existing) {
+      return existing;
+    }
+
+    const nodes = Array.from(panel.querySelectorAll("[data-impact-node]"));
+    const state = {
+      active: false,
+      frame: 0,
+      nodes,
+      startedAt: 0,
+      type: "impact-bars",
+    };
+
+    panelAnimationStates.set(panel, state);
+    return state;
+  }
+
+  function targetNodeHeight(node) {
+    const value = window.getComputedStyle(node).getPropertyValue("--node-height");
+    return 38 + Math.max(0, Number.parseFloat(value) || 80);
+  }
+
+  function drawImpactBars(state, timestamp, schedule = true) {
+    const elapsed = timestamp - state.startedAt;
+    let complete = true;
+
+    state.nodes.forEach((node, index) => {
+      const target = targetNodeHeight(node);
+      const progress = reduceMotion.matches ? 1 : easeOutCubic((elapsed - index * 80) / 580);
+      const height = Math.max(4, target * progress);
+
+      node.style.height = `${height.toFixed(1)}px`;
+
+      if (progress < 1) {
+        complete = false;
+      }
+    });
+
+    if (schedule && state.active && !reduceMotion.matches && !complete) {
+      state.frame = window.requestAnimationFrame((next) => drawImpactBars(state, next));
+    }
+  }
+
+  function startImpactBars(panel) {
+    const state = makeImpactBarsState(panel);
+
+    if (!state.nodes.length) {
+      return;
+    }
+
+    if (state.frame) {
+      window.cancelAnimationFrame(state.frame);
+    }
+
+    state.active = true;
+    state.startedAt = window.performance.now();
+    state.nodes.forEach((node) => {
+      node.style.height = "4px";
+    });
+    state.frame = window.requestAnimationFrame((timestamp) => drawImpactBars(state, timestamp));
+  }
+
+  function pausePanelAnimation(panel) {
+    const state = panelAnimationStates.get(panel);
+
+    if (!state) {
+      return;
+    }
+
+    state.active = false;
+
+    if (state.frame) {
+      window.cancelAnimationFrame(state.frame);
+      state.frame = 0;
+    }
+
+    if (state.timer) {
+      window.clearTimeout(state.timer);
+      state.timer = 0;
+    }
+  }
+
+  function startPanelAnimation(panel, animation) {
+    if (animation === "work-graph") {
+      startWorkGraph(panel);
+    } else if (animation === "research-terminal") {
+      startTerminal(panel);
+    } else if (animation === "writing-document") {
+      startDocument(panel);
+    } else if (animation === "impact-bars") {
+      startImpactBars(panel);
+    }
+  }
+
+  function initPanelAnimations() {
+    const panels = Array.from(document.querySelectorAll("[data-animation]"));
+
+    if (!panels.length) {
+      return;
+    }
+
+    if (reduceMotion.matches || typeof IntersectionObserver !== "function") {
+      panels.forEach((panel) => startPanelAnimation(panel, panel.dataset.animation));
       return;
     }
 
     const observer = new IntersectionObserver(
       (entries) => {
-        if (!entries.some((entry) => entry.isIntersecting)) {
-          return;
-        }
+        entries.forEach((entry) => {
+          const animation = entry.target.dataset.animation;
 
-        observer.disconnect();
-        initialize();
+          if (entry.isIntersecting) {
+            startPanelAnimation(entry.target, animation);
+          } else {
+            pausePanelAnimation(entry.target);
+          }
+        });
       },
-      { rootMargin: "240px 0px" }
+      { threshold: 0.2 }
     );
 
-    observer.observe(map);
+    panels.forEach((panel) => observer.observe(panel));
   }
 
   function initImpactTimeline() {
@@ -746,12 +1056,11 @@
   }
 
   initThemeToggle();
-  initTensionControl();
   initSignalField();
   initReveals();
   initFilterGroups();
   initTabs();
-  deferPixelMap();
   initImpactTimeline();
+  initPanelAnimations();
   bindMotionSetting();
 })();

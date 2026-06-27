@@ -9,7 +9,10 @@
     >
     <title>About - Muhammad Umar Zafar</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23ffffff'/%3E%3Cpath d='M12 18v17c0 9 6 14 15 14s15-5 15-14V18h-8v17c0 4-3 7-7 7s-7-3-7-7V18zM46 18h8L41 49h-8z' fill='%23ffae00'/%3E%3C/svg%3E">
-    <link rel="stylesheet" href="styles.css?v=20260621">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css?v=20260624">
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to main content</a>
@@ -24,11 +27,38 @@
       </a>
       <nav class="site-nav" aria-label="Primary navigation">
         <a href="about.html" aria-current="page">about</a>
-        <a href="work.html">work</a>
-        <a href="writing.html">writing</a>
+        <div class="nav-menu nav-menu--research">
+          <button class="nav-menu__trigger" type="button" aria-haspopup="true" aria-expanded="false">research</button>
+          <div class="nav-menu__panel" role="menu" aria-label="Research pages">
+            <a role="menuitem" href="work.html">work</a>
+            <a role="menuitem" href="writing.html">writing</a>
+          </div>
+        </div>
         <a href="impact.html">impact</a>
-        <a href="index.html#contact">contact</a>
       </nav>
+      <div class="header-social" aria-label="Social links">
+        <a class="header-social-link" href="https://substack.com/@omarzafar" target="_blank" rel="noopener noreferrer" aria-label="Substack">
+          <svg aria-hidden="true" viewBox="0 0 24 24">
+            <path d="M4 5h16v2H4zM4 9h16v2H4zM4 13h16v6l-8-4-8 4z"></path>
+          </svg>
+        </a>
+        <a class="header-social-link header-social-link--photography" href="photography.html" aria-label="Photography">
+          <svg aria-hidden="true" viewBox="0 0 24 24">
+            <path d="M4 8h3l1.6-2h6.8L17 8h3v10H4zM6 10v6h12v-6h-2.1l-1.6-2H9.7L8.1 10z"></path>
+            <circle cx="12" cy="13" r="3.2"></circle>
+          </svg>
+        </a>
+        <a class="header-social-link" href="https://github.com/Omarzaf" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+          <svg aria-hidden="true" viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.58 2 12.24c0 4.52 2.86 8.35 6.83 9.71.5.09.68-.22.68-.49v-1.9c-2.78.62-3.37-1.22-3.37-1.22-.45-1.18-1.11-1.49-1.11-1.49-.91-.64.07-.63.07-.63 1 .07 1.53 1.06 1.53 1.06.9 1.56 2.35 1.11 2.92.85.09-.66.35-1.11.64-1.37-2.22-.26-4.55-1.14-4.55-5.06 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.71 0 0 .84-.28 2.75 1.05A9.26 9.26 0 0 1 12 6.95c.85 0 1.7.12 2.5.35 1.9-1.33 2.74-1.05 2.74-1.05.55 1.41.2 2.45.1 2.71.64.72 1.03 1.63 1.03 2.75 0 3.93-2.34 4.8-4.57 5.05.36.32.68.94.68 1.9v2.8c0 .27.18.59.69.49A10.13 10.13 0 0 0 22 12.24C22 6.58 17.52 2 12 2z"></path>
+          </svg>
+        </a>
+        <a class="header-social-link" href="https://www.linkedin.com/in/umarzafar1" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+          <svg aria-hidden="true" viewBox="0 0 24 24">
+            <path d="M5 9h3v10H5zM6.5 4.8a1.8 1.8 0 1 1 0 3.6 1.8 1.8 0 0 1 0-3.6zM10 9h2.9v1.4h.1c.4-.8 1.4-1.7 3-1.7 3.2 0 3.8 2.1 3.8 4.9V19h-3v-4.8c0-1.2 0-2.7-1.7-2.7s-1.9 1.3-1.9 2.6V19H10z"></path>
+          </svg>
+        </a>
+      </div>
       <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode" aria-pressed="false">
         <span class="theme-toggle-icon" aria-hidden="true"></span>
         <span data-theme-label>dark</span>
@@ -92,8 +122,9 @@
               <h3>Johns Hopkins SAIS</h3>
               <p class="body-copy">
                 MA in International Relations, Technology and Innovation Policy. Public Service
-                Fellow Scholar. Thesis on Washington, lobbyists, corporate actors, and AI export
-                control architecture in U.S.-China competition.
+                Fellow Scholar. Independent researcher at SNF Agora Institute on AI governance
+                and democratic accountability. Thesis on how corporate actors co-securitize AI
+                in U.S.-China export control architecture.
               </p>
             </div>
           </article>
@@ -113,9 +144,10 @@
             <div>
               <h3>Intellectual anchors</h3>
               <p class="body-copy">
-                Postcolonial theory, international political economy, AI policy, cybersecurity,
-                infrastructure politics, Islamic philosophy, and direct experience with Pakistani and
-                American institutions.
+                Fanon, Said, Bourdieu, Foucault, Freire, Ibn Khaldun, and Islamic philosophy.
+                The common thread is how colonial inheritance, epistemic power, and class interact
+                with legal and technical systems — which is also the lens applied to AI governance,
+                compute policy, and institutional failure.
               </p>
             </div>
           </article>
@@ -132,26 +164,38 @@
               public programs, infrastructure, writing, and organizational design.
             </p>
           </div>
-          <div class="fact-grid reveal" aria-label="Skills and languages">
-            <article class="fact-card">
-              <span>policy</span>
-              <strong>AI governance</strong>
-              <p class="card-copy">Export controls, compute policy, trust and safety, democratic values, cybersecurity policy.</p>
+          <div class="entry-list reveal" aria-label="Skills and languages">
+            <article class="entry-row">
+              <span class="entry-label">policy</span>
+              <div>
+                <strong class="entry-title">AI governance</strong>
+                <p class="entry-body">Export controls, compute policy, trust and safety, democratic values, cybersecurity policy.</p>
+              </div>
+              <span class="entry-meta">range</span>
             </article>
-            <article class="fact-card">
-              <span>analysis</span>
-              <strong>risk</strong>
-              <p class="card-copy">South Asia, MENA, digital governance, regional security, infrastructure and supply chains.</p>
+            <article class="entry-row">
+              <span class="entry-label">analysis</span>
+              <div>
+                <strong class="entry-title">risk</strong>
+                <p class="entry-body">South Asia, MENA, digital governance, regional security, infrastructure and supply chains.</p>
+              </div>
+              <span class="entry-meta">range</span>
             </article>
-            <article class="fact-card">
-              <span>technical</span>
-              <strong>prototypes</strong>
-              <p class="card-copy">D3.js, Leaflet, FastAPI, data extraction, automation workflows, research tools.</p>
+            <article class="entry-row">
+              <span class="entry-label">technical</span>
+              <div>
+                <strong class="entry-title">prototypes</strong>
+                <p class="entry-body">D3.js, Leaflet, FastAPI, data extraction, automation workflows, research tools.</p>
+              </div>
+              <span class="entry-meta">range</span>
             </article>
-            <article class="fact-card">
-              <span>languages</span>
-              <strong>5</strong>
-              <p class="card-copy">English, Urdu, Punjabi, Hindi, and basic Arabic.</p>
+            <article class="entry-row">
+              <span class="entry-label">languages</span>
+              <div>
+                <strong class="entry-title">5</strong>
+                <p class="entry-body">English, Urdu, Punjabi, Hindi, and basic Arabic.</p>
+              </div>
+              <span class="entry-meta">range</span>
             </article>
           </div>
         </div>
@@ -169,15 +213,24 @@
             mumerzafer@gmail.com
             <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"></path></svg>
           </a>
+          <div class="social-links" aria-label="Social links">
+            <a class="social-link" href="https://substack.com/@omarzafar" target="_blank" rel="noopener noreferrer">substack</a>
+            <a class="social-link" href="https://github.com/Omarzaf" target="_blank" rel="noopener noreferrer">github</a>
+            <a class="social-link" href="https://www.linkedin.com/in/umarzafar1" target="_blank" rel="noopener noreferrer">linkedin</a>
+          </div>
         </div>
       </section>
     </main>
 
     <footer class="site-footer">
       <p>(c) 2026 Muhammad Umar Zafar</p>
-      <a href="#main">back to top</a>
+      <div class="footer-links" aria-label="Footer links">
+        <a href="https://substack.com/@omarzafar" target="_blank" rel="noopener noreferrer">substack</a>
+        <a href="https://github.com/Omarzaf" target="_blank" rel="noopener noreferrer">github</a>
+        <a href="https://www.linkedin.com/in/umarzafar1" target="_blank" rel="noopener noreferrer">linkedin</a>
+        <a href="#main">back to top</a>
+      </div>
     </footer>
-
-    <script src="script.js?v=20260621" defer></script>
+    <script src="script.js?v=20260624" defer></script>
   </body>
 </html>

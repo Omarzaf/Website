@@ -1,0 +1,356 @@
+#gameboy-dog-layer {
+  --gb-ink: #2e211c;
+  --gb-paper: #fff7e9;
+  --gb-gold: var(--accent, #ffae00);
+  --gb-ball-scale: 1;
+  --gb-sprite-scale: 0.9;
+  --gb-intro-scale: 1;
+  position: fixed;
+  inset: 0;
+  z-index: 18;
+  pointer-events: none;
+  font-family: var(--font-mono, "Courier New", monospace);
+  font-variant-numeric: tabular-nums;
+  contain: layout paint;
+}
+
+.gb-dog-layer__arc {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--gb-arc-width, 0);
+  border-top: 3px dotted var(--gb-gold);
+  opacity: 0;
+  transform: translate3d(var(--gb-arc-x, 0), var(--gb-arc-y, 0), 0) rotate(var(--gb-arc-angle, 0));
+  transform-origin: 0 50%;
+  transition: opacity 90ms ease;
+}
+
+.gb-dog-layer__arc.is-visible {
+  opacity: 0.9;
+}
+
+.gb-dog-layer__shadow {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 82px;
+  height: 12px;
+  margin-left: -41px;
+  background: linear-gradient(90deg, rgba(38, 54, 61, 0), rgba(38, 54, 61, 0.28), rgba(38, 54, 61, 0));
+  transform: translate3d(var(--gb-shadow-x, 0), var(--gb-shadow-y, 0), 0) scale(calc(var(--gb-intro-scale) * 0.9 + 0.1));
+  opacity: calc(var(--gb-intro-scale) * 0.75 + 0.15);
+}
+
+/* ---- 3D voxel dog ---- */
+.gb-dog-layer__dog {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 122px;
+  height: 108px;
+  transform: translate3d(var(--gb-dog-x, 0), var(--gb-dog-y, 0), 0) scaleX(var(--gb-dog-face, 1)) scale(calc(var(--gb-sprite-scale) * var(--gb-intro-scale, 1)));
+  transform-origin: 58px 98px;
+  pointer-events: auto;
+  cursor: pointer;
+  will-change: transform;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.gb-voxel-dog,
+.gb-voxel-ball {
+  position: relative;
+  transform-style: preserve-3d;
+  image-rendering: pixelated;
+}
+
+.gb-voxel-dog {
+  width: 122px;
+  height: 108px;
+  perspective: 420px;
+  filter: drop-shadow(0 2px 1px rgba(40, 24, 12, 0.2));
+}
+
+.gb-voxel-dog__rig {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transform: rotateX(4deg) rotateY(-8deg) rotateZ(-1deg);
+  transform-origin: 58px 72px;
+  animation: gb-breathe 3.8s ease-in-out infinite;
+}
+
+.gb-voxel-group {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+
+.gb-tail {
+  transform-origin: 22px 42px;
+}
+
+.gb-ear {
+  transform-origin: 50% 100%;
+}
+
+.gb-leg {
+  transform-origin: 50% 0%;
+}
+
+.gb-eyes--closed {
+  opacity: 0;
+}
+
+.gb-dog-layer__dog.is-running .gb-voxel-dog__rig,
+.gb-dog-layer__dog.is-catching .gb-voxel-dog__rig {
+  animation: gb-run-bob 280ms steps(2, end) infinite;
+}
+
+.gb-dog-layer__dog.is-presenting .gb-tail,
+.gb-dog-layer__dog.is-happy .gb-tail,
+.gb-dog-layer__dog.is-running .gb-tail,
+.gb-dog-layer__dog.is-catching .gb-tail {
+  animation: gb-tail-wag 240ms steps(2, end) infinite;
+}
+
+.gb-dog-layer__dog.is-running .gb-leg--back,
+.gb-dog-layer__dog.is-catching .gb-leg--back {
+  animation: gb-leg-back 240ms steps(2, end) infinite;
+}
+
+.gb-dog-layer__dog.is-running .gb-leg--front,
+.gb-dog-layer__dog.is-catching .gb-leg--front {
+  animation: gb-leg-front 240ms steps(2, end) infinite;
+}
+
+.gb-dog-layer__dog.is-presenting .gb-ear--l,
+.gb-dog-layer__dog.is-happy .gb-ear--l {
+  animation: gb-ear-perk-l 420ms steps(2, end) 2;
+}
+
+.gb-dog-layer__dog.is-presenting .gb-ear--r,
+.gb-dog-layer__dog.is-happy .gb-ear--r {
+  animation: gb-ear-perk-r 420ms steps(2, end) 2;
+}
+
+.gb-dog-layer__dog.is-sleeping .gb-eyes--open {
+  opacity: 0;
+}
+
+.gb-dog-layer__dog.is-sleeping .gb-eyes--closed {
+  opacity: 1;
+}
+
+.gb-dog-layer__dog.is-sleeping .gb-voxel-dog__rig {
+  animation: gb-snooze 3.4s steps(2, end) infinite;
+  transform: rotateX(4deg) rotateY(-8deg) rotateZ(-1deg) translateY(8px) scale(1.04, 0.82);
+}
+
+/* ---- Ball (small 3D pixel rubber ball) ---- */
+.gb-dog-layer__ball {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 22px;
+  height: 22px;
+  margin-left: -11px;
+  margin-top: -11px;
+  cursor: grab;
+  pointer-events: none;
+  touch-action: none;
+  transform: translate3d(var(--gb-bone-x, 0), var(--gb-bone-y, 0), 0) rotate(var(--gb-bone-rotate, 0deg)) scale(var(--gb-ball-scale));
+  transform-origin: 50% 50%;
+  will-change: transform;
+}
+
+.gb-voxel-ball {
+  width: 22px;
+  height: 22px;
+  transform: rotateX(10deg) rotateY(-14deg);
+  filter: drop-shadow(0 1px 1px rgba(40, 12, 8, 0.3));
+}
+
+.gb-dog-layer__ball.is-ready,
+.gb-dog-layer__ball.is-held {
+  pointer-events: auto;
+}
+
+.gb-dog-layer__ball.is-ready {
+  animation: gb-ball-ready 720ms steps(2, end) infinite;
+}
+
+.gb-dog-layer__ball.is-held {
+  cursor: grabbing;
+  animation: none;
+}
+
+body.gb-dog-layer-is-dragging {
+  cursor: grabbing;
+}
+
+/* ---- Speech bubble ---- */
+.gb-dog-layer__bubble {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform: translate3d(var(--gb-bubble-x, 0), var(--gb-bubble-y, 0), 0);
+  background: var(--gb-paper);
+  border: 2px solid var(--gb-ink);
+  border-radius: 4px;
+  padding: 3px 7px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: lowercase;
+  white-space: nowrap;
+  pointer-events: none;
+  color: var(--gb-ink);
+  line-height: 1;
+  opacity: 0;
+  transform-origin: 50% 120%;
+  transition: opacity 220ms ease;
+}
+
+.gb-dog-layer__bubble::after {
+  content: "";
+  position: absolute;
+  bottom: -6px;
+  left: 14px;
+  width: 8px;
+  height: 8px;
+  background: var(--gb-paper);
+  border-right: 2px solid var(--gb-ink);
+  border-bottom: 2px solid var(--gb-ink);
+  transform: rotate(45deg);
+}
+
+#gameboy-dog-layer[data-state="ready"] .gb-dog-layer__bubble,
+#gameboy-dog-layer[data-state="sleeping"] .gb-dog-layer__bubble {
+  opacity: 1;
+  animation: gb-bubble-pop 260ms steps(2, end);
+}
+
+/* ---- Zzz (sleeping) ---- */
+.gb-dog-layer__zzz {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform: translate3d(var(--gb-zzz-x, 0), var(--gb-zzz-y, 0), 0);
+  pointer-events: none;
+  opacity: 0;
+  color: var(--gb-gold);
+  font-weight: 800;
+  text-transform: lowercase;
+}
+
+.gb-dog-layer__zzz span {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: block;
+  text-shadow: 0 1px 0 rgba(40, 24, 12, 0.25);
+}
+
+.gb-dog-layer__zzz span:nth-child(1) { font-size: 9px; }
+.gb-dog-layer__zzz span:nth-child(2) { font-size: 12px; }
+.gb-dog-layer__zzz span:nth-child(3) { font-size: 16px; }
+
+#gameboy-dog-layer[data-state="sleeping"] .gb-dog-layer__zzz {
+  opacity: 1;
+}
+
+#gameboy-dog-layer[data-state="sleeping"] .gb-dog-layer__zzz span:nth-child(1) {
+  animation: gb-float 2.4s steps(4, end) infinite;
+}
+
+#gameboy-dog-layer[data-state="sleeping"] .gb-dog-layer__zzz span:nth-child(2) {
+  animation: gb-float 2.4s steps(4, end) 0.8s infinite;
+}
+
+#gameboy-dog-layer[data-state="sleeping"] .gb-dog-layer__zzz span:nth-child(3) {
+  animation: gb-float 2.4s steps(4, end) 1.6s infinite;
+}
+
+@keyframes gb-breathe {
+  0%, 100% { transform: rotateX(4deg) rotateY(-8deg) rotateZ(-1deg) translateY(0); }
+  50% { transform: rotateX(4deg) rotateY(-8deg) rotateZ(-1deg) translateY(-1px); }
+}
+
+@keyframes gb-run-bob {
+  0%, 100% { transform: rotateX(4deg) rotateY(-8deg) rotateZ(-1deg) translateY(0); }
+  50% { transform: rotateX(4deg) rotateY(-8deg) rotateZ(-1deg) translateY(-4px); }
+}
+
+@keyframes gb-snooze {
+  0%, 100% { transform: rotateX(4deg) rotateY(-8deg) rotateZ(-1deg) translateY(8px) scale(1.04, 0.82); }
+  50% { transform: rotateX(4deg) rotateY(-8deg) rotateZ(-1deg) translateY(9px) scale(1.05, 0.8); }
+}
+
+@keyframes gb-tail-wag {
+  0%, 100% { transform: rotateZ(-10deg) translateY(0); }
+  50% { transform: rotateZ(13deg) translateY(-1px); }
+}
+
+@keyframes gb-leg-back {
+  0%, 100% { transform: translateY(0) rotateZ(-8deg); }
+  50% { transform: translateY(3px) rotateZ(8deg); }
+}
+
+@keyframes gb-leg-front {
+  0%, 100% { transform: translateY(3px) rotateZ(8deg); }
+  50% { transform: translateY(0) rotateZ(-8deg); }
+}
+
+@keyframes gb-ear-perk-l {
+  0%, 100% { transform: rotateZ(0deg); }
+  50% { transform: rotateZ(-7deg) translateY(-2px); }
+}
+
+@keyframes gb-ear-perk-r {
+  0%, 100% { transform: rotateZ(0deg); }
+  50% { transform: rotateZ(7deg) translateY(-2px); }
+}
+
+@keyframes gb-ball-ready {
+  0%, 100% {
+    transform: translate3d(var(--gb-bone-x, 0), var(--gb-bone-y, 0), 0) rotate(0deg) scale(var(--gb-ball-scale));
+  }
+  50% {
+    transform: translate3d(var(--gb-bone-x, 0), calc(var(--gb-bone-y, 0) - 6px), 0) rotate(10deg) scale(var(--gb-ball-scale));
+  }
+}
+
+@keyframes gb-bubble-pop {
+  0% { transform: translate3d(var(--gb-bubble-x, 0), var(--gb-bubble-y, 0), 0) scale(0.6); }
+  100% { transform: translate3d(var(--gb-bubble-x, 0), var(--gb-bubble-y, 0), 0) scale(1); }
+}
+
+@keyframes gb-float {
+  0% { transform: translate(0, 0) scale(0.7); opacity: 0; }
+  20% { opacity: 1; }
+  100% { transform: translate(14px, -26px) scale(1.1); opacity: 0; }
+}
+
+@media (max-width: 720px) {
+  #gameboy-dog-layer {
+    --gb-sprite-scale: 0.48;
+    --gb-ball-scale: 0.9;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gb-voxel-dog__rig,
+  .gb-dog-layer__ball,
+  .gb-tail,
+  .gb-leg,
+  .gb-ear,
+  .gb-dog-layer__zzz span {
+    animation: none !important;
+    transition-duration: 0.001ms !important;
+  }
+
+  .gb-dog-layer__arc {
+    display: none;
+  }
+}

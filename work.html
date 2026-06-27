@@ -9,7 +9,10 @@
     >
     <title>Work - Muhammad Umar Zafar</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23ffffff'/%3E%3Cpath d='M12 18v17c0 9 6 14 15 14s15-5 15-14V18h-8v17c0 4-3 7-7 7s-7-3-7-7V18zM46 18h8L41 49h-8z' fill='%23ffae00'/%3E%3C/svg%3E">
-    <link rel="stylesheet" href="styles.css?v=20260621">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css?v=20260624">
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to main content</a>
@@ -24,11 +27,38 @@
       </a>
       <nav class="site-nav" aria-label="Primary navigation">
         <a href="about.html">about</a>
-        <a href="work.html" aria-current="page">work</a>
-        <a href="writing.html">writing</a>
+        <div class="nav-menu nav-menu--research">
+          <button class="nav-menu__trigger" type="button" aria-haspopup="true" aria-expanded="false" aria-current="page">research</button>
+          <div class="nav-menu__panel" role="menu" aria-label="Research pages">
+            <a role="menuitem" href="work.html" aria-current="page">work</a>
+            <a role="menuitem" href="writing.html">writing</a>
+          </div>
+        </div>
         <a href="impact.html">impact</a>
-        <a href="index.html#contact">contact</a>
       </nav>
+      <div class="header-social" aria-label="Social links">
+        <a class="header-social-link" href="https://substack.com/@omarzafar" target="_blank" rel="noopener noreferrer" aria-label="Substack">
+          <svg aria-hidden="true" viewBox="0 0 24 24">
+            <path d="M4 5h16v2H4zM4 9h16v2H4zM4 13h16v6l-8-4-8 4z"></path>
+          </svg>
+        </a>
+        <a class="header-social-link header-social-link--photography" href="photography.html" aria-label="Photography">
+          <svg aria-hidden="true" viewBox="0 0 24 24">
+            <path d="M4 8h3l1.6-2h6.8L17 8h3v10H4zM6 10v6h12v-6h-2.1l-1.6-2H9.7L8.1 10z"></path>
+            <circle cx="12" cy="13" r="3.2"></circle>
+          </svg>
+        </a>
+        <a class="header-social-link" href="https://github.com/Omarzaf" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+          <svg aria-hidden="true" viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.58 2 12.24c0 4.52 2.86 8.35 6.83 9.71.5.09.68-.22.68-.49v-1.9c-2.78.62-3.37-1.22-3.37-1.22-.45-1.18-1.11-1.49-1.11-1.49-.91-.64.07-.63.07-.63 1 .07 1.53 1.06 1.53 1.06.9 1.56 2.35 1.11 2.92.85.09-.66.35-1.11.64-1.37-2.22-.26-4.55-1.14-4.55-5.06 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.71 0 0 .84-.28 2.75 1.05A9.26 9.26 0 0 1 12 6.95c.85 0 1.7.12 2.5.35 1.9-1.33 2.74-1.05 2.74-1.05.55 1.41.2 2.45.1 2.71.64.72 1.03 1.63 1.03 2.75 0 3.93-2.34 4.8-4.57 5.05.36.32.68.94.68 1.9v2.8c0 .27.18.59.69.49A10.13 10.13 0 0 0 22 12.24C22 6.58 17.52 2 12 2z"></path>
+          </svg>
+        </a>
+        <a class="header-social-link" href="https://www.linkedin.com/in/umarzafar1" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+          <svg aria-hidden="true" viewBox="0 0 24 24">
+            <path d="M5 9h3v10H5zM6.5 4.8a1.8 1.8 0 1 1 0 3.6 1.8 1.8 0 0 1 0-3.6zM10 9h2.9v1.4h.1c.4-.8 1.4-1.7 3-1.7 3.2 0 3.8 2.1 3.8 4.9V19h-3v-4.8c0-1.2 0-2.7-1.7-2.7s-1.9 1.3-1.9 2.6V19H10z"></path>
+          </svg>
+        </a>
+      </div>
       <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode" aria-pressed="false">
         <span class="theme-toggle-icon" aria-hidden="true"></span>
         <span data-theme-label>dark</span>
@@ -59,10 +89,6 @@
               can inspect.
             </p>
           </div>
-          <figure class="visual-frame reveal">
-            <img src="assets/policy-systems-map.png" alt="Abstract policy systems map in black, white, and yellow">
-            <figcaption class="visual-caption">Generated editorial asset used as a policy-systems visual anchor.</figcaption>
-          </figure>
         </div>
       </section>
 
@@ -82,127 +108,187 @@
           </div>
 
           <div class="filtered-grid">
-            <article class="project-card reveal" data-filter-item="ai risk">
-              <span>MA thesis / AI export controls</span>
-              <strong>The Epistemic Global City</strong>
-              <p>
-                Qualitative process tracing and lobbying-data analysis on how corporate actors such
-                as Nvidia and Google function as co-securitizers in U.S.-China AI export-control
-                architecture.
-              </p>
-              <div class="tag-row" aria-label="Tags">
-                <span>export controls</span>
-                <span>AI governance</span>
-                <span>process tracing</span>
+            <article class="entry-row reveal" data-filter-item="ai risk">
+              <span class="entry-label">MA thesis / AI export controls</span>
+              <div>
+                <strong class="entry-title">The Epistemic Global City</strong>
+                <p class="entry-body">
+                  Qualitative process tracing and lobbying-data analysis on how corporate actors such
+                  as Nvidia and Google function as co-securitizers in U.S.-China AI export-control
+                  architecture.
+                </p>
+                <div class="tag-row" aria-label="Tags">
+                  <span>export controls</span>
+                  <span>AI governance</span>
+                  <span>process tracing</span>
+                </div>
               </div>
+              <span class="entry-meta">thesis</span>
             </article>
 
-            <article class="project-card reveal" data-filter-item="ai">
-              <span>policy clinic / comparative governance</span>
-              <strong>CAIDP AI Policy Clinic</strong>
-              <p>
-                Completed a comprehensive AI policy program involving research, writing, policy
-                analysis, and participation in AI and Democratic Values index work.
-              </p>
+            <article class="entry-row reveal" data-filter-item="ai">
+              <span class="entry-label">policy clinic / comparative governance</span>
+              <div>
+                <strong class="entry-title">CAIDP AI Policy Clinic</strong>
+                <p class="entry-body">
+                  Completed a comprehensive AI policy program involving research, writing, policy
+                  analysis, and participation in AI and Democratic Values index work.
+                </p>
+                <div class="tag-row" aria-label="Tags">
+                  <span>policy evaluation</span>
+                  <span>democratic values</span>
+                </div>
+              </div>
               <a class="source-link" href="https://credsverse.com/credentials/9c8f99b4-8f7f-4e11-8786-4642e0465a35">
                 credential
                 <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"></path></svg>
               </a>
-              <div class="tag-row" aria-label="Tags">
-                <span>policy evaluation</span>
-                <span>democratic values</span>
-              </div>
             </article>
 
-            <article class="project-card reveal" data-filter-item="ai risk">
-              <span>fellowship / political economy</span>
-              <strong>Mercatus and BASI</strong>
-              <p>
-                Research and training across compute governance, responsible scaling, energy security,
-                sovereign AI, regulatory design, and frontier AI policy.
-              </p>
+            <article class="entry-row reveal" data-filter-item="ai risk">
+              <span class="entry-label">fellowship / political economy</span>
+              <div>
+                <strong class="entry-title">Mercatus and BASI</strong>
+                <p class="entry-body">
+                  Research and training across compute governance, responsible scaling, energy security,
+                  sovereign AI, regulatory design, and frontier AI policy.
+                </p>
+                <div class="tag-row" aria-label="Tags">
+                  <span>compute</span>
+                  <span>RSPs</span>
+                  <span>political economy</span>
+                </div>
+              </div>
               <a class="source-link" href="https://www.mercatus.org/students/frederic-bastiat-fellows">
                 Mercatus listing
                 <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"></path></svg>
               </a>
-              <div class="tag-row" aria-label="Tags">
-                <span>compute</span>
-                <span>RSPs</span>
-                <span>political economy</span>
-              </div>
             </article>
 
-            <article class="project-card reveal" data-filter-item="risk">
-              <span>geopolitical risk / South Asia</span>
-              <strong>Telophase analysis</strong>
-              <p>
-                Produced intelligence-led briefs on Bangladesh, cybersecurity, 5G, dual-use technology,
-                medical AI compliance, and regional defense modernization pathways.
-              </p>
-              <div class="tag-row" aria-label="Tags">
-                <span>Bangladesh</span>
-                <span>cybersecurity</span>
-                <span>5G</span>
+            <article class="entry-row reveal" data-filter-item="risk">
+              <span class="entry-label">geopolitical risk / South Asia</span>
+              <div>
+                <strong class="entry-title">Telophase analysis</strong>
+                <p class="entry-body">
+                  Produced intelligence-led briefs on Bangladesh, cybersecurity, 5G, dual-use technology,
+                  medical AI compliance, and regional defense modernization pathways.
+                </p>
+                <div class="tag-row" aria-label="Tags">
+                  <span>Bangladesh</span>
+                  <span>cybersecurity</span>
+                  <span>5G</span>
+                </div>
               </div>
+              <span class="entry-meta">briefs</span>
             </article>
 
-            <article class="project-card reveal" data-filter-item="prototype ai">
-              <span>hackathon / operational intelligence</span>
-              <strong>AIxBio early warning</strong>
-              <p>
-                Built a waterborne pathogen early-warning news intelligence engine that extracted,
-                translated, geocoded, and served outbreak signals through a FastAPI and Leaflet stack.
-              </p>
-              <div class="tag-row" aria-label="Tags">
-                <span>FastAPI</span>
-                <span>Leaflet</span>
-                <span>biosecurity</span>
+            <article class="entry-row reveal" data-filter-item="prototype ai">
+              <span class="entry-label">hackathon / operational intelligence</span>
+              <div>
+                <strong class="entry-title">AIxBio early warning</strong>
+                <p class="entry-body">
+                  Built a waterborne pathogen early-warning news intelligence engine that extracted,
+                  translated, geocoded, and served outbreak signals through a FastAPI and Leaflet stack.
+                </p>
+                <div class="tag-row" aria-label="Tags">
+                  <span>FastAPI</span>
+                  <span>Leaflet</span>
+                  <span>biosecurity</span>
+                </div>
               </div>
+              <span class="entry-meta">prototype</span>
             </article>
 
-            <article class="project-card reveal" data-filter-item="prototype risk">
-              <span>hackathon / national security</span>
-              <strong>CrossDomain Sentinel</strong>
-              <p>
-                Built a cyber-physical correlation engine for defense and critical-infrastructure
-                decision-making in an OpenAI x Meta national security hackathon context.
-              </p>
-              <div class="tag-row" aria-label="Tags">
-                <span>critical infrastructure</span>
-                <span>correlation engine</span>
+            <article class="entry-row reveal" data-filter-item="prototype risk">
+              <span class="entry-label">hackathon / national security</span>
+              <div>
+                <strong class="entry-title">CrossDomain Sentinel</strong>
+                <p class="entry-body">
+                  Built a cyber-physical correlation engine for defense and critical-infrastructure
+                  decision-making in an OpenAI x Meta national security hackathon context.
+                </p>
+                <div class="tag-row" aria-label="Tags">
+                  <span>critical infrastructure</span>
+                  <span>correlation engine</span>
+                </div>
               </div>
+              <span class="entry-meta">prototype</span>
             </article>
 
-            <article class="project-card reveal" data-filter-item="prototype ai risk">
-              <span>visualization / policy network</span>
-              <strong>Think-Tanks-DC and RDL</strong>
-              <p>
-                Interactive network-visualization work mapping strategic linkages, influence,
-                lobbying, and institutional movement in U.S.-China semiconductor and AI policy.
-              </p>
-              <div class="tag-row" aria-label="Tags">
-                <span>D3.js</span>
-                <span>network analysis</span>
-                <span>lobbying</span>
+            <article class="entry-row reveal" data-filter-item="prototype ai risk">
+              <span class="entry-label">visualization / policy network</span>
+              <div>
+                <strong class="entry-title">Think-Tanks-DC and RDL</strong>
+                <p class="entry-body">
+                  Interactive network-visualization work mapping strategic linkages, influence,
+                  lobbying, and institutional movement in U.S.-China semiconductor and AI policy.
+                </p>
+                <div class="tag-row" aria-label="Tags">
+                  <span>D3.js</span>
+                  <span>network analysis</span>
+                  <span>lobbying</span>
+                </div>
               </div>
+              <a class="source-link" href="https://github.com/Omarzaf" target="_blank" rel="noopener noreferrer">
+                GitHub
+                <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"></path></svg>
+              </a>
             </article>
 
-            <article class="project-card reveal" data-filter-item="impact">
-              <span>field program / Pakistan</span>
-              <strong>Daadras Foundation</strong>
-              <p>
-                Founded and scaled education, relief, digital-literacy, and community programming
-                through Daadras, including Project Salam and field partnerships in Pakistan.
-              </p>
+            <article class="entry-row reveal" data-filter-item="impact">
+              <span class="entry-label">field program / Pakistan</span>
+              <div>
+                <strong class="entry-title">Daadras Foundation</strong>
+                <p class="entry-body">
+                  Founded and scaled education, relief, digital-literacy, and community programming
+                  through Daadras, including Project Salam and field partnerships in Pakistan.
+                </p>
+                <div class="tag-row" aria-label="Tags">
+                  <span>education</span>
+                  <span>digital literacy</span>
+                  <span>relief</span>
+                </div>
+              </div>
               <a class="source-link" href="impact.html">
                 impact page
                 <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"></path></svg>
               </a>
-              <div class="tag-row" aria-label="Tags">
-                <span>education</span>
-                <span>digital literacy</span>
-                <span>relief</span>
+            </article>
+
+            <article class="entry-row reveal" data-filter-item="ai risk">
+              <span class="entry-label">policy research / think tank</span>
+              <div>
+                <strong class="entry-title">SNF Agora Institute</strong>
+                <p class="entry-body">
+                  Independent researcher at Johns Hopkins University's SNF Agora Institute. Projects
+                  included e-waste policy analysis across U.S. and Nordic regulatory frameworks and
+                  AI governance research under the institute's democratic accountability mandate.
+                </p>
+                <div class="tag-row" aria-label="Tags">
+                  <span>e-waste policy</span>
+                  <span>AI governance</span>
+                  <span>comparative policy</span>
+                </div>
               </div>
+              <span class="entry-meta">research</span>
+            </article>
+
+            <article class="entry-row reveal" data-filter-item="ai impact">
+              <span class="entry-label">program design / AI education</span>
+              <div>
+                <strong class="entry-title">ScholarisAI — AI curriculum design</strong>
+                <p class="entry-body">
+                  Designed an AI application program for teaching and learning in a Pennsylvania
+                  public school district — covering pedagogy integration, teacher training pathways,
+                  and district-level AI policy frameworks for responsible adoption.
+                </p>
+                <div class="tag-row" aria-label="Tags">
+                  <span>AI education</span>
+                  <span>program design</span>
+                  <span>K-12</span>
+                </div>
+              </div>
+              <span class="entry-meta">program</span>
             </article>
 
             <p class="small-note" data-filter-empty hidden>No work items match this filter.</p>
@@ -222,15 +308,24 @@
             mumerzafer@gmail.com
             <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"></path></svg>
           </a>
+          <div class="social-links" aria-label="Social links">
+            <a class="social-link" href="https://substack.com/@omarzafar" target="_blank" rel="noopener noreferrer">substack</a>
+            <a class="social-link" href="https://github.com/Omarzaf" target="_blank" rel="noopener noreferrer">github</a>
+            <a class="social-link" href="https://www.linkedin.com/in/umarzafar1" target="_blank" rel="noopener noreferrer">linkedin</a>
+          </div>
         </div>
       </section>
     </main>
 
     <footer class="site-footer">
       <p>(c) 2026 Muhammad Umar Zafar</p>
-      <a href="#main">back to top</a>
+      <div class="footer-links" aria-label="Footer links">
+        <a href="https://substack.com/@omarzafar" target="_blank" rel="noopener noreferrer">substack</a>
+        <a href="https://github.com/Omarzaf" target="_blank" rel="noopener noreferrer">github</a>
+        <a href="https://www.linkedin.com/in/umarzafar1" target="_blank" rel="noopener noreferrer">linkedin</a>
+        <a href="#main">back to top</a>
+      </div>
     </footer>
-
-    <script src="script.js?v=20260621" defer></script>
+    <script src="script.js?v=20260624" defer></script>
   </body>
 </html>
