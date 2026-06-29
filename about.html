@@ -12,7 +12,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=20260624">
+    <link rel="stylesheet" href="styles.css?v=20260628c">
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to main content</a>
@@ -34,7 +34,15 @@
             <a role="menuitem" href="writing.html">writing</a>
           </div>
         </div>
-        <a href="impact.html">impact</a>
+        <div class="nav-menu nav-menu--projects">
+          <button class="nav-menu__trigger" type="button" aria-haspopup="true" aria-expanded="false">projects</button>
+          <div class="nav-menu__panel" role="menu" aria-label="Project pages">
+            <a role="menuitem" href="projects.html">overview</a>
+            <a role="menuitem" href="daadras.html">Daadras Foundation</a>
+            <a role="menuitem" href="davis-project.html">Davis Projects for Peace</a>
+            <a role="menuitem" href="think-tank.html">Think Tank / RDL</a>
+          </div>
+        </div>
       </nav>
       <div class="header-social" aria-label="Social links">
         <a class="header-social-link" href="https://substack.com/@omarzafar" target="_blank" rel="noopener noreferrer" aria-label="Substack">
@@ -72,8 +80,8 @@
           <p class="section-number">about</p>
           <h1 id="about-title" class="page-title">A life organized around institutions, power, and public purpose.</h1>
           <p class="page-body">
-            Muhammad Umar Zafar is a Washington, DC-based Pakistani writer and policy researcher
-            working where AI governance, geopolitical risk, and social-impact institutions overlap.
+            A Washington, DC-based Pakistani writer and researcher shaped by SAIS, Lahore, and
+            field institution-building.
           </p>
         </div>
       </section>
@@ -86,14 +94,15 @@
         <div class="split-layout">
           <div class="stack reveal">
             <p class="large-statement">
-              I work where AI, geopolitics, and public-purpose institutions collide.
+              Institutions are not abstract to me; they are schools, cities, programs, and the
+              habits they leave behind.
             </p>
           </div>
           <div class="rich-copy reveal">
             <p>
               I completed an MA in International Relations at Johns Hopkins SAIS with a focus on
-              Technology and Innovation Policy. My work connects AI governance, cybersecurity,
-              infrastructure resilience, export controls, geopolitical risk, and program design.
+              Technology and Innovation Policy. My work connects export controls, cybersecurity,
+              infrastructure resilience, and program design.
             </p>
             <p>
               Before Washington, I grew up between Pakistani institutions that made education feel
@@ -102,9 +111,9 @@
               institutional failure.
             </p>
             <p>
-              I do not treat research, writing, and building as separate identities. The research gives
-              language to systems, the writing keeps the human cost visible, and the prototypes test
-              whether an idea can survive contact with use.
+              I do not treat research, writing, and building as separate identities. Research gives
+              language, writing keeps the human cost visible, and prototypes test whether an idea can
+              survive contact with use.
             </p>
           </div>
         </div>
@@ -154,60 +163,227 @@
         </div>
       </section>
 
-      <section class="feature-section" aria-labelledby="skills-title">
-        <div class="feature-grid">
+      <section class="feature-section coursework-section" aria-labelledby="coursework-title">
+        <div class="feature-grid coursework-grid" data-education-map>
           <div class="feature-copy reveal">
             <p class="section-number">03</p>
-            <h2 id="skills-title">Working range.</h2>
+            <h2 id="coursework-title">Coursework map.</h2>
             <p>
-              The through-line is institutional analysis: how power moves through technical systems,
-              public programs, infrastructure, writing, and organizational design.
+              The coursework moves from political theory and sociology into applied methods,
+              regional security, AI policy, and systems analysis.
             </p>
+            <div class="coursework-mentors" aria-label="Faculty and instructors">
+              <span>Henry Farrell</span>
+              <span>Dipali Mukhopadhyay</span>
+              <span>Jeanette Manfra</span>
+              <span>Anna Broughel</span>
+              <span>Obiora Okafor</span>
+              <span>Ian McCulloh</span>
+              <span>Adam Auerbach</span>
+              <span>Jennifer R. Cole</span>
+              <span>Jonathan Cook</span>
+              <span>Christopher Sands</span>
+              <span>Omer Taspinar</span>
+              <span>Vali Nasr</span>
+            </div>
           </div>
-          <div class="entry-list reveal" aria-label="Skills and languages">
-            <article class="entry-row">
-              <span class="entry-label">policy</span>
-              <div>
-                <strong class="entry-title">AI governance</strong>
-                <p class="entry-body">Export controls, compute policy, trust and safety, democratic values, cybersecurity policy.</p>
-              </div>
-              <span class="entry-meta">range</span>
-            </article>
-            <article class="entry-row">
-              <span class="entry-label">analysis</span>
-              <div>
-                <strong class="entry-title">risk</strong>
-                <p class="entry-body">South Asia, MENA, digital governance, regional security, infrastructure and supply chains.</p>
-              </div>
-              <span class="entry-meta">range</span>
-            </article>
-            <article class="entry-row">
-              <span class="entry-label">technical</span>
-              <div>
-                <strong class="entry-title">prototypes</strong>
-                <p class="entry-body">D3.js, Leaflet, FastAPI, data extraction, automation workflows, research tools.</p>
-              </div>
-              <span class="entry-meta">range</span>
-            </article>
-            <article class="entry-row">
-              <span class="entry-label">languages</span>
-              <div>
-                <strong class="entry-title">5</strong>
-                <p class="entry-body">English, Urdu, Punjabi, Hindi, and basic Arabic.</p>
-              </div>
-              <span class="entry-meta">range</span>
-            </article>
+
+          <div class="coursework-board reveal">
+            <div class="coursework-controls" role="tablist" aria-label="Education journey phases">
+              <button
+                class="coursework-node is-active"
+                type="button"
+                role="tab"
+                id="coursework-foundations-tab"
+                aria-controls="coursework-foundations-panel"
+                aria-selected="true"
+                data-education-node="foundations"
+              >
+                <span>2019</span>
+                foundations
+              </button>
+              <button
+                class="coursework-node"
+                type="button"
+                role="tab"
+                id="coursework-theory-tab"
+                aria-controls="coursework-theory-panel"
+                aria-selected="false"
+                data-education-node="theory"
+              >
+                <span>2020-23</span>
+                theory + society
+              </button>
+              <button
+                class="coursework-node"
+                type="button"
+                role="tab"
+                id="coursework-methods-tab"
+                aria-controls="coursework-methods-panel"
+                aria-selected="false"
+                data-education-node="methods"
+              >
+                <span>2021-25</span>
+                methods
+              </button>
+              <button
+                class="coursework-node"
+                type="button"
+                role="tab"
+                id="coursework-security-tab"
+                aria-controls="coursework-security-panel"
+                aria-selected="false"
+                data-education-node="security"
+              >
+                <span>2024-26</span>
+                security + order
+              </button>
+              <button
+                class="coursework-node"
+                type="button"
+                role="tab"
+                id="coursework-systems-tab"
+                aria-controls="coursework-systems-panel"
+                aria-selected="false"
+                data-education-node="systems"
+              >
+                <span>2024-26</span>
+                AI + systems
+              </button>
+            </div>
+
+            <div class="coursework-panels">
+              <article
+                class="coursework-panel is-active"
+                id="coursework-foundations-panel"
+                role="tabpanel"
+                aria-labelledby="coursework-foundations-tab"
+                data-course-panel="foundations"
+              >
+                <p class="entry-label">Forman Christian College</p>
+                <h3>Political science before policy.</h3>
+                <p>
+                  The undergraduate base starts with economics, sociology, philosophy, Pakistan
+                  government, international relations, comparative politics, and constitutional law.
+                </p>
+                <div class="course-chip-row" aria-label="Representative courses">
+                  <span>Intro to Political Science</span>
+                  <span>International Relations</span>
+                  <span>Pakistan Government</span>
+                  <span>Constitutional Law of Pakistan</span>
+                </div>
+              </article>
+
+              <article
+                class="coursework-panel"
+                id="coursework-theory-panel"
+                role="tabpanel"
+                aria-labelledby="coursework-theory-tab"
+                data-course-panel="theory"
+                hidden
+              >
+                <p class="entry-label">Forman Christian College</p>
+                <h3>Institutions through class, language, and culture.</h3>
+                <p>
+                  The middle arc adds philosophy of religion, contemporary political theory,
+                  public opinion, sociology of gender, sociological anthropology, linguistic
+                  anthropology, and politics of the Middle East.
+                </p>
+                <div class="course-chip-row" aria-label="Representative courses">
+                  <span>Contemporary Political Theory</span>
+                  <span>Public Opinion</span>
+                  <span>Sociology of Gender</span>
+                  <span>Linguistic Anthropology</span>
+                </div>
+              </article>
+
+              <article
+                class="coursework-panel"
+                id="coursework-methods-panel"
+                role="tabpanel"
+                aria-labelledby="coursework-methods-tab"
+                data-course-panel="methods"
+                hidden
+              >
+                <p class="entry-label">Forman + SAIS</p>
+                <h3>Methods became the bridge.</h3>
+                <p>
+                  Research methodology, statistical methods, statistics for data analysis, R for
+                  professional research, field research methods, monitoring and evaluation, and
+                  policy consulting turn argument into evidence.
+                </p>
+                <div class="course-chip-row" aria-label="Representative courses">
+                  <span>Research Methodology</span>
+                  <span>Statistics for Data Analysis</span>
+                  <span>Programming for Research Using R</span>
+                  <span>Field Research Methods</span>
+                </div>
+              </article>
+
+              <article
+                class="coursework-panel"
+                id="coursework-security-panel"
+                role="tabpanel"
+                aria-labelledby="coursework-security-tab"
+                data-course-panel="security"
+                hidden
+              >
+                <p class="entry-label">Johns Hopkins SAIS</p>
+                <h3>Order, security, rights, and regions.</h3>
+                <p>
+                  SAIS sharpens the regional and legal frame through world order, cyberpolicy,
+                  international human rights law, humanitarian politics, Asia in Washington,
+                  geostrategy, and the Eastern Mediterranean.
+                </p>
+                <div class="course-chip-row" aria-label="Representative courses">
+                  <span>World Order and Disorder</span>
+                  <span>Evolution of Cyberpolicy</span>
+                  <span>International Human Rights Law</span>
+                  <span>Geostrategy of the Middle East</span>
+                </div>
+              </article>
+
+              <article
+                class="coursework-panel"
+                id="coursework-systems-panel"
+                role="tabpanel"
+                aria-labelledby="coursework-systems-tab"
+                data-course-panel="systems"
+                hidden
+              >
+                <p class="entry-label">Johns Hopkins SAIS</p>
+                <h3>Technology policy as institutional design.</h3>
+                <p>
+                  The current layer ties AI governance, climate and energy policy, economics,
+                  media systems, systems analysis, AI Policy Clinic work, and Artificial
+                  Intelligence for Leaders into a single public-interest technology frame.
+                </p>
+                <div class="course-chip-row" aria-label="Representative courses">
+                  <span>Political Economy of AI</span>
+                  <span>Artificial Intelligence for Leaders</span>
+                  <span>Systems Analysis</span>
+                  <span>Energy and Climate Policy Analysis</span>
+                </div>
+              </article>
+            </div>
+
+            <div class="coursework-lenses" aria-label="Coursework lenses">
+              <span><strong>Power</strong> theory, state formation, constitutional order</span>
+              <span><strong>Society</strong> sociology, gender, anthropology, language</span>
+              <span><strong>Evidence</strong> statistics, research design, R, fieldwork</span>
+              <span><strong>Systems</strong> cyberpolicy, AI governance, climate, energy</span>
+            </div>
           </div>
         </div>
       </section>
 
-      <section class="contact-section" aria-labelledby="contact-title">
+      <section class="contact-section contact-mosaic" aria-labelledby="contact-title">
         <p class="section-number reveal">04</p>
-        <div class="contact-copy reveal">
-          <h2 id="contact-title">For research, writing, and policy systems work.</h2>
+        <div class="contact-copy contact-mosaic-copy reveal">
+          <h2 id="contact-title">For research, writing, and public-purpose work.</h2>
           <p>
-            The best conversations are about AI governance, geopolitical risk, public-interest
-            infrastructure, or how to make complex institutions legible.
+            The best conversations are about public-interest infrastructure, institutional failure,
+            and how to make difficult problems easier to explain.
           </p>
           <a class="contact-link" href="mailto:mumerzafer@gmail.com">
             mumerzafer@gmail.com

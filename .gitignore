@@ -11,6 +11,9 @@ coverage/
 !.env.example
 
 # Local/generated agent artifacts; keep out of a public GitHub push.
-DESIGN-IS-2026-06-22/
+DESIGN-IS-*/
 docs/superpowers/
 journey-into-Website.md
+review-artifacts/
+/*-desktop.png
+/*-mobile.png

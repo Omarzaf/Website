@@ -35,12 +35,24 @@
     return side;
   }
 
+  function finiteNumber(value) {
+    return typeof value === "number" && Number.isFinite(value);
+  }
+
+  function requireDimensions(part) {
+    if (!finiteNumber(part.w) || !finiteNumber(part.h) || !finiteNumber(part.d)) {
+      throw new Error("createCube requires finite numeric w, h, and d");
+    }
+  }
+
   function createCube(part, opts) {
     const document = resolveDocument();
 
     if (!document) {
       throw new Error("createCube requires a document");
     }
+
+    requireDimensions(part || {});
 
     const options = opts || {};
     const colors = options.colors || {};

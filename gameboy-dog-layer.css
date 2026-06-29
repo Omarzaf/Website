@@ -1,17 +1,62 @@
-#gameboy-dog-layer {
+.dog-zone {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  pointer-events: none;
+}
+
+.dog-zone--hero {
+  grid-column: 1 / -1;
+  min-height: clamp(220px, 30vh, 360px);
+  margin-top: clamp(20px, 4vh, 40px);
+}
+
+.dog-zone--rest {
+  grid-column: 1 / 2;
+  min-height: clamp(220px, 28vh, 320px);
+  align-self: end;
+}
+
+.dog-zone .gb-dog-layer {
+  inset: 0;
+}
+
+.gb-dog-layer {
   --gb-ink: #2e211c;
   --gb-paper: #fff7e9;
   --gb-gold: var(--accent, #ffae00);
   --gb-ball-scale: 1;
   --gb-sprite-scale: 0.9;
   --gb-intro-scale: 1;
-  position: fixed;
+  position: absolute;
   inset: 0;
-  z-index: 18;
+  z-index: 2;
   pointer-events: none;
   font-family: var(--font-mono, "Courier New", monospace);
   font-variant-numeric: tabular-nums;
   contain: layout paint;
+}
+
+.gb-dog-layer[data-zone-kind="rest"] .gb-dog-layer__ball,
+.gb-dog-layer[data-zone-kind="rest"] .gb-dog-layer__bubble,
+.gb-dog-layer[data-zone-kind="rest"] .gb-dog-layer__arc {
+  display: none;
+}
+
+.gb-dog-layer[data-zone-kind="rest"] .gb-dog-layer__dog {
+  pointer-events: none;
+  cursor: default;
+}
+
+.gb-dog-layer.prefers-reduced-motion .gb-dog-layer__ball,
+.gb-dog-layer.prefers-reduced-motion .gb-dog-layer__bubble,
+.gb-dog-layer.prefers-reduced-motion .gb-dog-layer__arc {
+  display: none;
+}
+
+.gb-dog-layer.prefers-reduced-motion .gb-dog-layer__dog {
+  pointer-events: none;
+  cursor: default;
 }
 
 .gb-dog-layer__arc {
@@ -37,9 +82,11 @@
   width: 82px;
   height: 12px;
   margin-left: -41px;
-  background: linear-gradient(90deg, rgba(38, 54, 61, 0), rgba(38, 54, 61, 0.28), rgba(38, 54, 61, 0));
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(38, 54, 61, 0.22) 0%, rgba(38, 54, 61, 0) 70%);
   transform: translate3d(var(--gb-shadow-x, 0), var(--gb-shadow-y, 0), 0) scale(calc(var(--gb-intro-scale) * 0.9 + 0.1));
   opacity: calc(var(--gb-intro-scale) * 0.75 + 0.15);
+  transition: opacity 200ms ease;
 }
 
 /* ---- 3D voxel dog ---- */
@@ -55,6 +102,7 @@
   cursor: pointer;
   will-change: transform;
   -webkit-tap-highlight-color: transparent;
+  transition: filter 300ms ease;
 }
 
 .gb-voxel-dog,
@@ -104,34 +152,34 @@
 
 .gb-dog-layer__dog.is-running .gb-voxel-dog__rig,
 .gb-dog-layer__dog.is-catching .gb-voxel-dog__rig {
-  animation: gb-run-bob 280ms steps(2, end) infinite;
+  animation: gb-run-bob 320ms steps(4, end) infinite;
 }
 
 .gb-dog-layer__dog.is-presenting .gb-tail,
 .gb-dog-layer__dog.is-happy .gb-tail,
 .gb-dog-layer__dog.is-running .gb-tail,
 .gb-dog-layer__dog.is-catching .gb-tail {
-  animation: gb-tail-wag 240ms steps(2, end) infinite;
+  animation: gb-tail-wag 280ms steps(4, end) infinite;
 }
 
 .gb-dog-layer__dog.is-running .gb-leg--back,
 .gb-dog-layer__dog.is-catching .gb-leg--back {
-  animation: gb-leg-back 240ms steps(2, end) infinite;
+  animation: gb-leg-back 280ms steps(4, end) infinite;
 }
 
 .gb-dog-layer__dog.is-running .gb-leg--front,
 .gb-dog-layer__dog.is-catching .gb-leg--front {
-  animation: gb-leg-front 240ms steps(2, end) infinite;
+  animation: gb-leg-front 280ms steps(4, end) infinite;
 }
 
 .gb-dog-layer__dog.is-presenting .gb-ear--l,
 .gb-dog-layer__dog.is-happy .gb-ear--l {
-  animation: gb-ear-perk-l 420ms steps(2, end) 2;
+  animation: gb-ear-perk-l 420ms ease-in-out 2;
 }
 
 .gb-dog-layer__dog.is-presenting .gb-ear--r,
 .gb-dog-layer__dog.is-happy .gb-ear--r {
-  animation: gb-ear-perk-r 420ms steps(2, end) 2;
+  animation: gb-ear-perk-r 420ms ease-in-out 2;
 }
 
 .gb-dog-layer__dog.is-sleeping .gb-eyes--open {
@@ -143,7 +191,7 @@
 }
 
 .gb-dog-layer__dog.is-sleeping .gb-voxel-dog__rig {
-  animation: gb-snooze 3.4s steps(2, end) infinite;
+  animation: gb-snooze 3.4s ease-in-out infinite;
   transform: rotateX(4deg) rotateY(-8deg) rotateZ(-1deg) translateY(8px) scale(1.04, 0.82);
 }
 
@@ -177,7 +225,7 @@
 }
 
 .gb-dog-layer__ball.is-ready {
-  animation: gb-ball-ready 720ms steps(2, end) infinite;
+  animation: gb-ball-ready 900ms ease-in-out infinite;
 }
 
 .gb-dog-layer__ball.is-held {
@@ -225,10 +273,10 @@ body.gb-dog-layer-is-dragging {
   transform: rotate(45deg);
 }
 
-#gameboy-dog-layer[data-state="ready"] .gb-dog-layer__bubble,
-#gameboy-dog-layer[data-state="sleeping"] .gb-dog-layer__bubble {
+.gb-dog-layer[data-state="ready"] .gb-dog-layer__bubble,
+.gb-dog-layer[data-state="sleeping"] .gb-dog-layer__bubble {
   opacity: 1;
-  animation: gb-bubble-pop 260ms steps(2, end);
+  animation: gb-bubble-pop 320ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 /* ---- Zzz (sleeping) ---- */
@@ -256,86 +304,114 @@ body.gb-dog-layer-is-dragging {
 .gb-dog-layer__zzz span:nth-child(2) { font-size: 12px; }
 .gb-dog-layer__zzz span:nth-child(3) { font-size: 16px; }
 
-#gameboy-dog-layer[data-state="sleeping"] .gb-dog-layer__zzz {
+.gb-dog-layer[data-state="sleeping"] .gb-dog-layer__zzz {
   opacity: 1;
 }
 
-#gameboy-dog-layer[data-state="sleeping"] .gb-dog-layer__zzz span:nth-child(1) {
-  animation: gb-float 2.4s steps(4, end) infinite;
+.gb-dog-layer[data-state="sleeping"] .gb-dog-layer__zzz span:nth-child(1) {
+  animation: gb-float 2.6s ease-out infinite;
 }
 
-#gameboy-dog-layer[data-state="sleeping"] .gb-dog-layer__zzz span:nth-child(2) {
-  animation: gb-float 2.4s steps(4, end) 0.8s infinite;
+.gb-dog-layer[data-state="sleeping"] .gb-dog-layer__zzz span:nth-child(2) {
+  animation: gb-float 2.6s ease-out 0.8s infinite;
 }
 
-#gameboy-dog-layer[data-state="sleeping"] .gb-dog-layer__zzz span:nth-child(3) {
-  animation: gb-float 2.4s steps(4, end) 1.6s infinite;
+.gb-dog-layer[data-state="sleeping"] .gb-dog-layer__zzz span:nth-child(3) {
+  animation: gb-float 2.6s ease-out 1.6s infinite;
 }
 
 @keyframes gb-breathe {
   0%, 100% { transform: rotateX(4deg) rotateY(-8deg) rotateZ(-1deg) translateY(0); }
-  50% { transform: rotateX(4deg) rotateY(-8deg) rotateZ(-1deg) translateY(-1px); }
+  40% { transform: rotateX(4deg) rotateY(-8deg) rotateZ(-1deg) translateY(-1.5px); }
+  60% { transform: rotateX(4deg) rotateY(-8deg) rotateZ(-1deg) translateY(-1px); }
 }
 
 @keyframes gb-run-bob {
-  0%, 100% { transform: rotateX(4deg) rotateY(-8deg) rotateZ(-1deg) translateY(0); }
-  50% { transform: rotateX(4deg) rotateY(-8deg) rotateZ(-1deg) translateY(-4px); }
+  0% { transform: rotateX(4deg) rotateY(-8deg) rotateZ(-1deg) translateY(0); }
+  25% { transform: rotateX(5deg) rotateY(-8deg) rotateZ(-1deg) translateY(-5px); }
+  50% { transform: rotateX(4deg) rotateY(-8deg) rotateZ(-1deg) translateY(0); }
+  75% { transform: rotateX(3deg) rotateY(-8deg) rotateZ(-1deg) translateY(-4px); }
+  100% { transform: rotateX(4deg) rotateY(-8deg) rotateZ(-1deg) translateY(0); }
 }
 
 @keyframes gb-snooze {
-  0%, 100% { transform: rotateX(4deg) rotateY(-8deg) rotateZ(-1deg) translateY(8px) scale(1.04, 0.82); }
-  50% { transform: rotateX(4deg) rotateY(-8deg) rotateZ(-1deg) translateY(9px) scale(1.05, 0.8); }
+  0%, 100% { transform: rotateX(4deg) rotateY(-8deg) rotateZ(-1deg) translateY(8px) scale(1.04, 0.84); }
+  50% { transform: rotateX(4deg) rotateY(-8deg) rotateZ(-1deg) translateY(10px) scale(1.06, 0.8); }
 }
 
 @keyframes gb-tail-wag {
-  0%, 100% { transform: rotateZ(-10deg) translateY(0); }
-  50% { transform: rotateZ(13deg) translateY(-1px); }
+  0% { transform: rotateZ(-10deg) translateY(0); }
+  25% { transform: rotateZ(0deg) translateY(-1px); }
+  50% { transform: rotateZ(14deg) translateY(0); }
+  75% { transform: rotateZ(0deg) translateY(-1px); }
+  100% { transform: rotateZ(-10deg) translateY(0); }
 }
 
 @keyframes gb-leg-back {
-  0%, 100% { transform: translateY(0) rotateZ(-8deg); }
+  0% { transform: translateY(0) rotateZ(-8deg); }
+  25% { transform: translateY(2px) rotateZ(0deg); }
   50% { transform: translateY(3px) rotateZ(8deg); }
+  75% { transform: translateY(2px) rotateZ(0deg); }
+  100% { transform: translateY(0) rotateZ(-8deg); }
 }
 
 @keyframes gb-leg-front {
-  0%, 100% { transform: translateY(3px) rotateZ(8deg); }
+  0% { transform: translateY(3px) rotateZ(8deg); }
+  25% { transform: translateY(2px) rotateZ(0deg); }
   50% { transform: translateY(0) rotateZ(-8deg); }
+  75% { transform: translateY(2px) rotateZ(0deg); }
+  100% { transform: translateY(3px) rotateZ(8deg); }
 }
 
 @keyframes gb-ear-perk-l {
-  0%, 100% { transform: rotateZ(0deg); }
-  50% { transform: rotateZ(-7deg) translateY(-2px); }
+  0%, 100% { transform: rotateZ(0deg) translateY(0); }
+  30% { transform: rotateZ(-9deg) translateY(-3px); }
+  60% { transform: rotateZ(-4deg) translateY(-1px); }
 }
 
 @keyframes gb-ear-perk-r {
-  0%, 100% { transform: rotateZ(0deg); }
-  50% { transform: rotateZ(7deg) translateY(-2px); }
+  0%, 100% { transform: rotateZ(0deg) translateY(0); }
+  30% { transform: rotateZ(9deg) translateY(-3px); }
+  60% { transform: rotateZ(4deg) translateY(-1px); }
 }
 
 @keyframes gb-ball-ready {
   0%, 100% {
     transform: translate3d(var(--gb-bone-x, 0), var(--gb-bone-y, 0), 0) rotate(0deg) scale(var(--gb-ball-scale));
   }
-  50% {
-    transform: translate3d(var(--gb-bone-x, 0), calc(var(--gb-bone-y, 0) - 6px), 0) rotate(10deg) scale(var(--gb-ball-scale));
+  40% {
+    transform: translate3d(var(--gb-bone-x, 0), calc(var(--gb-bone-y, 0) - 7px), 0) rotate(6deg) scale(calc(var(--gb-ball-scale) * 1.05));
+  }
+  70% {
+    transform: translate3d(var(--gb-bone-x, 0), calc(var(--gb-bone-y, 0) - 2px), 0) rotate(3deg) scale(var(--gb-ball-scale));
   }
 }
 
 @keyframes gb-bubble-pop {
-  0% { transform: translate3d(var(--gb-bubble-x, 0), var(--gb-bubble-y, 0), 0) scale(0.6); }
-  100% { transform: translate3d(var(--gb-bubble-x, 0), var(--gb-bubble-y, 0), 0) scale(1); }
+  0% { transform: translate3d(var(--gb-bubble-x, 0), var(--gb-bubble-y, 0), 0) scale(0.4); opacity: 0; }
+  60% { transform: translate3d(var(--gb-bubble-x, 0), var(--gb-bubble-y, 0), 0) scale(1.08); opacity: 1; }
+  100% { transform: translate3d(var(--gb-bubble-x, 0), var(--gb-bubble-y, 0), 0) scale(1); opacity: 1; }
 }
 
 @keyframes gb-float {
-  0% { transform: translate(0, 0) scale(0.7); opacity: 0; }
-  20% { opacity: 1; }
-  100% { transform: translate(14px, -26px) scale(1.1); opacity: 0; }
+  0% { transform: translate(0, 0) scale(0.6); opacity: 0; }
+  15% { opacity: 0.9; }
+  70% { opacity: 0.6; }
+  100% { transform: translate(16px, -30px) scale(1.15); opacity: 0; }
 }
 
 @media (max-width: 720px) {
-  #gameboy-dog-layer {
-    --gb-sprite-scale: 0.48;
-    --gb-ball-scale: 0.9;
+  .gb-dog-layer {
+    --gb-sprite-scale: 0.58;
+    --gb-ball-scale: 0.92;
+  }
+
+  .dog-zone--hero {
+    min-height: clamp(180px, 24vh, 280px);
+  }
+
+  .dog-zone--rest {
+    min-height: clamp(180px, 22vh, 260px);
   }
 }
 
@@ -352,5 +428,9 @@ body.gb-dog-layer-is-dragging {
 
   .gb-dog-layer__arc {
     display: none;
+  }
+
+  .dog-zone {
+    min-height: clamp(160px, 20vh, 220px);
   }
 }

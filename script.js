@@ -7,6 +7,8 @@
   const context = canvas ? canvas.getContext("2d") : null;
   const themeToggles = Array.from(document.querySelectorAll("[data-theme-toggle]"));
   const themeStorageKey = "uz-theme";
+  const policyGlobeStates = [];
+  const degree = Math.PI / 180;
 
   const field = {
     active: false,
@@ -27,7 +29,7 @@
   };
 
   function requestSignalFrame() {
-    if (!canvas || !context || reduceMotion.matches || field.animationId) {
+    if (!canvas || !context || reduceMotion.matches || document.hidden || field.animationId) {
       return;
     }
 
@@ -58,6 +60,29 @@
       requestSignalFrame();
     }, 900);
     requestSignalFrame();
+  }
+
+  function pauseSignalField() {
+    clearSignalIdleTimer();
+    field.active = false;
+
+    if (!field.animationId) {
+      return;
+    }
+
+    window.cancelAnimationFrame(field.animationId);
+    field.animationId = 0;
+  }
+
+  function handleVisibilityChange() {
+    if (document.hidden) {
+      pauseSignalField();
+      pausePolicyGlobes();
+      return;
+    }
+
+    requestSignalFrame();
+    restartPolicyGlobes();
   }
 
   function getStoredTheme() {
@@ -306,6 +331,19 @@
     });
 
     window.addEventListener("pointerleave", settleSignalField);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+  }
+
+  function applyRevealOrder(elements) {
+    const groupCounts = new WeakMap();
+
+    elements.forEach((element) => {
+      const group = element.closest("section, header, footer, main") || document.body;
+      const order = groupCounts.get(group) || 0;
+
+      element.style.setProperty("--reveal-order", String(Math.min(order, 5)));
+      groupCounts.set(group, order + 1);
+    });
   }
 
   function initReveals() {
@@ -314,6 +352,8 @@
     if (!revealElements.length) {
       return;
     }
+
+    applyRevealOrder(revealElements);
 
     if (reduceMotion.matches || typeof IntersectionObserver !== "function") {
       revealElements.forEach((element) => element.classList.add("is-visible"));
@@ -384,6 +424,38 @@
     });
   }
 
+  function initNavMenus() {
+    const menus = Array.from(document.querySelectorAll(".nav-menu"));
+
+    menus.forEach((menu) => {
+      const trigger = menu.querySelector(".nav-menu__trigger");
+
+      if (!trigger) {
+        return;
+      }
+
+      const setExpanded = (isExpanded) => {
+        trigger.setAttribute("aria-expanded", String(isExpanded));
+      };
+
+      menu.addEventListener("mouseenter", () => setExpanded(true));
+      menu.addEventListener("mouseleave", () => setExpanded(false));
+      menu.addEventListener("focusin", () => setExpanded(true));
+      menu.addEventListener("focusout", () => {
+        window.setTimeout(() => {
+          setExpanded(menu.contains(document.activeElement));
+        }, 0);
+      });
+
+      trigger.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          setExpanded(false);
+          trigger.blur();
+        }
+      });
+    });
+  }
+
   function initTabs() {
     const tabLists = Array.from(document.querySelectorAll("[data-tabs]"));
 
@@ -420,8 +492,6 @@
             return;
           }
 
-          event.preventDefault();
-
           const direction = event.key === "ArrowDown" || event.key === "ArrowRight" ? 1 : -1;
           const next =
             event.key === "Home" ? 0 :
@@ -437,605 +507,500 @@
     });
   }
 
-  const panelAnimationStates = new WeakMap();
+  function initEducationMaps() {
+    const maps = Array.from(document.querySelectorAll("[data-education-map]"));
 
-  function cssValue(name) {
-    return window.getComputedStyle(root).getPropertyValue(name).trim();
-  }
+    maps.forEach((map) => {
+      const nodes = Array.from(map.querySelectorAll("[data-education-node]"));
+      const panels = Array.from(map.querySelectorAll("[data-course-panel]"));
 
-  function clamp(value, min = 0, max = 1) {
-    return Math.max(min, Math.min(max, value));
-  }
-
-  function easeOutCubic(value) {
-    const t = clamp(value);
-    return 1 - Math.pow(1 - t, 3);
-  }
-
-  function parseGraphData(panel) {
-    const read = (raw) => {
-      if (!raw) {
-        return null;
+      if (!nodes.length || !panels.length) {
+        return;
       }
 
-      try {
-        const value = JSON.parse(raw);
-        return Array.isArray(value) && value.length ? value : null;
-      } catch (error) {
-        return null;
+      function activate(node) {
+        const target = node.dataset.educationNode;
+
+        nodes.forEach((control) => {
+          const isActive = control === node;
+          control.classList.toggle("is-active", isActive);
+          control.setAttribute("aria-selected", String(isActive));
+          control.tabIndex = isActive ? 0 : -1;
+        });
+
+        panels.forEach((panel) => {
+          const isActive = panel.dataset.coursePanel === target;
+          panel.classList.toggle("is-active", isActive);
+          panel.hidden = !isActive;
+        });
       }
-    };
+
+      nodes.forEach((node, index) => {
+        node.addEventListener("click", () => activate(node));
+        node.addEventListener("keydown", (event) => {
+          if (!["ArrowDown", "ArrowRight", "ArrowUp", "ArrowLeft", "Home", "End"].includes(event.key)) {
+            return;
+          }
+
+          const direction = event.key === "ArrowDown" || event.key === "ArrowRight" ? 1 : -1;
+          const next =
+            event.key === "Home" ? 0 :
+            event.key === "End" ? nodes.length - 1 :
+            (index + direction + nodes.length) % nodes.length;
+
+          activate(nodes[next]);
+          nodes[next].focus();
+        });
+      });
+
+      activate(nodes.find((node) => node.classList.contains("is-active")) || nodes[0]);
+    });
+  }
+
+  function initPhotoGallery() {
+    const gallery = document.querySelector("[data-photo-gallery]");
+    const dialog = document.querySelector("[data-photo-dialog]");
+
+    if (!gallery || !dialog) {
+      return;
+    }
+
+    const triggers = Array.from(gallery.querySelectorAll("[data-photo-trigger]"));
+    const image = dialog.querySelector("[data-photo-full]");
+    const caption = dialog.querySelector("[data-photo-caption]");
+    const previous = dialog.querySelector("[data-photo-prev]");
+    const next = dialog.querySelector("[data-photo-next]");
+    const close = dialog.querySelector("[data-photo-close]");
+
+    if (!triggers.length || !image || !caption || !previous || !next || !close) {
+      return;
+    }
+
+    let activeIndex = 0;
+    let fallbackOpen = false;
+    let lastPhotoTrigger = null;
+
+    function setActivePhoto(index) {
+      activeIndex = (index + triggers.length) % triggers.length;
+
+      const trigger = triggers[activeIndex];
+      const thumbnail = trigger.querySelector("img");
+      const fullWidth = Number.parseInt(trigger.dataset.fullWidth || "", 10);
+      const fullHeight = Number.parseInt(trigger.dataset.fullHeight || "", 10);
+      const fullSource = trigger.dataset.full || "";
+      const nextCaption = trigger.dataset.caption || (thumbnail ? thumbnail.alt : "");
+
+      if (fullSource) {
+        image.src = fullSource;
+      }
+
+      if (thumbnail) {
+        image.alt = thumbnail.alt;
+      }
+
+      if (Number.isFinite(fullWidth) && fullWidth > 0) {
+        image.width = fullWidth;
+      }
+
+      if (Number.isFinite(fullHeight) && fullHeight > 0) {
+        image.height = fullHeight;
+      }
+
+      caption.textContent = nextCaption;
+    }
+
+    function openPhoto(index) {
+      setActivePhoto(index);
+
+      if (typeof dialog.showModal === "function") {
+        dialog.showModal();
+      } else {
+        fallbackOpen = true;
+        dialog.setAttribute("open", "");
+        document.addEventListener("keydown", onFallbackKeydown);
+        close.focus();
+      }
+    }
+
+    function closePhoto() {
+      const wasFallbackOpen = fallbackOpen;
+
+      if (typeof dialog.close === "function") {
+        dialog.close();
+      } else {
+        dialog.removeAttribute("open");
+      }
+
+      if (wasFallbackOpen) {
+        fallbackOpen = false;
+        document.removeEventListener("keydown", onFallbackKeydown);
+      }
+
+      if (lastPhotoTrigger && typeof lastPhotoTrigger.focus === "function") {
+        lastPhotoTrigger.focus();
+      }
+    }
+
+    triggers.forEach((trigger, index) => {
+      trigger.addEventListener("click", () => {
+        lastPhotoTrigger = trigger;
+        openPhoto(index);
+      });
+    });
+
+    previous.addEventListener("click", () => setActivePhoto(activeIndex - 1));
+    next.addEventListener("click", () => setActivePhoto(activeIndex + 1));
+    close.addEventListener("click", closePhoto);
+
+    function onFallbackKeydown(event) {
+      if (!fallbackOpen) {
+        return;
+      }
+
+      if (event.key === "Escape") {
+        closePhoto();
+      }
+    }
+
+    dialog.addEventListener("click", (event) => {
+      if (event.target === dialog) {
+        closePhoto();
+      }
+    });
+
+    dialog.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowLeft") {
+        setActivePhoto(activeIndex - 1);
+      } else if (event.key === "ArrowRight") {
+        setActivePhoto(activeIndex + 1);
+      } else if (event.key === "Escape") {
+        closePhoto();
+      }
+    });
+  }
+
+  const globeLandmasses = [
+    {
+      name: "north-america",
+      points: [
+        [72, -168], [70, -150], [62, -140], [58, -125], [50, -124], [49, -115],
+        [56, -104], [54, -90], [62, -82], [55, -62], [47, -52], [40, -70],
+        [30, -80], [24, -96], [16, -93], [12, -86], [8, -80], [18, -73],
+        [25, -80], [32, -82], [40, -75], [49, -67], [58, -78], [67, -98],
+        [72, -128],
+      ],
+    },
+    {
+      name: "greenland",
+      points: [
+        [83, -52], [80, -24], [73, -18], [64, -28], [59, -43], [64, -62],
+        [74, -72],
+      ],
+    },
+    {
+      name: "south-america",
+      points: [
+        [13, -81], [11, -70], [7, -60], [3, -50], [-8, -35], [-18, -39],
+        [-22, -44], [-35, -52], [-55, -68], [-48, -75], [-32, -72],
+        [-15, -76], [0, -80],
+      ],
+    },
+    {
+      name: "europe",
+      points: [
+        [72, -10], [71, 20], [66, 38], [58, 35], [54, 26], [50, 30],
+        [45, 20], [42, 12], [36, 10], [37, -6], [45, -10], [55, -5],
+        [62, -8],
+      ],
+    },
+    {
+      name: "asia",
+      points: [
+        [72, 25], [72, 70], [66, 95], [69, 125], [61, 170], [50, 155],
+        [43, 135], [35, 128], [23, 121], [18, 106], [8, 103], [16, 96],
+        [24, 88], [29, 78], [34, 70], [29, 58], [36, 48], [43, 34],
+        [55, 38],
+      ],
+    },
+    {
+      name: "arabia",
+      points: [
+        [32, 35], [28, 50], [17, 57], [12, 48], [16, 41], [25, 36],
+      ],
+    },
+    {
+      name: "india",
+      points: [
+        [31, 68], [29, 78], [24, 88], [18, 86], [8, 78], [18, 72],
+      ],
+    },
+    {
+      name: "southeast-asia",
+      points: [
+        [24, 94], [22, 108], [14, 109], [7, 105], [1, 101], [7, 96],
+      ],
+    },
+    {
+      name: "africa",
+      points: [
+        [37, -17], [36, 10], [31, 31], [13, 43], [5, 40], [-5, 39],
+        [-18, 35], [-35, 20], [-34, 15], [-23, 14], [-35, -16],
+        [-15, -18], [5, -10], [12, -17], [25, -15],
+      ],
+    },
+    {
+      name: "australia",
+      points: [
+        [-11, 113], [-10, 153], [-24, 154], [-38, 146], [-44, 130],
+        [-32, 114],
+      ],
+    },
+    {
+      name: "madagascar",
+      points: [
+        [-12, 48], [-25, 51], [-26, 44], [-15, 43],
+      ],
+    },
+    {
+      name: "japan",
+      points: [
+        [45, 140], [38, 143], [31, 131], [36, 129],
+      ],
+    },
+  ];
+
+  function normalizeLongitude(value) {
+    let next = value;
+
+    while (next > 180) {
+      next -= 360;
+    }
+
+    while (next < -180) {
+      next += 360;
+    }
+
+    return next;
+  }
+
+  function pointInPolygon(lat, lon, polygon) {
+    const x = normalizeLongitude(lon);
+    const y = lat;
+    let inside = false;
+
+    for (let index = 0, previous = polygon.length - 1; index < polygon.length; previous = index, index += 1) {
+      const xi = normalizeLongitude(polygon[index][1]);
+      const yi = polygon[index][0];
+      const xj = normalizeLongitude(polygon[previous][1]);
+      const yj = polygon[previous][0];
+      const intersects = (yi > y) !== (yj > y) && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
+
+      if (intersects) {
+        inside = !inside;
+      }
+    }
+
+    return inside;
+  }
+
+  function isLandPixel(lat, lon) {
+    return globeLandmasses.some((landmass) => pointInPolygon(lat, lon, landmass.points));
+  }
+
+  function readPolicyGlobeMarkers(canvasElement) {
+    const stage = canvasElement.closest(".work-globe__stage");
+    const items = stage ? Array.from(stage.querySelectorAll("[data-lat][data-lon]")) : [];
+
+    return items
+      .map((item) => {
+        const label = item.textContent.trim();
+        const lat = Number.parseFloat(item.dataset.lat || "");
+        const lon = Number.parseFloat(item.dataset.lon || "");
+        const isField = /Islamabad|Lahore/.test(label);
+
+        return {
+          label,
+          lat,
+          lon,
+          color: isField ? "#ffd452" : "#ef3340",
+        };
+      })
+      .filter((marker) => Number.isFinite(marker.lat) && Number.isFinite(marker.lon));
+  }
+
+  function projectGlobePoint(lat, lon, centerLon, center, radius) {
+    const phi = lat * degree;
+    const lambda = normalizeLongitude(lon - centerLon) * degree;
+    const cosPhi = Math.cos(phi);
+    const x = cosPhi * Math.sin(lambda);
+    const y = -Math.sin(phi);
+    const z = cosPhi * Math.cos(lambda);
+
+    if (z <= 0.03) {
+      return null;
+    }
 
     return {
-      nodeData: read(panel.dataset.nodes),
-      edgeData: read(panel.dataset.edges),
+      depth: z,
+      x: center + x * radius,
+      y: center + y * radius,
     };
   }
 
-  function preparePanelCanvas(canvas) {
-    if (!canvas) {
-      return null;
+  function drawPolicyMarker(drawing, marker, projection, timestamp) {
+    const pulse = reduceMotion.matches ? 0.5 : (Math.sin(timestamp * 0.006 + marker.lon) + 1) * 0.5;
+    const size = marker.color === "#ffd452" ? 5 : 6;
+    const x = Math.round(projection.x - size / 2);
+    const y = Math.round(projection.y - size / 2);
+
+    drawing.globalAlpha = 0.46 + projection.depth * 0.54;
+    drawing.fillStyle = marker.color;
+    drawing.fillRect(x, y, size, size);
+
+    if (pulse > 0.62) {
+      drawing.globalAlpha = 0.18 + pulse * 0.2;
+      drawing.fillRect(x - 2, y - 2, size + 4, 2);
+      drawing.fillRect(x - 2, y + size, size + 4, 2);
+      drawing.fillRect(x - 2, y, 2, size);
+      drawing.fillRect(x + size, y, 2, size);
     }
 
-    const rect = canvas.getBoundingClientRect();
-    const width = Math.max(1, rect.width);
-    const height = Math.max(1, rect.height);
-    const scale = Math.min(window.devicePixelRatio || 1, 2);
-    const pixelWidth = Math.floor(width * scale);
-    const pixelHeight = Math.floor(height * scale);
-    const drawing = canvas.getContext("2d");
-
-    if (!drawing) {
-      return null;
-    }
-
-    if (canvas.width !== pixelWidth || canvas.height !== pixelHeight) {
-      canvas.width = pixelWidth;
-      canvas.height = pixelHeight;
-    }
-
-    drawing.setTransform(scale, 0, 0, scale, 0, 0);
-    return { drawing, width, height };
+    drawing.globalAlpha = 1;
   }
 
-  function makeWorkGraphState(panel) {
-    const existing = panelAnimationStates.get(panel);
+  function drawPolicyGlobe(state, timestamp) {
+    const drawing = state.context;
+    const size = state.size;
+    const center = size / 2;
+    const radius = size * 0.44;
+    const cell = 2;
+    const elapsed = (timestamp - state.startedAt) / 1000;
+    const centerLon = reduceMotion.matches ? 84 : normalizeLongitude(102 - elapsed * 24);
 
-    if (existing) {
-      return existing;
+    state.frame = 0;
+
+    if (!reduceMotion.matches && timestamp - state.lastDraw < 32) {
+      state.frame = window.requestAnimationFrame((nextTimestamp) => drawPolicyGlobe(state, nextTimestamp));
+      return;
     }
 
-    const canvasElement = panel.querySelector("canvas");
-    const defaultNodes = [
-      ["AI governance", 0.24, 0.32],
-      ["export controls", 0.55, 0.22],
-      ["geopolitics", 0.78, 0.42],
-      ["institutions", 0.34, 0.66],
-      ["systems", 0.58, 0.58],
-      ["writing", 0.76, 0.75],
-    ];
-    const defaultEdges = [
-      [0, 1, 1],
-      [0, 3, 0.85],
-      [1, 2, 0.78],
-      [1, 4, 0.92],
-      [2, 4, 0.7],
-      [3, 4, 0.88],
-      [3, 5, 0.58],
-      [4, 5, 0.72],
-    ];
-    const parsed = parseGraphData(panel);
-    const nodes = (parsed.nodeData || defaultNodes).map(([label, tx, ty], index) => ({
-      label,
-      tx,
-      ty,
-      x: 0.18 + ((index * 0.17) % 0.72),
-      y: 0.2 + ((index * 0.23) % 0.56),
-      vx: 0,
-      vy: 0,
-    }));
-    const edges = parsed.edgeData || defaultEdges;
-    const state = {
-      active: false,
-      canvas: canvasElement,
-      edges,
-      frame: 0,
-      hover: -1,
-      nodes,
-      startedAt: 0,
-      type: "work-graph",
-    };
+    state.lastDraw = timestamp;
+    drawing.clearRect(0, 0, size, size);
 
-    if (canvasElement) {
-      canvasElement.addEventListener("pointermove", (event) => {
-        const rect = canvasElement.getBoundingClientRect();
-        const x = event.clientX - rect.left;
-        const y = event.clientY - rect.top;
-        let hover = -1;
-        let best = 28;
+    drawing.fillStyle = "#062f3b";
+    drawing.beginPath();
+    drawing.arc(center, center, radius + 4, 0, Math.PI * 2);
+    drawing.fill();
 
-        state.nodes.forEach((node, index) => {
-          const distance = Math.hypot(node.drawX - x, node.drawY - y);
+    for (let y = Math.floor(center - radius); y <= center + radius; y += cell) {
+      for (let x = Math.floor(center - radius); x <= center + radius; x += cell) {
+        const nx = (x + cell * 0.5 - center) / radius;
+        const ny = (y + cell * 0.5 - center) / radius;
+        const distance = nx * nx + ny * ny;
 
-          if (distance < best) {
-            best = distance;
-            hover = index;
+        if (distance > 1) {
+          continue;
+        }
+
+        const z = Math.sqrt(1 - distance);
+        const lat = Math.asin(-ny) / degree;
+        const lon = normalizeLongitude(centerLon + Math.atan2(nx, z) / degree);
+        const land = isLandPixel(lat, lon);
+        const edgeShade = Math.max(0, Math.min(1, z - Math.max(0, nx) * 0.14));
+        const band = Math.sin((lon * 1.7 + lat * 2.6) * degree);
+
+        if (land) {
+          if (lat > 54) {
+            drawing.fillStyle = edgeShade > 0.55 ? "#7fcf70" : "#4d9956";
+          } else if (edgeShade < 0.34) {
+            drawing.fillStyle = "#377f45";
+          } else {
+            drawing.fillStyle = edgeShade > 0.56 ? "#6fc266" : "#448f4a";
           }
-        });
-
-        state.hover = hover;
-
-        if (!state.active) {
-          drawWorkGraph(state, window.performance.now(), false);
+        } else if (band > 0.28 && edgeShade > 0.42) {
+          drawing.fillStyle = edgeShade > 0.52 ? "#4a91ce" : "#2e679b";
+        } else {
+          drawing.fillStyle = edgeShade > 0.52 ? "#3479b6" : "#255b89";
         }
-      });
 
-      canvasElement.addEventListener("pointerleave", () => {
-        state.hover = -1;
-
-        if (!state.active) {
-          drawWorkGraph(state, window.performance.now(), false);
-        }
-      });
-    }
-
-    panelAnimationStates.set(panel, state);
-    return state;
-  }
-
-  function drawWorkGraph(state, timestamp, schedule = true) {
-    const prepared = preparePanelCanvas(state.canvas);
-
-    if (!prepared) {
-      return;
-    }
-
-    const { drawing, width, height } = prepared;
-    const accent = cssValue("--accent") || "#ffae00";
-    const rule = cssValue("--rule") || "rgba(5,5,5,0.18)";
-    const text = cssValue("--text") || "#050505";
-    const muted = cssValue("--muted") || "#565656";
-    const elapsed = timestamp - state.startedAt;
-
-    drawing.clearRect(0, 0, width, height);
-
-    state.nodes.forEach((node, index) => {
-      const targetX = node.tx * width;
-      const targetY = node.ty * height;
-      const settled = reduceMotion.matches || elapsed > 900;
-
-      if (reduceMotion.matches) {
-        node.x = node.tx;
-        node.y = node.ty;
-      } else if (settled) {
-        const drift = Math.sin(timestamp * 0.001 + index) * 2.5;
-        node.drawX = targetX + drift;
-        node.drawY = targetY + Math.cos(timestamp * 0.001 + index) * 2.5;
-        return;
-      } else {
-        node.vx += (node.tx - node.x) * 0.035;
-        node.vy += (node.ty - node.y) * 0.035;
-        node.vx *= 0.78;
-        node.vy *= 0.78;
-        node.x += node.vx;
-        node.y += node.vy;
+        drawing.fillRect(x, y, cell, cell);
       }
+    }
 
-      node.drawX = node.x * width;
-      node.drawY = node.y * height;
+    drawing.lineWidth = 5;
+    drawing.strokeStyle = "#06213a";
+    drawing.beginPath();
+    drawing.arc(center, center, radius + 3, 0, Math.PI * 2);
+    drawing.stroke();
+
+    drawing.lineWidth = 2;
+    drawing.strokeStyle = "#0b5160";
+    drawing.beginPath();
+    drawing.arc(center, center, radius + 0.5, 0, Math.PI * 2);
+    drawing.stroke();
+
+    state.markers.forEach((marker) => {
+      const projection = projectGlobePoint(marker.lat, marker.lon, centerLon, center, radius);
+
+      if (projection) {
+        drawPolicyMarker(drawing, marker, projection, timestamp);
+      }
     });
 
-    drawing.save();
-    drawing.lineCap = "round";
+    drawing.fillStyle = "rgba(230, 239, 238, 0.68)";
+    drawing.fillRect(center - 4, center + radius - 1, 8, 3);
 
-    state.edges.forEach(([from, to, weight]) => {
-      const start = state.nodes[from];
-      const end = state.nodes[to];
-      const highlighted = state.hover === from || state.hover === to;
-
-      drawing.beginPath();
-      drawing.moveTo(start.drawX, start.drawY);
-      drawing.lineTo(end.drawX, end.drawY);
-      drawing.strokeStyle = highlighted ? accent : rule;
-      drawing.globalAlpha = highlighted ? 0.95 : 0.44 + weight * 0.28;
-      drawing.lineWidth = highlighted ? 2.4 : 0.8 + weight * 1.2;
-      drawing.stroke();
-    });
-
-    drawing.globalAlpha = 1;
-    drawing.font = `700 ${Math.max(11, Math.min(13, width * 0.022))}px ${cssValue("--font-mono") || "monospace"}`;
-    drawing.textBaseline = "middle";
-
-    state.nodes.forEach((node, index) => {
-      const highlighted = state.hover === index;
-      const radius = highlighted ? 8 : 5.5;
-      const flip = node.drawX > width * 0.6;
-
-      drawing.beginPath();
-      drawing.arc(node.drawX, node.drawY, radius, 0, Math.PI * 2);
-      drawing.fillStyle = highlighted ? accent : text;
-      drawing.fill();
-      drawing.fillStyle = highlighted ? text : muted;
-      drawing.textAlign = flip ? "right" : "left";
-      drawing.fillText(node.label, node.drawX + (flip ? -12 : 12), node.drawY);
-    });
-
-    drawing.textAlign = "left";
-    drawing.restore();
-
-    if (schedule && state.active && !reduceMotion.matches) {
-      state.frame = window.requestAnimationFrame((next) => drawWorkGraph(state, next));
+    if (!reduceMotion.matches && !document.hidden) {
+      state.frame = window.requestAnimationFrame((nextTimestamp) => drawPolicyGlobe(state, nextTimestamp));
     }
   }
 
-  function startWorkGraph(panel) {
-    const state = makeWorkGraphState(panel);
-
-    if (state.frame) {
-      window.cancelAnimationFrame(state.frame);
-    }
-
-    state.active = true;
-    state.startedAt = window.performance.now();
-
-    if (reduceMotion.matches) {
-      drawWorkGraph(state, state.startedAt, false);
-      return;
-    }
-
-    state.frame = window.requestAnimationFrame((timestamp) => drawWorkGraph(state, timestamp));
-  }
-
-  function formatTerminalPanel(panel) {
-    if (!panel) {
-      return "";
-    }
-
-    const title = panel.querySelector("h3")?.textContent.trim() || "Research focus";
-    const body = panel.querySelector("p")?.textContent.trim().replace(/\s+/g, " ") || "";
-    const bullets = Array.from(panel.querySelectorAll("li")).map((item) => `- ${item.textContent.trim()}`);
-
-    return [`$ open research_focus`, "", `# ${title}`, body, "", ...bullets].join("\n");
-  }
-
-  function makeTerminalState(panel) {
-    const existing = panelAnimationStates.get(panel);
-
-    if (existing) {
-      return existing;
-    }
-
-    const output = panel.querySelector("[data-terminal-output]");
-    const tabGroup = panel.closest("[data-tabs]");
-    const sourcePanels = tabGroup ? Array.from(tabGroup.querySelectorAll("[data-tab-panel]")) : [];
-    const state = {
-      active: false,
-      frame: 0,
-      index: 0,
-      output,
-      panel,
-      sourcePanels,
-      text: "",
-      timer: 0,
-      type: "research-terminal",
-    };
-
-    if (tabGroup) {
-      tabGroup.addEventListener("site:tabchange", (event) => {
-        const nextText = formatTerminalPanel(event.detail.panel);
-
-        if (state.active) {
-          typeTerminalText(state, nextText);
-        } else if (state.output) {
-          state.output.textContent = nextText;
-        }
-      });
-    }
-
-    panelAnimationStates.set(panel, state);
-    return state;
-  }
-
-  function typeTerminalText(state, text) {
-    if (!state.output) {
-      return;
-    }
-
-    if (state.timer) {
-      window.clearTimeout(state.timer);
-      state.timer = 0;
-    }
-
-    state.text = text;
-    state.index = reduceMotion.matches ? text.length : 0;
-    state.output.textContent = text.slice(0, state.index);
-
-    function tick() {
-      if (!state.active || reduceMotion.matches) {
+  function pausePolicyGlobes() {
+    policyGlobeStates.forEach((state) => {
+      if (!state.frame) {
         return;
       }
 
-      state.index = Math.min(state.text.length, state.index + 2);
-      state.output.textContent = state.text.slice(0, state.index);
-
-      if (state.index < state.text.length) {
-        state.timer = window.setTimeout(tick, 18);
-      }
-    }
-
-    tick();
-  }
-
-  function startTerminal(panel) {
-    const state = makeTerminalState(panel);
-    const activePanel = state.sourcePanels.find((source) => !source.hidden) || state.sourcePanels[0];
-
-    state.active = true;
-    typeTerminalText(state, formatTerminalPanel(activePanel));
-  }
-
-  function makeDocumentState(panel) {
-    const existing = panelAnimationStates.get(panel);
-
-    if (existing) {
-      return existing;
-    }
-
-    const canvasElement = panel.querySelector("canvas");
-    const state = {
-      active: false,
-      canvas: canvasElement,
-      frame: 0,
-      lines: [0.88, 0.62, 0.76, 0.47, 0.81, 0.69, 0.9, 0.54, 0.73, 0.42, 0.84, 0.58],
-      pulseUntil: 0,
-      startedAt: 0,
-      type: "writing-document",
-    };
-
-    if (canvasElement) {
-      canvasElement.addEventListener("pointerenter", () => {
-        state.pulseUntil = window.performance.now() + 220;
-
-        if (!state.active) {
-          drawDocumentLines(state, window.performance.now(), false);
-        }
-      });
-    }
-
-    panelAnimationStates.set(panel, state);
-    return state;
-  }
-
-  function drawDocumentLines(state, timestamp, schedule = true) {
-    const prepared = preparePanelCanvas(state.canvas);
-
-    if (!prepared) {
-      return;
-    }
-
-    const { drawing, width, height } = prepared;
-    const text = cssValue("--text") || "#050505";
-    const rule = cssValue("--rule") || "rgba(5,5,5,0.2)";
-    const accent = cssValue("--accent") || "#ffae00";
-    const progress = reduceMotion.matches ? 1 : easeOutCubic((timestamp - state.startedAt) / 680);
-    const left = width * 0.12;
-    const top = height * 0.16;
-    const gap = Math.max(17, height * 0.052);
-    const lineHeight = 2;
-    const pulse = timestamp < state.pulseUntil;
-
-    drawing.clearRect(0, 0, width, height);
-    drawing.fillStyle = cssValue("--surface-solid") || "transparent";
-    drawing.fillRect(width * 0.08, height * 0.1, width * 0.76, height * 0.78);
-    drawing.strokeStyle = rule;
-    drawing.lineWidth = 1;
-    drawing.strokeRect(width * 0.08, height * 0.1, width * 0.76, height * 0.78);
-
-    state.lines.forEach((lineWidth, index) => {
-      const local = clamp((progress - index * 0.045) / 0.46);
-      const y = top + index * gap;
-      const fade = index >= state.lines.length - 3 ? 0.32 : 0.82;
-      const breathe = 0.92 + Math.sin(timestamp * 0.002 + index) * 0.08;
-
-      drawing.globalAlpha = fade * breathe;
-      drawing.fillStyle = pulse ? accent : (index % 4 === 0 ? text : rule);
-      drawing.fillRect(left, y, width * 0.68 * lineWidth * local, lineHeight);
-    });
-
-    drawing.globalAlpha = 1;
-
-    if (schedule && state.active && !reduceMotion.matches) {
-      state.frame = window.requestAnimationFrame((next) => drawDocumentLines(state, next));
-    }
-  }
-
-  function startDocument(panel) {
-    const state = makeDocumentState(panel);
-
-    if (state.frame) {
-      window.cancelAnimationFrame(state.frame);
-    }
-
-    state.active = true;
-    state.startedAt = window.performance.now();
-
-    if (reduceMotion.matches) {
-      drawDocumentLines(state, state.startedAt, false);
-      return;
-    }
-
-    state.frame = window.requestAnimationFrame((timestamp) => drawDocumentLines(state, timestamp));
-  }
-
-  function makeImpactBarsState(panel) {
-    const existing = panelAnimationStates.get(panel);
-
-    if (existing) {
-      return existing;
-    }
-
-    const nodes = Array.from(panel.querySelectorAll("[data-impact-node]"));
-    const state = {
-      active: false,
-      frame: 0,
-      nodes,
-      startedAt: 0,
-      type: "impact-bars",
-    };
-
-    panelAnimationStates.set(panel, state);
-    return state;
-  }
-
-  function targetNodeHeight(node) {
-    const value = window.getComputedStyle(node).getPropertyValue("--node-height");
-    return 38 + Math.max(0, Number.parseFloat(value) || 80);
-  }
-
-  function drawImpactBars(state, timestamp, schedule = true) {
-    const elapsed = timestamp - state.startedAt;
-    let complete = true;
-
-    state.nodes.forEach((node, index) => {
-      const target = targetNodeHeight(node);
-      const progress = reduceMotion.matches ? 1 : easeOutCubic((elapsed - index * 80) / 580);
-      const height = Math.max(4, target * progress);
-
-      node.style.height = `${height.toFixed(1)}px`;
-
-      if (progress < 1) {
-        complete = false;
-      }
-    });
-
-    if (schedule && state.active && !reduceMotion.matches && !complete) {
-      state.frame = window.requestAnimationFrame((next) => drawImpactBars(state, next));
-    }
-  }
-
-  function startImpactBars(panel) {
-    const state = makeImpactBarsState(panel);
-
-    if (!state.nodes.length) {
-      return;
-    }
-
-    if (state.frame) {
-      window.cancelAnimationFrame(state.frame);
-    }
-
-    state.active = true;
-    state.startedAt = window.performance.now();
-    state.nodes.forEach((node) => {
-      node.style.height = "4px";
-    });
-    state.frame = window.requestAnimationFrame((timestamp) => drawImpactBars(state, timestamp));
-  }
-
-  function pausePanelAnimation(panel) {
-    const state = panelAnimationStates.get(panel);
-
-    if (!state) {
-      return;
-    }
-
-    state.active = false;
-
-    if (state.frame) {
       window.cancelAnimationFrame(state.frame);
       state.frame = 0;
-    }
-
-    if (state.timer) {
-      window.clearTimeout(state.timer);
-      state.timer = 0;
-    }
+    });
   }
 
-  function startPanelAnimation(panel, animation) {
-    if (animation === "work-graph") {
-      startWorkGraph(panel);
-    } else if (animation === "research-terminal") {
-      startTerminal(panel);
-    } else if (animation === "writing-document") {
-      startDocument(panel);
-    } else if (animation === "impact-bars") {
-      startImpactBars(panel);
-    }
+  function restartPolicyGlobes() {
+    policyGlobeStates.forEach((state) => {
+      if (state.frame) {
+        window.cancelAnimationFrame(state.frame);
+        state.frame = 0;
+      }
+
+      state.startedAt = window.performance.now();
+      drawPolicyGlobe(state, state.startedAt);
+    });
   }
 
-  function initPanelAnimations() {
-    const panels = Array.from(document.querySelectorAll("[data-animation]"));
+  function initPolicyGlobes() {
+    const globeCanvases = Array.from(document.querySelectorAll("[data-policy-globe]"));
 
-    if (!panels.length) {
-      return;
-    }
+    globeCanvases.forEach((globeCanvas) => {
+      const drawing = globeCanvas.getContext("2d");
 
-    if (reduceMotion.matches || typeof IntersectionObserver !== "function") {
-      panels.forEach((panel) => startPanelAnimation(panel, panel.dataset.animation));
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          const animation = entry.target.dataset.animation;
-
-          if (entry.isIntersecting) {
-            startPanelAnimation(entry.target, animation);
-          } else {
-            pausePanelAnimation(entry.target);
-          }
-        });
-      },
-      { threshold: 0.2 }
-    );
-
-    panels.forEach((panel) => observer.observe(panel));
-  }
-
-  function initImpactTimeline() {
-    const timeline = document.querySelector("[data-impact-timeline]");
-
-    if (!timeline) {
-      return;
-    }
-
-    const controls = Array.from(timeline.querySelectorAll("[data-impact-control]"));
-    const nodes = Array.from(timeline.querySelectorAll("[data-impact-node]"));
-    const title = timeline.querySelector("[data-impact-readout-title]");
-    const body = timeline.querySelector("[data-impact-readout-body]");
-
-    if (!controls.length || !nodes.length || !title || !body) {
-      return;
-    }
-
-    function activate(index) {
-      const active = controls[index];
-
-      if (!active) {
+      if (!drawing) {
         return;
       }
 
-      controls.forEach((control, controlIndex) => {
-        const isActive = controlIndex === index;
-        control.classList.toggle("is-active", isActive);
-        control.setAttribute("aria-pressed", String(isActive));
-      });
+      const state = {
+        canvas: globeCanvas,
+        context: drawing,
+        frame: 0,
+        lastDraw: 0,
+        markers: readPolicyGlobeMarkers(globeCanvas),
+        size: globeCanvas.width || 320,
+        startedAt: window.performance.now(),
+      };
 
-      nodes.forEach((node, nodeIndex) => {
-        node.classList.toggle("is-active", nodeIndex === index);
-      });
-
-      title.textContent = active.dataset.impactTitle || active.textContent.trim();
-      body.textContent = active.dataset.impactBody || "";
-    }
-
-    controls.forEach((control, index) => {
-      control.addEventListener("click", () => activate(index));
+      policyGlobeStates.push(state);
+      drawPolicyGlobe(state, state.startedAt);
     });
-
-    activate(Math.max(0, controls.findIndex((control) => control.classList.contains("is-active"))));
   }
 
   function bindMotionSetting() {
@@ -1046,6 +1011,8 @@
       } else if (!reduceMotion.matches && !field.animationId && canvas && context) {
         requestSignalFrame();
       }
+
+      restartPolicyGlobes();
     };
 
     if (typeof reduceMotion.addEventListener === "function") {
@@ -1059,8 +1026,10 @@
   initSignalField();
   initReveals();
   initFilterGroups();
+  initNavMenus();
   initTabs();
-  initImpactTimeline();
-  initPanelAnimations();
+  initEducationMaps();
+  initPhotoGallery();
+  initPolicyGlobes();
   bindMotionSetting();
 })();

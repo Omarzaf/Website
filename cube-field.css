@@ -1,6 +1,5 @@
 :root {
   --cube-perspective: 720px;
-  --cube-depth-step: 12px;
   --cube-field-depth: 0px;
   --cube-accent: var(--accent, #ffae00);
   --cube-ink: var(--ink, var(--text, #050505));

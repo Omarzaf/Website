@@ -12,7 +12,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=20260624">
+    <link rel="stylesheet" href="styles.css?v=20260628">
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to main content</a>
@@ -28,13 +28,21 @@
       <nav class="site-nav" aria-label="Primary navigation">
         <a href="about.html">about</a>
         <div class="nav-menu nav-menu--research">
-          <button class="nav-menu__trigger" type="button" aria-haspopup="true" aria-expanded="false" aria-current="page">research</button>
+          <button class="nav-menu__trigger" type="button" aria-haspopup="true" aria-expanded="false">research</button>
           <div class="nav-menu__panel" role="menu" aria-label="Research pages">
             <a role="menuitem" href="work.html" aria-current="page">work</a>
             <a role="menuitem" href="writing.html">writing</a>
           </div>
         </div>
-        <a href="impact.html">impact</a>
+        <div class="nav-menu nav-menu--projects">
+          <button class="nav-menu__trigger" type="button" aria-haspopup="true" aria-expanded="false">projects</button>
+          <div class="nav-menu__panel" role="menu" aria-label="Project pages">
+            <a role="menuitem" href="projects.html">overview</a>
+            <a role="menuitem" href="daadras.html">Daadras Foundation</a>
+            <a role="menuitem" href="davis-project.html">Davis Projects for Peace</a>
+            <a role="menuitem" href="think-tank.html">Think Tank / RDL</a>
+          </div>
+        </div>
       </nav>
       <div class="header-social" aria-label="Social links">
         <a class="header-social-link" href="https://substack.com/@omarzafar" target="_blank" rel="noopener noreferrer" aria-label="Substack">
@@ -72,30 +80,62 @@
           <p class="section-number">work</p>
           <h1 id="work-title" class="page-title">Case studies in policy, risk, and usable systems.</h1>
           <p class="page-body">
-            A selected portfolio: research that explains institutions, prototypes that make systems
-            inspectable, and field programs that turned ideas into operations.
+            Thesis work, risk briefs, public-interest tools, and field programs organized around one
+            question: what makes power inspectable?
           </p>
         </div>
       </section>
 
-      <section class="feature-section" aria-labelledby="featured-title">
-        <div class="feature-grid">
-          <div class="feature-copy reveal">
-            <p class="section-number">01</p>
-            <h2 id="featured-title">The common method is systems legibility.</h2>
-            <p>
-              Whether the artifact is a thesis, a policy memo, a risk brief, or a working map, the
-              goal is the same: turn diffuse institutional pressure into something a reader or team
-              can inspect.
-            </p>
-          </div>
-        </div>
-      </section>
-
       <section class="panel-section" aria-labelledby="case-title" data-filter-group>
-        <p class="section-number section-kicker reveal">02</p>
+        <p class="section-number section-kicker reveal">01</p>
         <div class="section-title reveal">
           <h2 id="case-title">Selected work.</h2>
+        </div>
+
+        <div class="work-globe reveal" aria-labelledby="work-globe-title">
+          <div class="work-globe__copy">
+            <span class="entry-label">geography / systems map</span>
+            <h3 id="work-globe-title">A cleaner map of where the work sits.</h3>
+            <p>
+              The reference globe becomes a sharper, coordinate-driven map: AI governance in
+              Washington and U.S.-China policy, South Asia risk analysis, Pakistan field programs,
+              and comparative governance work across Nordic and European frameworks.
+            </p>
+            <dl class="work-globe__facts" aria-label="Mapped work signals">
+              <div>
+                <dt>policy</dt>
+                <dd>DC, SF, Beijing, Nordics</dd>
+              </div>
+              <div>
+                <dt>field</dt>
+                <dd>Pakistan / US</dd>
+              </div>
+              <div>
+                <dt>risk</dt>
+                <dd>South Asia / Nuclear Policy</dd>
+              </div>
+            </dl>
+          </div>
+          <div class="work-globe__stage">
+            <canvas
+              class="policy-globe"
+              data-policy-globe
+              width="320"
+              height="320"
+              role="img"
+              aria-label="Animated pixel globe showing policy, field, and risk reference points for the work below."
+            >
+              Animated pixel globe showing the mapped work reference points.
+            </canvas>
+            <div class="work-globe__markers" hidden>
+              <span data-lat="38.9072" data-lon="-77.0369"></span>
+              <span data-lat="39.9042" data-lon="116.4074"></span>
+              <span data-lat="55.6761" data-lon="12.5683"></span>
+              <span data-lat="37.7749" data-lon="-122.4194"></span>
+              <span data-lat="33.6844" data-lon="73.0479"></span>
+              <span data-lat="23.8103" data-lon="90.4125"></span>
+            </div>
+          </div>
         </div>
 
         <div class="filter-panel">
@@ -105,6 +145,17 @@
             <button class="filter-button" type="button" aria-pressed="false" data-filter-control="risk">risk analysis</button>
             <button class="filter-button" type="button" aria-pressed="false" data-filter-control="prototype">prototypes</button>
             <button class="filter-button" type="button" aria-pressed="false" data-filter-control="impact">field programs</button>
+            <div class="filter-visual-strip" aria-label="Work reference photographs">
+              <figure class="filter-visual-strip__item filter-visual-strip__item--wide">
+                <img src="assets/work/work-gallery-dc.jpg" alt="Washington Monument under a blue sky">
+              </figure>
+              <figure class="filter-visual-strip__item">
+                <img src="assets/work/work-gallery-room.jpg" alt="Museum room with portraits and chairs">
+              </figure>
+              <figure class="filter-visual-strip__item">
+                <img src="assets/work/work-gallery-painting.jpg" alt="Framed paintings in a gallery">
+              </figure>
+            </div>
           </div>
 
           <div class="filtered-grid">
@@ -218,10 +269,11 @@
             <article class="entry-row reveal" data-filter-item="prototype ai risk">
               <span class="entry-label">visualization / policy network</span>
               <div>
-                <strong class="entry-title">Think-Tanks-DC and RDL</strong>
+                <strong class="entry-title">Think Tank / RDL Evidence Map</strong>
                 <p class="entry-body">
-                  Interactive network-visualization work mapping strategic linkages, influence,
-                  lobbying, and institutional movement in U.S.-China semiconductor and AI policy.
+                  Public-record-derived lobbying evidence map with a reproducible Python pipeline,
+                  confidence metadata, and an interactive static surface for U.S.-China semiconductor
+                  and AI policy research.
                 </p>
                 <div class="tag-row" aria-label="Tags">
                   <span>D3.js</span>
@@ -229,8 +281,8 @@
                   <span>lobbying</span>
                 </div>
               </div>
-              <a class="source-link" href="https://github.com/Omarzaf" target="_blank" rel="noopener noreferrer">
-                GitHub
+              <a class="source-link" href="think-tank.html">
+                project page
                 <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"></path></svg>
               </a>
             </article>
@@ -249,8 +301,8 @@
                   <span>relief</span>
                 </div>
               </div>
-              <a class="source-link" href="impact.html">
-                impact page
+              <a class="source-link" href="daadras.html">
+                project page
                 <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"></path></svg>
               </a>
             </article>
@@ -276,7 +328,7 @@
             <article class="entry-row reveal" data-filter-item="ai impact">
               <span class="entry-label">program design / AI education</span>
               <div>
-                <strong class="entry-title">ScholarisAI — AI curriculum design</strong>
+                <strong class="entry-title">AI curriculum design</strong>
                 <p class="entry-body">
                   Designed an AI application program for teaching and learning in a Pennsylvania
                   public school district — covering pedagogy integration, teacher training pathways,
@@ -297,11 +349,11 @@
       </section>
 
       <section class="contact-section" aria-labelledby="contact-title">
-        <p class="section-number reveal">03</p>
+        <p class="section-number reveal">02</p>
         <div class="contact-copy reveal">
-          <h2 id="contact-title">Need a clearer map of a messy policy system?</h2>
+          <h2 id="contact-title">Contact</h2>
           <p>
-            I am available for research, prototypes, writing, and analysis around AI governance,
+            I am available for research, prototypes, writing, and analysis around compute policy,
             infrastructure risk, and institutional design.
           </p>
           <a class="contact-link" href="mailto:mumerzafer@gmail.com">
@@ -326,6 +378,6 @@
         <a href="#main">back to top</a>
       </div>
     </footer>
-    <script src="script.js?v=20260624" defer></script>
+    <script src="script.js?v=20260628" defer></script>
   </body>
 </html>

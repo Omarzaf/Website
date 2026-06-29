@@ -3,6 +3,194 @@ const fs = require("node:fs");
 const path = require("node:path");
 
 const source = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
+const styles = fs.readFileSync(path.join(__dirname, "..", "styles.css"), "utf8");
+const logoBannerRule = styles.match(/\.logo-banner\s*\{([\s\S]*?)\n\}/)?.[1] ?? "";
+const logoTrackRule = styles.match(/\.logo-banner__track\s*\{([\s\S]*?)\n\}/)?.[1] ?? "";
+const logoTileRule = styles.match(/\.logo-tile\s*\{([\s\S]*?)\n\}/)?.[1] ?? "";
+const logoMarkRule = styles.match(/\.logo-tile__mark\s*\{([\s\S]*?)\n\}/)?.[1] ?? "";
+const logoMarkImageRule = styles.match(/\.logo-tile__mark img\s*\{([\s\S]*?)\n\}/)?.[1] ?? "";
+const heroCvButtonRule = styles.match(/\.hero-cv-button\s*\{([\s\S]*?)\n\}/)?.[1] ?? "";
+const logoAssets = [
+  "assets/logos/sais.png",
+  "assets/logos/snf-agora.jpg",
+  "assets/logos/caidp.png",
+  "assets/logos/mercatus.png",
+  "assets/logos/daadras.svg",
+  "assets/logos/the-nation.png",
+  "assets/logos/sais-observer.png",
+  "assets/logos/fccu.png",
+];
+
+assert.match(
+  source,
+  /<a class="availability-status" href="assets\/G-Resume_2\.pdf"[^>]*>[\s\S]*class="availability-light"[\s\S]*Open for Work[\s\S]*<\/a>/,
+  "homepage hero should link the availability status to the CV"
+);
+
+assert.match(
+  source,
+  /<div class="hero-actions" aria-label="Primary actions">[\s\S]*<\/div>\s*<a class="hero-cv-button" href="resume\.html">view CV<\/a>/,
+  "homepage hero copy should include a compact left-aligned link to the CV page"
+);
+
+assert.match(
+  source,
+  /<aside class="hero-visual reveal" aria-hidden="true">[\s\S]*data-dog-zone="hero"/,
+  "homepage dog visual should remain decorative after the CV link"
+);
+
+assert.match(
+  source,
+  /<h2 id="contact-title">Open for work<\/h2>/,
+  "homepage contact heading should use the concise open-for-work label"
+);
+
+assert.doesNotMatch(
+  source,
+  /class="focus-grid"|aria-label="Working range"|<strong>field work<\/strong>/,
+  "homepage hero should not render the four focus-grid boxes"
+);
+
+assert.match(
+  styles,
+  /\.availability-status\s*\{[\s\S]*display:\s*inline-flex[\s\S]*font-size:\s*clamp\(11px, 0\.78vw, 13px\)/,
+  "availability status should stay visually minimal"
+);
+
+assert.match(
+  styles,
+  /\.availability-light\s*\{[\s\S]*background:\s*var\(--availability-green\)/,
+  "availability light should use the green availability token"
+);
+
+assert.match(
+  styles,
+  /\.button,\s*\n\.contact-link\s*\{[\s\S]*min-height:\s*34px[\s\S]*border-radius:\s*3px/,
+  "shared CTA buttons should be smaller and boxy"
+);
+
+assert.doesNotMatch(
+  heroCvButtonRule,
+  /position:\s*absolute|left:\s*0|top:\s*0/,
+  "homepage CV button should not anchor to the right-side dog visual"
+);
+
+assert.match(
+  heroCvButtonRule,
+  /width:\s*max-content[\s\S]*margin-top:\s*10px/,
+  "homepage CV button should sit as a compact left hero action"
+);
+
+assert.match(
+  source,
+  /<section class="logo-banner reveal" aria-label="Network and association logos">[\s\S]*Johns Hopkins SAIS[\s\S]*Daadras Foundation[\s\S]*Forman Christian College/,
+  "homepage should replace the proof line with a named association logo banner"
+);
+
+assert.equal(
+  (source.match(/class="logo-tile" href=/g) || []).length,
+  14,
+  "homepage logo banner should expose the primary association tiles once for keyboard users"
+);
+
+for (const asset of logoAssets) {
+  assert.match(source, new RegExp(`src="${asset.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}"`), `${asset} should be used in the logo banner`);
+  assert.ok(fs.existsSync(path.join(__dirname, "..", asset)), `${asset} should exist locally`);
+}
+
+assert.equal(
+  (source.match(/<img src="assets\/logos\//g) || []).length,
+  16,
+  "homepage logo banner should use sourced image marks for the primary and duplicate logo rows"
+);
+
+assert.equal(
+  (source.match(/logo-tile__mark logo-tile__mark--text/g) || []).length,
+  12,
+  "only unverified or scholarship/program marks should render as text marks in the primary and duplicate rows"
+);
+
+for (const mark of ["BASI", "SALAM", "PFP", "PEEF", "PSF", "TR"]) {
+  assert.match(source, new RegExp(`logo-tile__mark logo-tile__mark--text">${mark}<`), `${mark} should render as a styled text mark`);
+}
+
+assert.match(
+  source,
+  /Public Service Fellow[\s\S]*PEEF|PEEF[\s\S]*Public Service Fellow/,
+  "homepage logo banner should include locally documented fellowship and scholarship associations"
+);
+
+assert.doesNotMatch(
+  source,
+  /<span class="logo-tile__mark">(?:SAIS|SNF|AI|MC|D|PS|DP|TN|SO|FCCU)<\/span>/,
+  "sourced associations should not fall back to initial-only marks"
+);
+
+assert.doesNotMatch(
+  source,
+  /davis-middlebury-shield|Project Salam<\/strong><em>Pakistan<\/em><\/span><\/span>[\s\S]*assets\/logos\/daadras\.svg/,
+  "Project Salam and Davis should not use borrowed logo assets without standalone verified marks"
+);
+
+assert.match(
+  logoBannerRule,
+  /grid-template-columns:\s*minmax\(0, 1fr\)/,
+  "homepage logo banner should let the rolling logo track span the full width"
+);
+
+assert.doesNotMatch(
+  source + styles,
+  /logo-banner__head|network[\s\S]*US \+ Pakistan/,
+  "homepage logo banner should not keep the label box"
+);
+
+assert.match(
+  logoTrackRule,
+  /animation:\s*logo-roll 56s linear infinite/,
+  "homepage logo banner should continuously roll"
+);
+
+assert.match(
+  styles,
+  /\.logo-banner__viewport\s*\{[\s\S]*mask-image:\s*linear-gradient\(90deg, transparent, #000 7%, #000 93%, transparent\)/,
+  "homepage logo banner should fade its marquee edges instead of clipping abruptly"
+);
+
+assert.match(
+  styles,
+  /\.logo-banner__group\s*\{[\s\S]*flex:\s*0 0 auto/,
+  "homepage logo banner groups should not shrink during marquee animation"
+);
+
+assert.match(
+  logoTileRule,
+  /flex:\s*0 0 clamp\(244px, 22vw, 324px\)[\s\S]*box-sizing:\s*border-box/,
+  "homepage logo tiles should use a fixed no-shrink marquee rhythm"
+);
+
+assert.match(
+  logoMarkRule,
+  /width:\s*96px[\s\S]*background:\s*color-mix\(in srgb, #ffffff 88%, var\(--surface-solid\)\)/,
+  "homepage logo mark well should give real logos a consistent theme-aware field"
+);
+
+assert.match(
+  logoMarkImageRule,
+  /object-fit:\s*contain/,
+  "homepage logo images should fit within the compact mark well"
+);
+
+assert.match(
+  logoMarkImageRule,
+  /filter:\s*saturate\(0\.94\) contrast\(1\.12\)/,
+  "homepage logo images should get a subtle contrast lift"
+);
+
+assert.doesNotMatch(
+  source + styles,
+  /proof-strip/,
+  "old proof-strip line should be removed after the logo banner replacement"
+);
 
 assert.doesNotMatch(
   source,
@@ -28,4 +216,10 @@ assert.doesNotMatch(
   "homepage reserved section 04 marker should be removed"
 );
 
-console.log("homepage section removals ok");
+assert.doesNotMatch(
+  source,
+  /id="research-title"|A practical agenda for technical power|Research focus areas|id="research-tab-1"/,
+  "homepage practical agenda section should be removed"
+);
+
+console.log("homepage sections ok");

@@ -7,6 +7,9 @@ const root = path.join(__dirname, "..");
 const cubeSourcePath = path.join(root, "cube-field.js");
 const dogSourcePath = path.join(root, "gameboy-dog-layer.js");
 const cubeCssPath = path.join(root, "cube-field.css");
+const indexSource = fs.readFileSync(path.join(root, "index.html"), "utf8");
+const scriptSource = fs.readFileSync(path.join(root, "script.js"), "utf8");
+const stylesSource = fs.readFileSync(path.join(root, "styles.css"), "utf8");
 
 assert.ok(fs.existsSync(cubeSourcePath), "cube-field.js should define the shared cube module");
 assert.ok(fs.existsSync(cubeCssPath), "cube-field.css should define shared cube styles");
@@ -86,6 +89,12 @@ assert.equal(cube.style.values["--cube-x"], "7px");
 assert.equal(cube.style.values["--cube-d2"], "11.5px");
 assert.equal(cube.style.values["--cube-color"], "#ffae00");
 
+assert.throws(
+  () => createCube({ x: 0, y: 0, z: 0, w: 12, h: 12, color: "gold" }),
+  /createCube requires finite numeric w, h, and d/,
+  "createCube should reject malformed dimensions instead of emitting invalid CSS"
+);
+
 const container = createElement("div");
 const field = mountCubeField(container, {
   scene: "test",
@@ -103,6 +112,9 @@ field.activate();
 assert.ok(container.classList.values.has("is-active"), "activate marks the field active");
 field.destroy();
 assert.equal(container.children.length, 0, "destroy clears mounted cubes");
+assert.equal(container.dataset.cubeScene, undefined, "destroy clears the scene dataset");
+assert.equal(container.classList.values.has("is-active"), false, "destroy removes the active class");
+assert.equal(container.classList.values.has("cube-field"), false, "destroy removes the cube-field class");
 
 const dogSource = fs.readFileSync(dogSourcePath, "utf8");
 assert.match(
@@ -119,5 +131,8 @@ assert.doesNotMatch(
 const cubeCss = fs.readFileSync(cubeCssPath, "utf8");
 assert.match(cubeCss, /\.cube__face--front/, "cube-field.css should own cube face styles");
 assert.match(cubeCss, /--ink/, "cube-field.css should reference the site ink token for cube edge tone");
+assert.doesNotMatch(indexSource, /data-footer-cube/, "homepage footer should not expose a cube mount");
+assert.doesNotMatch(scriptSource, /function initFooterCube/, "shared script should not initialize a footer cube");
+assert.doesNotMatch(stylesSource, /\.footer-cube\b/, "site styles should not render footer cube chrome");
 
 console.log("cube field helpers ok");

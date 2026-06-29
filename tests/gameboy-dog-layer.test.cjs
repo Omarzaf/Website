@@ -19,6 +19,7 @@ const {
   clampPoint,
   computeThrowTarget,
   isCatchDistance,
+  lerpToward,
   shouldReleaseDrag,
   moveToward,
   states,
@@ -81,6 +82,18 @@ assert.equal(
   shouldReleaseDrag(states.held, { pointerId: 7 }, { pointerId: 9 }),
   false,
   "shouldReleaseDrag ignores release events from a different pointer"
+);
+
+assert.deepEqual(
+  plain(lerpToward({ x: 0, y: 0 }, { x: 100, y: 0 }, 0.1)),
+  { x: 10, y: 0 },
+  "lerpToward moves a fraction of the distance toward target"
+);
+
+assert.deepEqual(
+  plain(lerpToward({ x: 99.8, y: 0 }, { x: 100, y: 0 }, 0.1)),
+  { x: 100, y: 0 },
+  "lerpToward snaps when very close to target"
 );
 
 const sourceText = fs.readFileSync(sourcePath, "utf8");

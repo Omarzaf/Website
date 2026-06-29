@@ -13,7 +13,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css?v=20260624">
-    <link rel="stylesheet" href="cube-field.css?v=20260624">
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to main content</a>
@@ -28,15 +27,25 @@
       </a>
       <nav class="site-nav" aria-label="Primary navigation">
         <a href="about.html">about</a>
-        <a href="work.html">work</a>
-        <a href="writing.html">writing</a>
+        <div class="nav-menu nav-menu--research">
+          <button class="nav-menu__trigger" type="button" aria-haspopup="true" aria-expanded="false">research</button>
+          <div class="nav-menu__panel" role="menu" aria-label="Research pages">
+            <a role="menuitem" href="work.html">work</a>
+            <a role="menuitem" href="writing.html">writing</a>
+          </div>
+        </div>
         <a href="impact.html" aria-current="page">impact</a>
-        <a href="index.html#contact">contact</a>
       </nav>
       <div class="header-social" aria-label="Social links">
         <a class="header-social-link" href="https://substack.com/@omarzafar" target="_blank" rel="noopener noreferrer" aria-label="Substack">
           <svg aria-hidden="true" viewBox="0 0 24 24">
             <path d="M4 5h16v2H4zM4 9h16v2H4zM4 13h16v6l-8-4-8 4z"></path>
+          </svg>
+        </a>
+        <a class="header-social-link header-social-link--photography" href="photography.html" aria-label="Photography">
+          <svg aria-hidden="true" viewBox="0 0 24 24">
+            <path d="M4 8h3l1.6-2h6.8L17 8h3v10H4zM6 10v6h12v-6h-2.1l-1.6-2H9.7L8.1 10z"></path>
+            <circle cx="12" cy="13" r="3.2"></circle>
           </svg>
         </a>
         <a class="header-social-link" href="https://github.com/Omarzaf" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
@@ -66,6 +75,7 @@
             Daadras began as a grassroots response during COVID-19 and grew into education,
             relief, digital literacy, and peacebuilding work across communities in Pakistan.
           </p>
+          <p class="small-note impact-tagline">Building education, relief, and peacebuilding through local trust.</p>
         </div>
       </section>
 
@@ -84,13 +94,6 @@
               <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"></path></svg>
             </a>
           </div>
-          <figure class="visual-frame reveal" data-animation="work-graph" role="img" aria-label="Interactive map of the Daadras field architecture: education, technology, social-emotional learning, humanitarian response, and Project Salam"
-            data-nodes='[["education",0.24,0.3],["technology",0.5,0.18],["SEL",0.78,0.3],["humanitarian",0.76,0.68],["Project Salam",0.26,0.72],["Daadras",0.5,0.5]]'
-            data-edges='[[5,0,0.9],[5,1,0.8],[5,2,0.82],[5,3,0.85],[5,4,0.9],[0,2,0.55],[3,4,0.6]]'>
-            <canvas aria-hidden="true"></canvas>
-            <noscript><img src="assets/impact-systems-map.png" alt="Abstract education and community system map in black, white, and yellow"></noscript>
-            <figcaption class="visual-caption">Interactive map — hover a node to explore each Daadras program.</figcaption>
-          </figure>
         </div>
       </section>
 
@@ -112,7 +115,7 @@
             <span class="entry-label">public Project Salam page</span>
             <div>
               <strong class="entry-title">111+</strong>
-              <p class="entry-body">Children transformed across 3 partner organizations, as listed on the public Project Salam page.</p>
+              <p class="entry-body">Children reached across three partner organizations, as listed on the public Project Salam page.</p>
             </div>
             <span class="entry-meta">public</span>
           </article>
@@ -169,74 +172,101 @@
         </div>
       </section>
 
-      <section class="panel-section" aria-labelledby="timeline-title" data-impact-timeline>
+      <section class="panel-section impact-timeline-section" aria-labelledby="timeline-title" data-impact-timeline>
         <p class="section-number section-kicker reveal">04</p>
         <div class="section-title reveal">
-          <h2 id="timeline-title">Impact timeline.</h2>
+          <h2 id="timeline-title">Daadras milestone timeline.</h2>
+          <p class="page-body impact-timeline-intro">
+            The timeline below follows the organization from its founding charter to a more
+            institutionalized operating model.
+          </p>
         </div>
 
-        <div class="impact-timeline">
-          <div class="filter-list reveal" aria-label="Impact timeline controls">
-            <button
-              class="impact-button is-active"
-              type="button"
-              aria-pressed="true"
-              data-impact-control
-              data-impact-title="COVID relief"
-              data-impact-body="Daadras began by responding to hunger and unemployment with monthly ration bags, sanitary products, medicines, and local delivery operations."
-            >
-              <span>2020</span>
-              COVID relief
-            </button>
-            <button
-              class="impact-button"
-              type="button"
-              aria-pressed="false"
-              data-impact-control
-              data-impact-title="Flood relief"
-              data-impact-body="Emergency operations moved through food distribution, shelter logistics, and a livelihoods pipeline for micro-business support."
-            >
-              <span>2022</span>
-              Flood response
-            </button>
-            <button
-              class="impact-button"
-              type="button"
-              aria-pressed="false"
-              data-impact-control
-              data-impact-title="Project Salam"
-              data-impact-body="The program shifted from relief toward education, digital literacy, chess, social-emotional learning, public speaking, and mentorship."
-            >
-              <span>2023</span>
-              Project Salam
-            </button>
-            <button
-              class="impact-button"
-              type="button"
-              aria-pressed="false"
-              data-impact-control
-              data-impact-title="Davis Projects for Peace"
-              data-impact-body="A $10,000 grant supports theatre-based dialogue and peacebuilding with Pashtun and Punjabi youth in Lahore."
-            >
-              <span>2026</span>
-              Davis grant
-            </button>
-          </div>
+        <div class="impact-timeline-shell">
 
-          <div class="impact-visual reveal" data-animation="impact-bars">
-            <div class="impact-nodes" aria-hidden="true">
-              <span class="impact-node is-active" style="--node-height: 90" data-impact-node></span>
-              <span class="impact-node" style="--node-height: 116" data-impact-node></span>
-              <span class="impact-node" style="--node-height: 132" data-impact-node></span>
-              <span class="impact-node" style="--node-height: 78" data-impact-node></span>
-            </div>
-            <div class="impact-readout" aria-live="polite">
-              <h3 data-impact-readout-title>COVID relief</h3>
-              <p data-impact-readout-body>
-                Daadras began by responding to hunger and unemployment with monthly ration bags,
-                sanitary products, medicines, and local delivery operations.
+          <div class="impact-timeline">
+            <article class="impact-milestone reveal" data-impact-milestone>
+              <div class="impact-milestone-head">
+                <time>2019</time>
+                <h3>Founding charter</h3>
+              </div>
+              <p class="impact-milestone-what">
+                Executive Council drafts the constitution — empathy, non-discrimination, youth-led
+                civic action.
               </p>
-            </div>
+              <p class="impact-milestone-effect">The principles that still govern the org.</p>
+            </article>
+
+            <article class="impact-milestone reveal" data-impact-milestone>
+              <div class="impact-milestone-head">
+                <time>2020</time>
+                <h3>Project D2D</h3>
+              </div>
+              <p class="impact-milestone-what">
+                First project, launched in the adversity of COVID-19: monthly food rations delivered
+                to families.
+              </p>
+              <p class="impact-milestone-effect">
+                Immediate relief; the program that started everything (active since).
+              </p>
+            </article>
+
+            <article class="impact-milestone reveal" data-impact-milestone>
+              <div class="impact-milestone-head">
+                <time>2021</time>
+                <h3>Self-Sustainability</h3>
+              </div>
+              <p class="impact-milestone-what">
+                Pivot away from dependency by building livelihoods around families' existing skills:
+                motorbikes, rickshaws, fruit stalls, sewing machines. Plus medicine, sanitation &amp;
+                blood-donation support.
+              </p>
+              <p class="impact-milestone-effect">
+                Recipients become self-supporting; aid as a stepping stone, not a comfort zone.
+              </p>
+            </article>
+
+            <article class="impact-milestone reveal" data-impact-milestone>
+              <div class="impact-milestone-head">
+                <time>2022</time>
+                <h3>Relief at scale</h3>
+              </div>
+              <p class="impact-milestone-what">
+                Flood-victim relief; Ramadan iftar drives; orphanage support; book donations.
+              </p>
+              <p class="impact-milestone-effect">
+                Reach broadened from single families to communities in crisis.
+              </p>
+            </article>
+
+            <article class="impact-milestone reveal" data-impact-milestone>
+              <div class="impact-milestone-head">
+                <time>2023</time>
+                <h3>Salam + partnerships</h3>
+              </div>
+              <p class="impact-milestone-what">
+                Project Salam skill-based education curriculum; partnerships with TRN &amp; PSZ;
+                three domains formalized — Dastarkhan, Salam, Research; Campus Ambassador Program;
+                digital/AI adoption; 10K Monthly Challenge.
+              </p>
+              <p class="impact-milestone-effect">
+                From relief org to durable institution: education + data + national volunteer
+                network.
+              </p>
+            </article>
+
+            <article class="impact-milestone reveal" data-impact-milestone>
+              <div class="impact-milestone-head">
+                <time>2024-25</time>
+                <h3>Institutionalize</h3>
+              </div>
+              <p class="impact-milestone-what">
+                Donor Database (Aug 2025), digital-rights workshops, continued programming.
+              </p>
+              <p class="impact-milestone-effect">
+                Operational maturity; systems for sustained impact.
+              </p>
+            </article>
           </div>
         </div>
       </section>
@@ -296,8 +326,6 @@
         <a href="#main">back to top</a>
       </div>
     </footer>
-
-    <script src="cube-field.js?v=20260624" defer></script>
     <script src="script.js?v=20260624" defer></script>
   </body>
 </html>

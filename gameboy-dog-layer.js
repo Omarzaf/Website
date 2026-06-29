@@ -52,6 +52,21 @@
     };
   }
 
+  function lerpToward(current, target, factor) {
+    const dx = target.x - current.x;
+    const dy = target.y - current.y;
+    const distance = Math.hypot(dx, dy);
+
+    if (distance < 0.5) {
+      return { x: target.x, y: target.y };
+    }
+
+    return {
+      x: current.x + dx * factor,
+      y: current.y + dy * factor,
+    };
+  }
+
   function isCatchDistance(dogPoint, ballPoint, radius = 34) {
     return Math.hypot(ballPoint.x - dogPoint.x, ballPoint.y - dogPoint.y) <= radius;
   }
@@ -73,6 +88,7 @@
     clampPoint,
     computeThrowTarget,
     isCatchDistance,
+    lerpToward,
     moveToward,
     shouldReleaseDrag,
     states,
@@ -210,12 +226,21 @@
     return ball;
   }
 
-  function createLayer() {
+  function zoneBounds(zone) {
+    const rect = zone.getBoundingClientRect();
+
+    return {
+      width: Math.max(320, Math.round(rect.width || zone.clientWidth || 320)),
+      height: Math.max(240, Math.round(rect.height || zone.clientHeight || 240)),
+    };
+  }
+
+  function createLayer(zone, zoneKind) {
     const layer = document.createElement("div");
 
-    layer.id = "gameboy-dog-layer";
     layer.className = "gb-dog-layer";
     layer.setAttribute("aria-hidden", "true");
+    layer.dataset.zoneKind = zoneKind;
 
     const arc = document.createElement("div");
     arc.className = "gb-dog-layer__arc";
@@ -258,22 +283,19 @@
     layer.appendChild(zzz);
     layer.appendChild(bubble);
 
-    document.body.appendChild(layer);
+    zone.appendChild(layer);
     return layer;
   }
 
-  function bootLayer() {
-    if (!isHomepage() || document.querySelector("#gameboy-dog-layer")) {
-      return;
-    }
-
-    const layer = createLayer();
+  function mountDogZone(zone, zoneKind) {
+    const layer = createLayer(zone, zoneKind);
     const dog = layer.querySelector("[data-gb-dog-sprite]");
     const bone = layer.querySelector("[data-gb-dog-bone]");
     const shadow = layer.querySelector("[data-gb-dog-shadow]");
     const arc = layer.querySelector("[data-gb-dog-arc]");
     const bubble = layer.querySelector("[data-gb-dog-bubble]");
     const zzz = layer.querySelector("[data-gb-dog-zzz]");
+    const interactive = zoneKind === "hero";
     const model = {
       bone: { x: 0, y: 0, rotation: 0, target: { x: 0, y: 0 } },
       dog: { x: 0, y: 0, face: -1, carrying: true, introScale: 0.3 },
@@ -281,11 +303,11 @@
       frame: 0,
       introStartDist: null,
       lastPointer: null,
-      mode: states.intro,
+      mode: states.sleeping,
       presentingUntil: 0,
       sleepTimer: 0,
       throw: null,
-      viewport: viewport(),
+      viewport: zoneBounds(zone),
     };
 
     function setMode(mode) {
@@ -300,8 +322,6 @@
       }
     }
 
-    // Once the pup is idle with the ball ready, drift it off to sleep after a
-    // random beat. Poking (or grabbing the ball) wakes it again.
     function scheduleSleep() {
       cancelSleepTimer();
       if (reduceMotion.matches) {
@@ -325,7 +345,7 @@
     }
 
     function wake() {
-      if (model.mode !== states.sleeping) {
+      if (reduceMotion.matches || !interactive || model.mode !== states.sleeping) {
         return;
       }
       cancelSleepTimer();
@@ -373,6 +393,17 @@
         },
         model.viewport,
         46
+      );
+    }
+
+    function restingDogPoint() {
+      return clampPoint(
+        {
+          x: Math.max(28, model.viewport.width * 0.16),
+          y: model.viewport.height - (model.viewport.width <= 520 ? 104 : 118),
+        },
+        model.viewport,
+        42
       );
     }
 
@@ -462,7 +493,7 @@
     }
 
     function schedule() {
-      if (model.frame) {
+      if (model.frame || !interactive) {
         return;
       }
 
@@ -496,11 +527,15 @@
     function tick(timestamp) {
       model.frame = 0;
 
+      if (!interactive) {
+        return;
+      }
+
       if (model.mode === states.intro) {
         const target = dogHomePoint();
         const previousX = model.dog.x;
 
-        model.dog = { ...model.dog, ...rounded(moveToward(model.dog, target, 7.2)) };
+        model.dog = { ...model.dog, ...rounded(lerpToward(model.dog, target, 0.08)) };
         model.dog.face = model.dog.x >= previousX ? 1 : -1;
 
         const currentDist = Math.hypot(model.dog.x - target.x, model.dog.y - target.y);
@@ -534,12 +569,12 @@
       if (model.mode === states.thrown && model.throw) {
         const progress = clamp((timestamp - model.throw.startedAt) / model.throw.duration, 0, 1);
         const eased = easeOutCubic(progress);
-        const arcLift = Math.sin(progress * Math.PI) * Math.min(86, 34 + model.throw.distance * 0.14);
+        const arcLift = Math.sin(progress * Math.PI) * Math.min(110, 42 + model.throw.distance * 0.18);
         const previousX = model.dog.x;
 
         model.bone.x = model.throw.from.x + (model.throw.to.x - model.throw.from.x) * eased;
         model.bone.y = model.throw.from.y + (model.throw.to.y - model.throw.from.y) * eased - arcLift;
-        model.bone.rotation += 14;
+        model.bone.rotation += 8;
 
         const chaseTarget = clampPoint(
           {
@@ -549,7 +584,7 @@
           model.viewport,
           42
         );
-        model.dog = { ...model.dog, ...rounded(moveToward(model.dog, chaseTarget, 12.4)) };
+        model.dog = { ...model.dog, ...rounded(lerpToward(model.dog, chaseTarget, 0.14)) };
         model.dog.face = model.dog.x >= previousX ? 1 : -1;
 
         if (progress > 0.32 && isCatchDistance(dogMouthPoint(), model.bone, 54)) {
@@ -586,7 +621,7 @@
         );
         const previousX = model.dog.x;
 
-        model.dog = { ...model.dog, ...rounded(moveToward(model.dog, target, 8.1)) };
+        model.dog = { ...model.dog, ...rounded(lerpToward(model.dog, target, 0.1)) };
         model.dog.face = model.dog.x >= previousX ? 1 : -1;
 
         if (Math.hypot(model.dog.x - target.x, model.dog.y - target.y) < 3) {
@@ -603,7 +638,7 @@
         const target = dogHomePoint();
         const previousX = model.dog.x;
 
-        model.dog = { ...model.dog, ...rounded(moveToward(model.dog, target, 7.6)) };
+        model.dog = { ...model.dog, ...rounded(lerpToward(model.dog, target, 0.07)) };
         model.dog.face = model.dog.x >= previousX ? 1 : -1;
 
         if (Math.hypot(model.dog.x - target.x, model.dog.y - target.y) < 2) {
@@ -618,15 +653,27 @@
     }
 
     function handlePointerMove(event) {
+      if (!interactive) {
+        return;
+      }
+
       const now = globalScope.performance.now();
-      const current = { x: event.clientX, y: event.clientY, time: now };
+      const zoneRect = zone.getBoundingClientRect();
+      const current = {
+        x: event.clientX - zoneRect.left,
+        y: event.clientY - zoneRect.top,
+        time: now,
+      };
       const previous = model.lastPointer;
 
       if (previous) {
-        const elapsed = Math.max(16, now - previous.time);
+        const elapsed = Math.max(8, now - previous.time);
+        const rawVx = ((current.x - previous.x) / elapsed) * 16;
+        const rawVy = ((current.y - previous.y) / elapsed) * 16;
+        const smooth = 0.3;
         current.velocity = {
-          x: ((current.x - previous.x) / elapsed) * 16,
-          y: ((current.y - previous.y) / elapsed) * 16,
+          x: (previous.velocity ? previous.velocity.x : 0) * (1 - smooth) + rawVx * smooth,
+          y: (previous.velocity ? previous.velocity.y : 0) * (1 - smooth) + rawVy * smooth,
         };
       } else {
         current.velocity = { x: 0, y: 0 };
@@ -638,8 +685,8 @@
         return;
       }
 
-      model.bone.x = event.clientX - model.drag.offsetX;
-      model.bone.y = event.clientY - model.drag.offsetY;
+      model.bone.x = current.x - model.drag.offsetX;
+      model.bone.y = current.y - model.drag.offsetY;
       model.bone.rotation = clamp((model.bone.x - model.drag.start.x) * 0.18, -28, 28);
 
       const projected = computeThrowTarget(model.bone, current.velocity, model.viewport, 34);
@@ -649,7 +696,7 @@
     }
 
     function releaseBone(event) {
-      if (!shouldReleaseDrag(model.mode, model.drag, event)) {
+      if (!interactive || !shouldReleaseDrag(model.mode, model.drag, event)) {
         return;
       }
 
@@ -670,7 +717,7 @@
 
       model.throw = {
         distance,
-        duration: clamp(360 + distance * 1.3, 430, 920),
+        duration: clamp(500 + distance * 1.8, 600, 1400),
         from: { x: model.bone.x, y: model.bone.y },
         startedAt: globalScope.performance.now(),
         to: target,
@@ -683,6 +730,9 @@
     }
 
     function grabBone(event) {
+      if (reduceMotion.matches || !interactive) {
+        return;
+      }
       if (model.mode === states.sleeping) {
         wake();
       }
@@ -693,6 +743,7 @@
       cancelSleepTimer();
       event.preventDefault();
       const rect = bone.getBoundingClientRect();
+      const zoneRect = zone.getBoundingClientRect();
 
       model.drag = {
         offsetX: event.clientX - rect.left,
@@ -703,8 +754,8 @@
       model.lastPointer = {
         time: globalScope.performance.now(),
         velocity: { x: 0, y: 0 },
-        x: event.clientX,
-        y: event.clientY,
+        x: event.clientX - zoneRect.left,
+        y: event.clientY - zoneRect.top,
       };
       bone.setPointerCapture(event.pointerId);
       document.body.classList.add("gb-dog-layer-is-dragging");
@@ -713,13 +764,15 @@
     }
 
     function pokeDog(event) {
+      if (reduceMotion.matches || !interactive) {
+        return;
+      }
       if (model.mode === states.sleeping) {
         event.preventDefault();
         wake();
         return;
       }
       if (model.mode === states.ready) {
-        // A happy little wag and a fresh nap timer when the awake pup is poked.
         dog.classList.add("is-happy");
         globalScope.setTimeout(function () {
           dog.classList.remove("is-happy");
@@ -729,29 +782,40 @@
     }
 
     function handleResize() {
-      model.viewport = viewport();
+      model.viewport = zoneBounds(zone);
       model.dog = { ...model.dog, ...clampPoint(model.dog, model.viewport, 42) };
       model.bone = { ...model.bone, ...clampPoint(model.bone, model.viewport, 34) };
       render();
     }
 
     function initPositions() {
-      const home = dogHomePoint();
+      const home = interactive ? dogHomePoint() : restingDogPoint();
+      const shouldAnimate = interactive && !reduceMotion.matches;
 
-      model.dog.x = model.viewport.width + 96;
-      model.dog.y = Math.max(128, home.y - 60);
-      model.dog.face = -1;
-      model.dog.introScale = 0.28;
+      model.dog.x = shouldAnimate ? model.viewport.width + 96 : home.x;
+      model.dog.y = shouldAnimate ? Math.max(128, home.y - 60) : home.y;
+      model.dog.face = shouldAnimate ? -1 : 1;
+      model.dog.introScale = shouldAnimate ? 0.28 : 1;
       model.introStartDist = null;
-      model.bone = { ...model.bone, ...dogMouthPoint(), rotation: 0 };
+      model.bone = { ...model.bone, ...(interactive ? dogMouthPoint() : home), rotation: 0 };
+
+      if (!interactive) {
+        model.dog.carrying = false;
+        setMode(states.sleeping);
+        layer.classList.add("is-rest-zone");
+        render();
+        return;
+      }
 
       if (reduceMotion.matches) {
         model.dog.x = home.x;
         model.dog.y = home.y;
         model.dog.face = 1;
         model.dog.introScale = 1;
-        becomeReady(globalScope.performance.now());
+        model.dog.carrying = false;
+        setMode(states.sleeping);
         layer.classList.add("prefers-reduced-motion");
+        render();
         return;
       }
 
@@ -784,6 +848,23 @@
     }
 
     initPositions();
+    return layer;
+  }
+
+  function bootLayer() {
+    if (!isHomepage()) {
+      return;
+    }
+
+    const heroZone = document.querySelector('[data-dog-zone="hero"]');
+    const restZone = document.querySelector('[data-dog-zone="rest"]');
+
+    if (!heroZone || !restZone) {
+      return;
+    }
+
+    mountDogZone(heroZone, "hero");
+    mountDogZone(restZone, "rest");
   }
 
   if (document.readyState === "loading") {

@@ -5,13 +5,19 @@ const path = require("node:path");
 
 const root = path.resolve(__dirname, "..");
 const dist = path.join(root, "dist");
+const vercelConfigPath = path.join(root, "vercel.json");
 
 const publicFiles = new Set([
   "index.html",
   "about.html",
   "work.html",
   "writing.html",
-  "impact.html",
+  "resume.html",
+  "projects.html",
+  "daadras.html",
+  "davis-project.html",
+  "think-tank.html",
+  "photography.html",
   "styles.css",
   "cube-field.css",
   "cube-field.js",
@@ -21,9 +27,22 @@ const publicFiles = new Set([
 ]);
 
 const htmlFiles = [...publicFiles].filter((file) => file.endsWith(".html"));
-const allowedAssetExtensions = new Set([".png", ".jpg", ".jpeg", ".svg", ".webp", ".gif"]);
-const publicRoots = ["assets"];
+const allowedAssetExtensions = new Set([".png", ".jpg", ".jpeg", ".svg", ".webp", ".gif", ".pdf"]);
+const publicRoots = ["assets", "photos"];
 const errors = [];
+const requiredVercelHeaders = {
+  "/(.*)": {
+    "X-Content-Type-Options": "nosniff",
+    "Referrer-Policy": "strict-origin-when-cross-origin",
+    "Permissions-Policy": "camera=(), microphone=(), geolocation=(), payment=(), usb=()",
+  },
+  "/assets/(.*)": {
+    "Cache-Control": "public, max-age=31536000, immutable",
+  },
+  "/photos/(.*)": {
+    "Cache-Control": "public, max-age=31536000, immutable",
+  },
+};
 
 const secretPatterns = [
   /-----BEGIN (?:RSA |OPENSSH |EC |DSA )?PRIVATE KEY-----/,
@@ -96,16 +115,21 @@ function checkLocalReference(sourceFile, rawReference) {
 
 function checkHtml(relativePath) {
   const source = read(relativePath);
-  const tagPattern = /<(a|link|script|img)\b[^>]*(?:href|src)=["']([^"']+)["'][^>]*>/gi;
+  const tagPattern = /<(a|link|script|img|button)\b[^>]*>/gi;
+  const referencePattern = /\b(?:href|src|data-full)=["']([^"']+)["']/gi;
   let match;
 
   while ((match = tagPattern.exec(source)) !== null) {
     const tag = match[0];
-    const reference = match[2];
-    const localReference = normalizeLocalReference(reference);
+    let referenceMatch;
 
-    if (localReference || reference.startsWith("#")) {
-      checkLocalReference(relativePath, reference);
+    while ((referenceMatch = referencePattern.exec(tag)) !== null) {
+      const reference = referenceMatch[1];
+      const localReference = normalizeLocalReference(reference);
+
+      if (localReference || reference.startsWith("#")) {
+        checkLocalReference(relativePath, reference);
+      }
     }
 
     if (/<a\b/i.test(tag) && /\btarget=["']_blank["']/i.test(tag)) {
@@ -167,7 +191,7 @@ function checkDist() {
       addError(`dist/: hidden file leaked into public build: ${file}`);
     }
 
-    if (file.startsWith("assets/")) {
+    if (publicRoots.some((rootName) => file.startsWith(`${rootName}/`))) {
       if (!isAllowedAsset(file)) {
         addError(`dist/: unexpected asset type: ${file}`);
       }
@@ -176,6 +200,51 @@ function checkDist() {
 
     if (!publicFiles.has(file)) {
       addError(`dist/: unexpected public file: ${file}`);
+    }
+  }
+}
+
+function checkVercelConfig() {
+  if (!fs.existsSync(vercelConfigPath)) {
+    addError("Missing vercel.json deploy config");
+    return;
+  }
+
+  let config;
+
+  try {
+    config = JSON.parse(fs.readFileSync(vercelConfigPath, "utf8"));
+  } catch (error) {
+    addError(`vercel.json is not valid JSON: ${error.message}`);
+    return;
+  }
+
+  if (config.buildCommand !== "node tools/build-public-site.cjs") {
+    addError('vercel.json: buildCommand must be "node tools/build-public-site.cjs"');
+  }
+
+  if (config.outputDirectory !== "dist") {
+    addError('vercel.json: outputDirectory must be "dist"');
+  }
+
+  const headerRules = Array.isArray(config.headers) ? config.headers : [];
+
+  for (const [source, requiredHeaders] of Object.entries(requiredVercelHeaders)) {
+    const rule = headerRules.find((entry) => entry && entry.source === source);
+
+    if (!rule) {
+      addError(`vercel.json: missing header rule for ${source}`);
+      continue;
+    }
+
+    const headers = new Map(
+      (Array.isArray(rule.headers) ? rule.headers : []).map((header) => [header.key, header.value]),
+    );
+
+    for (const [key, value] of Object.entries(requiredHeaders)) {
+      if (headers.get(key) !== value) {
+        addError(`vercel.json: ${source} must set ${key}: ${value}`);
+      }
     }
   }
 }
@@ -190,6 +259,7 @@ for (const file of publicFiles) {
 
 htmlFiles.forEach(checkHtml);
 checkDist();
+checkVercelConfig();
 
 if (errors.length > 0) {
   console.error(errors.join("\n"));

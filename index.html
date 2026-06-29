@@ -12,7 +12,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=20260624">
+    <link rel="stylesheet" href="styles.css?v=20260628c">
     <link rel="stylesheet" href="cube-field.css?v=20260624">
     <link rel="stylesheet" href="gameboy-dog-layer.css?v=20260622j">
   </head>
@@ -35,16 +35,34 @@
 
       <nav class="site-nav" aria-label="Primary navigation">
         <a href="about.html">about</a>
-        <a href="work.html">work</a>
-        <a href="writing.html">writing</a>
-        <a href="impact.html">impact</a>
-        <a href="#contact">contact</a>
+        <div class="nav-menu nav-menu--research">
+          <button class="nav-menu__trigger" type="button" aria-haspopup="true" aria-expanded="false">research</button>
+          <div class="nav-menu__panel" role="menu" aria-label="Research pages">
+            <a role="menuitem" href="work.html">work</a>
+            <a role="menuitem" href="writing.html">writing</a>
+          </div>
+        </div>
+        <div class="nav-menu nav-menu--projects">
+          <button class="nav-menu__trigger" type="button" aria-haspopup="true" aria-expanded="false">projects</button>
+          <div class="nav-menu__panel" role="menu" aria-label="Project pages">
+            <a role="menuitem" href="projects.html">overview</a>
+            <a role="menuitem" href="daadras.html">Daadras Foundation</a>
+            <a role="menuitem" href="davis-project.html">Davis Projects for Peace</a>
+            <a role="menuitem" href="think-tank.html">Think Tank / RDL</a>
+          </div>
+        </div>
       </nav>
 
       <div class="header-social" aria-label="Social links">
         <a class="header-social-link" href="https://substack.com/@omarzafar" target="_blank" rel="noopener noreferrer" aria-label="Substack">
           <svg aria-hidden="true" viewBox="0 0 24 24">
             <path d="M4 5h16v2H4zM4 9h16v2H4zM4 13h16v6l-8-4-8 4z"></path>
+          </svg>
+        </a>
+        <a class="header-social-link header-social-link--photography" href="photography.html" aria-label="Photography">
+          <svg aria-hidden="true" viewBox="0 0 24 24">
+            <path d="M4 8h3l1.6-2h6.8L17 8h3v10H4zM6 10v6h12v-6h-2.1l-1.6-2H9.7L8.1 10z"></path>
+            <circle cx="12" cy="13" r="3.2"></circle>
           </svg>
         </a>
         <a class="header-social-link" href="https://github.com/Omarzaf" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
@@ -70,10 +88,14 @@
       <section class="hero" aria-labelledby="hero-title">
         <div class="hero-copy reveal">
           <p class="section-number">00</p>
+          <a class="availability-status" href="assets/G-Resume_2.pdf" target="_blank" rel="noopener noreferrer" aria-label="Open CV">
+            <span class="availability-light" aria-hidden="true"></span>
+            <span>Open for Work</span>
+          </a>
           <h1 id="hero-title">I study how <br class="mobile-break">technical systems <br class="mobile-break">become political <br class="mobile-break">institutions.</h1>
           <p class="hero-body">
-            I work across AI governance, geopolitical risk, writing, and field-built social impact:
-            the places where infrastructure, law, and human institutions start making each other.
+            I connect research, writing, and field-built tools to explain where infrastructure,
+            law, and human institutions start shaping one another.
           </p>
           <div class="hero-actions" aria-label="Primary actions">
             <a class="button button-primary" href="work.html">
@@ -89,23 +111,99 @@
               </svg>
             </a>
           </div>
+          <a class="hero-cv-button" href="resume.html">view CV</a>
         </div>
-
+        <aside class="hero-visual reveal" aria-hidden="true">
+          <div class="dog-zone dog-zone--hero" data-dog-zone="hero" aria-hidden="true"></div>
+        </aside>
       </section>
 
-      <div class="proof-strip" aria-label="Public proof links">
-        <a href="https://credsverse.com/credentials/9c8f99b4-8f7f-4e11-8786-4642e0465a35">CAIDP AI Policy Clinic</a>
-        <a href="https://www.mercatus.org/students/frederic-bastiat-fellows">Mercatus Bastiat Fellow</a>
-        <a href="https://www.daadras.org/our-team">Daadras founder</a>
-        <a href="https://www.nation.com.pk/columnist/muhammad-umar-zafar">The Nation byline</a>
-        <a href="https://saisobserver.org/2024/10/16/an-educative-tribute-to-abdus-salam-daadras-foundation/">SAIS Observer writing</a>
-      </div>
+      <section class="logo-banner reveal" aria-label="Network and association logos">
+        <div class="logo-banner__viewport">
+          <div class="logo-banner__track">
+            <div class="logo-banner__group">
+              <a class="logo-tile" href="https://sais.jhu.edu/">
+                <span class="logo-tile__mark"><img src="assets/logos/sais.png" alt=""></span>
+                <span class="logo-tile__copy"><strong>Johns Hopkins SAIS</strong><em>US</em></span>
+              </a>
+              <a class="logo-tile" href="https://snfagora.jhu.edu/">
+                <span class="logo-tile__mark"><img src="assets/logos/snf-agora.jpg" alt=""></span>
+                <span class="logo-tile__copy"><strong>SNF Agora Institute</strong><em>US</em></span>
+              </a>
+              <a class="logo-tile" href="https://www.caidp.org/">
+                <span class="logo-tile__mark"><img src="assets/logos/caidp.png" alt=""></span>
+                <span class="logo-tile__copy"><strong>CAIDP</strong><em>policy clinic</em></span>
+              </a>
+              <a class="logo-tile" href="https://www.mercatus.org/students/frederic-bastiat-fellows">
+                <span class="logo-tile__mark"><img src="assets/logos/mercatus.png" alt=""></span>
+                <span class="logo-tile__copy"><strong>Mercatus Center</strong><em>Bastiat Fellow</em></span>
+              </a>
+              <a class="logo-tile" href="work.html">
+                <span class="logo-tile__mark logo-tile__mark--text">BASI</span>
+                <span class="logo-tile__copy"><strong>BASI</strong><em>AI policy</em></span>
+              </a>
+              <a class="logo-tile" href="https://www.daadras.org/our-team">
+                <span class="logo-tile__mark"><img src="assets/logos/daadras.svg" alt=""></span>
+                <span class="logo-tile__copy"><strong>Daadras Foundation</strong><em>Pakistan</em></span>
+              </a>
+              <a class="logo-tile" href="https://www.daadras.org/initiatives/project-salam">
+                <span class="logo-tile__mark logo-tile__mark--text">SALAM</span>
+                <span class="logo-tile__copy"><strong>Project Salam</strong><em>Pakistan</em></span>
+              </a>
+              <a class="logo-tile" href="https://www.davisprojectsforpeace.org/">
+                <span class="logo-tile__mark logo-tile__mark--text">PFP</span>
+                <span class="logo-tile__copy"><strong>Davis Projects for Peace</strong><em>grant</em></span>
+              </a>
+              <a class="logo-tile" href="https://www.nation.com.pk/columnist/muhammad-umar-zafar">
+                <span class="logo-tile__mark"><img src="assets/logos/the-nation.png" alt=""></span>
+                <span class="logo-tile__copy"><strong>The Nation</strong><em>Pakistan</em></span>
+              </a>
+              <a class="logo-tile" href="https://saisobserver.org/2024/10/16/an-educative-tribute-to-abdus-salam-daadras-foundation/">
+                <span class="logo-tile__mark"><img src="assets/logos/sais-observer.png" alt=""></span>
+                <span class="logo-tile__copy"><strong>SAIS Observer</strong><em>writing</em></span>
+              </a>
+              <a class="logo-tile" href="https://www.fccollege.edu.pk/">
+                <span class="logo-tile__mark"><img src="assets/logos/fccu.png" alt=""></span>
+                <span class="logo-tile__copy"><strong>Forman Christian College</strong><em>Pakistan</em></span>
+              </a>
+              <a class="logo-tile" href="resume.html">
+                <span class="logo-tile__mark logo-tile__mark--text">PEEF</span>
+                <span class="logo-tile__copy"><strong>PEEF</strong><em>Merit-cum-Need Scholar</em></span>
+              </a>
+              <a class="logo-tile" href="about.html#education-title">
+                <span class="logo-tile__mark logo-tile__mark--text">PSF</span>
+                <span class="logo-tile__copy"><strong>Public Service Fellow</strong><em>Johns Hopkins SAIS</em></span>
+              </a>
+              <a class="logo-tile" href="resume.html">
+                <span class="logo-tile__mark logo-tile__mark--text">TR</span>
+                <span class="logo-tile__copy"><strong>Telophase Risk Advisory</strong><em>analysis</em></span>
+              </a>
+            </div>
+            <div class="logo-banner__group" aria-hidden="true">
+              <span class="logo-tile"><span class="logo-tile__mark"><img src="assets/logos/sais.png" alt=""></span><span class="logo-tile__copy"><strong>Johns Hopkins SAIS</strong><em>US</em></span></span>
+              <span class="logo-tile"><span class="logo-tile__mark"><img src="assets/logos/snf-agora.jpg" alt=""></span><span class="logo-tile__copy"><strong>SNF Agora Institute</strong><em>US</em></span></span>
+              <span class="logo-tile"><span class="logo-tile__mark"><img src="assets/logos/caidp.png" alt=""></span><span class="logo-tile__copy"><strong>CAIDP</strong><em>policy clinic</em></span></span>
+              <span class="logo-tile"><span class="logo-tile__mark"><img src="assets/logos/mercatus.png" alt=""></span><span class="logo-tile__copy"><strong>Mercatus Center</strong><em>Bastiat Fellow</em></span></span>
+              <span class="logo-tile"><span class="logo-tile__mark logo-tile__mark--text">BASI</span><span class="logo-tile__copy"><strong>BASI</strong><em>AI policy</em></span></span>
+              <span class="logo-tile"><span class="logo-tile__mark"><img src="assets/logos/daadras.svg" alt=""></span><span class="logo-tile__copy"><strong>Daadras Foundation</strong><em>Pakistan</em></span></span>
+              <span class="logo-tile"><span class="logo-tile__mark logo-tile__mark--text">SALAM</span><span class="logo-tile__copy"><strong>Project Salam</strong><em>Pakistan</em></span></span>
+              <span class="logo-tile"><span class="logo-tile__mark logo-tile__mark--text">PFP</span><span class="logo-tile__copy"><strong>Davis Projects for Peace</strong><em>grant</em></span></span>
+              <span class="logo-tile"><span class="logo-tile__mark"><img src="assets/logos/the-nation.png" alt=""></span><span class="logo-tile__copy"><strong>The Nation</strong><em>Pakistan</em></span></span>
+              <span class="logo-tile"><span class="logo-tile__mark"><img src="assets/logos/sais-observer.png" alt=""></span><span class="logo-tile__copy"><strong>SAIS Observer</strong><em>writing</em></span></span>
+              <span class="logo-tile"><span class="logo-tile__mark"><img src="assets/logos/fccu.png" alt=""></span><span class="logo-tile__copy"><strong>Forman Christian College</strong><em>Pakistan</em></span></span>
+              <span class="logo-tile"><span class="logo-tile__mark logo-tile__mark--text">PEEF</span><span class="logo-tile__copy"><strong>PEEF</strong><em>Merit-cum-Need Scholar</em></span></span>
+              <span class="logo-tile"><span class="logo-tile__mark logo-tile__mark--text">PSF</span><span class="logo-tile__copy"><strong>Public Service Fellow</strong><em>Johns Hopkins SAIS</em></span></span>
+              <span class="logo-tile"><span class="logo-tile__mark logo-tile__mark--text">TR</span><span class="logo-tile__copy"><strong>Telophase Risk Advisory</strong><em>analysis</em></span></span>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <section class="panel-section" aria-labelledby="work-title">
         <div class="panel-split">
           <div class="panel-split-text reveal">
             <p class="section-number">02</p>
-            <h2 id="work-title">Selected work across policy, risk, and prototypes.</h2>
+            <h2 id="work-title">Selected proof across research, risk, and tools.</h2>
             <div class="entry-list">
               <article class="entry-row">
                 <span class="entry-label">AI export controls / thesis</span>
@@ -123,8 +221,8 @@
                 <div>
                   <strong class="entry-title">CAIDP, BASI, Mercatus</strong>
                   <p class="entry-body">
-                    Work across AI policy clinic research, responsible scaling, compute governance,
-                    sovereign AI, and institutional resilience in technology regulation.
+                    Research across responsible scaling, compute governance, sovereign AI, and
+                    institutional resilience in technology regulation.
                   </p>
                 </div>
                 <span class="entry-meta">policy</span>
@@ -141,94 +239,6 @@
                 <span class="entry-meta">risk</span>
               </article>
             </div>
-          </div>
-          <div class="panel-split-visual reveal" data-animation="work-graph" role="img" aria-label="Animated network graph of work themes">
-            <canvas aria-hidden="true"></canvas>
-          </div>
-        </div>
-      </section>
-
-      <section class="panel-section" aria-labelledby="research-title">
-        <div class="panel-split" data-tabs>
-          <div class="panel-split-text reveal">
-            <p class="section-number">03</p>
-            <h2 id="research-title">A practical agenda for governing complex technical systems.</h2>
-            <div class="tab-list" role="tablist" aria-label="Research focus areas">
-              <button id="research-tab-1" class="tab-button is-active" type="button" role="tab" aria-selected="true" aria-controls="research-panel-1" data-tab-control>
-                <span>01</span>
-                AI governance
-              </button>
-              <button id="research-tab-2" class="tab-button" type="button" role="tab" aria-selected="false" aria-controls="research-panel-2" data-tab-control>
-                <span>02</span>
-                Geopolitics
-              </button>
-              <button id="research-tab-3" class="tab-button" type="button" role="tab" aria-selected="false" aria-controls="research-panel-3" data-tab-control>
-                <span>03</span>
-                Institutions
-              </button>
-              <button id="research-tab-4" class="tab-button" type="button" role="tab" aria-selected="false" aria-controls="research-panel-4" data-tab-control>
-                <span>04</span>
-                Public systems
-              </button>
-            </div>
-            <div class="tab-copy-source">
-              <article id="research-panel-1" class="tab-panel" role="tabpanel" aria-labelledby="research-tab-1" data-tab-panel>
-                <h3>How AI capacity becomes regulatory architecture.</h3>
-                <p>
-                  My current research focuses on compute, export controls, democratic values, safety
-                  policy, and the institutional capacity required to govern powerful technical systems.
-                </p>
-                <ul>
-                  <li>AI governance and policy evaluation</li>
-                  <li>Compute governance and frontier AI regulation</li>
-                  <li>Trust, safety, and democratic accountability</li>
-                </ul>
-              </article>
-
-              <article id="research-panel-2" class="tab-panel" role="tabpanel" aria-labelledby="research-tab-2" data-tab-panel>
-                <h3>Where infrastructure, security, and regional politics collide.</h3>
-                <p>
-                  Regional analysis matters because technology competition is not abstract. It moves through
-                  ports, cables, defense modernization, data rules, and alliance politics.
-                </p>
-                <ul>
-                  <li>U.S.-China technology competition</li>
-                  <li>South Asia and MENA risk analysis</li>
-                  <li>Cybersecurity, 5G, and dual-use technology policy</li>
-                </ul>
-              </article>
-
-              <article id="research-panel-3" class="tab-panel" role="tabpanel" aria-labelledby="research-tab-3" data-tab-panel>
-                <h3>Institutions fail before they admit they are failing.</h3>
-                <p>
-                  The recurring question in my work is how governance bodies process technical uncertainty,
-                  capture, legitimacy, and coordination failure before crisis makes the weakness obvious.
-                </p>
-                <ul>
-                  <li>Regulatory design and institutional capacity</li>
-                  <li>Postcolonial analysis of law and power</li>
-                  <li>Organizational incentives in technical standard-setting</li>
-                </ul>
-              </article>
-
-              <article id="research-panel-4" class="tab-panel" role="tabpanel" aria-labelledby="research-tab-4" data-tab-panel>
-                <h3>Programs and tools that make complexity usable.</h3>
-                <p>
-                  Beyond writing, I build workflows, visualizations, and field programs that make institutional
-                  problems more legible to teams that need to act.
-                </p>
-                <ul>
-                  <li>D3.js and Leaflet prototypes for public-interest analysis</li>
-                  <li>Local-first research and career-ops automation</li>
-                  <li>Daadras education, relief, and digital-literacy programming</li>
-                </ul>
-              </article>
-            </div>
-          </div>
-
-          <div class="panel-split-visual terminal-feed reveal" data-animation="research-terminal" aria-live="polite" aria-label="Research terminal feed">
-            <pre data-terminal-output></pre>
-            <span class="terminal-cursor" aria-hidden="true"></span>
           </div>
         </div>
       </section>
@@ -274,9 +284,6 @@
               </article>
             </div>
           </div>
-          <div class="panel-split-visual reveal" data-animation="writing-document" role="img" aria-label="Animated abstract document drafting lines">
-            <canvas aria-hidden="true"></canvas>
-          </div>
         </div>
       </section>
 
@@ -284,30 +291,15 @@
         <div class="panel-split">
           <div class="panel-split-text reveal">
             <p class="section-number">06</p>
-            <h2 id="impact-title">Field work, not just commentary.</h2>
+            <h2 id="impact-title">Field work</h2>
             <p>
               Daadras began as a grassroots response during COVID-19 and developed into education,
               digital literacy, relief, and dialogue programming in Pakistan.
             </p>
-            <a class="button" href="impact.html">
-              view impact
+            <a class="button" href="projects.html">
+              view projects
               <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"></path></svg>
             </a>
-          </div>
-          <div class="panel-split-visual impact-visual reveal" data-animation="impact-bars" role="img" aria-label="Animated impact bar chart">
-            <div class="impact-nodes" aria-hidden="true">
-              <span class="impact-node is-active" style="--node-height: 92" data-impact-node></span>
-              <span class="impact-node" style="--node-height: 118" data-impact-node></span>
-              <span class="impact-node" style="--node-height: 136" data-impact-node></span>
-              <span class="impact-node" style="--node-height: 82" data-impact-node></span>
-            </div>
-            <div class="impact-readout">
-              <h3>Education, relief, dialogue.</h3>
-              <p>
-                Program work moves from emergency response to durable learning systems, with each bar
-                marking a different mode of public-interest institution-building.
-              </p>
-            </div>
           </div>
         </div>
       </section>
@@ -315,7 +307,7 @@
       <section id="contact" class="contact-section" aria-labelledby="contact-title">
         <p class="section-number reveal">07</p>
         <div class="contact-copy reveal">
-          <h2 id="contact-title">Available for research, prototypes, and policy systems work.</h2>
+          <h2 id="contact-title">Open for work</h2>
           <p>
             Send a note if you need clear analysis, a working prototype, or a sharper way to explain
             institutional risk around AI and geopolitical change.
@@ -332,6 +324,7 @@
             <a class="social-link" href="https://www.linkedin.com/in/umarzafar1" target="_blank" rel="noopener noreferrer">linkedin</a>
           </div>
         </div>
+        <div class="dog-zone dog-zone--rest" data-dog-zone="rest" aria-hidden="true"></div>
       </section>
     </main>
 

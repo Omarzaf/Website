@@ -8,6 +8,7 @@ node_modules/
 coverage/
 .vercel/
 .env*
+review-artifacts/
 *.png
 *.jpg
 *.jpeg

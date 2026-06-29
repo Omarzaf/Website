@@ -22,14 +22,15 @@ jobs:
 
       - name: Check JavaScript syntax
         run: |
-          node --check script.js
-          node --check gameboy-dog-layer.js
-          node --check tools/generate-brand-artifacts.cjs
-          node --check tools/build-public-site.cjs
-          node --check tools/check-static-site.cjs
+          git ls-files '*.js' '*.cjs' | sort | while IFS= read -r file; do
+            node --check "$file"
+          done
 
       - name: Run tests
-        run: node tests/gameboy-dog-layer.test.cjs
+        run: |
+          for test_file in tests/*.test.cjs; do
+            node "$test_file"
+          done
 
       - name: Build publishable site
         run: node tools/build-public-site.cjs

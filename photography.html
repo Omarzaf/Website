@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="Photography by Muhammad Umar Zafar: city texture, institutional interiors, coastlines, and quiet public-space observations."
+    >
+    <title>Photography - Muhammad Umar Zafar</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23ffffff'/%3E%3Cpath d='M12 18v17c0 9 6 14 15 14s15-5 15-14V18h-8v17c0 4-3 7-7 7s-7-3-7-7V18zM46 18h8L41 49h-8z' fill='%23ffae00'/%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css?v=20260624">
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to main content</a>
+    <div class="grid-field" aria-hidden="true"></div>
+    <canvas id="signal-canvas" aria-hidden="true"></canvas>
+    <div class="column-rules" aria-hidden="true"><span></span><span></span><span></span></div>
+
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="Muhammad Umar Zafar home">
+        <span class="brand-mark" aria-hidden="true">UZ</span>
+        <span>umar zafar</span>
+      </a>
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="about.html">about</a>
+        <div class="nav-menu nav-menu--research">
+          <button class="nav-menu__trigger" type="button" aria-haspopup="true" aria-expanded="false">research</button>
+          <div class="nav-menu__panel" role="menu" aria-label="Research pages">
+            <a role="menuitem" href="work.html">work</a>
+            <a role="menuitem" href="writing.html">writing</a>
+          </div>
+        </div>
+        <div class="nav-menu nav-menu--projects">
+          <button class="nav-menu__trigger" type="button" aria-haspopup="true" aria-expanded="false">projects</button>
+          <div class="nav-menu__panel" role="menu" aria-label="Project pages">
+            <a role="menuitem" href="projects.html">overview</a>
+            <a role="menuitem" href="daadras.html">Daadras Foundation</a>
+            <a role="menuitem" href="davis-project.html">Davis Projects for Peace</a>
+            <a role="menuitem" href="think-tank.html">Think Tank / RDL</a>
+          </div>
+        </div>
+      </nav>
+      <div class="header-social" aria-label="Social links">
+        <a class="header-social-link" href="https://substack.com/@omarzafar" target="_blank" rel="noopener noreferrer" aria-label="Substack">
+          <svg aria-hidden="true" viewBox="0 0 24 24">
+            <path d="M4 5h16v2H4zM4 9h16v2H4zM4 13h16v6l-8-4-8 4z"></path>
+          </svg>
+        </a>
+        <a class="header-social-link header-social-link--photography" href="photography.html" aria-current="page" aria-label="Photography">
+          <svg aria-hidden="true" viewBox="0 0 24 24">
+            <path d="M4 8h3l1.6-2h6.8L17 8h3v10H4zM6 10v6h12v-6h-2.1l-1.6-2H9.7L8.1 10z"></path>
+            <circle cx="12" cy="13" r="3.2"></circle>
+          </svg>
+        </a>
+        <a class="header-social-link" href="https://github.com/Omarzaf" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+          <svg aria-hidden="true" viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.58 2 12.24c0 4.52 2.86 8.35 6.83 9.71.5.09.68-.22.68-.49v-1.9c-2.78.62-3.37-1.22-3.37-1.22-.45-1.18-1.11-1.49-1.11-1.49-.91-.64.07-.63.07-.63 1 .07 1.53 1.06 1.53 1.06.9 1.56 2.35 1.11 2.92.85.09-.66.35-1.11.64-1.37-2.22-.26-4.55-1.14-4.55-5.06 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.71 0 0 .84-.28 2.75 1.05A9.26 9.26 0 0 1 12 6.95c.85 0 1.7.12 2.5.35 1.9-1.33 2.74-1.05 2.74-1.05.55 1.41.2 2.45.1 2.71.64.72 1.03 1.63 1.03 2.75 0 3.93-2.34 4.8-4.57 5.05.36.32.68.94.68 1.9v2.8c0 .27.18.59.69.49A10.13 10.13 0 0 0 22 12.24C22 6.58 17.52 2 12 2z"></path>
+          </svg>
+        </a>
+        <a class="header-social-link" href="https://www.linkedin.com/in/umarzafar1" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+          <svg aria-hidden="true" viewBox="0 0 24 24">
+            <path d="M5 9h3v10H5zM6.5 4.8a1.8 1.8 0 1 1 0 3.6 1.8 1.8 0 0 1 0-3.6zM10 9h2.9v1.4h.1c.4-.8 1.4-1.7 3-1.7 3.2 0 3.8 2.1 3.8 4.9V19h-3v-4.8c0-1.2 0-2.7-1.7-2.7s-1.9 1.3-1.9 2.6V19H10z"></path>
+          </svg>
+        </a>
+      </div>
+      <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode" aria-pressed="false">
+        <span class="theme-toggle-icon" aria-hidden="true"></span>
+        <span data-theme-label>dark</span>
+      </button>
+      <a class="header-action" href="mailto:mumerzafer@gmail.com">email</a>
+    </header>
+
+    <main id="main">
+      <section class="page-hero photography-hero" aria-labelledby="photo-title">
+        <div class="page-hero-copy reveal">
+          <p class="section-number">photography</p>
+          <h1 id="photo-title" class="page-title">"A thing of beauty is a joy forever." — John Keats</h1>
+          <p class="page-body">
+            I have found taking good pictures and editing to be a meditative process. All of these are from iPhone 15 Pro, edited on Lightroom Mobile.
+          </p>
+        </div>
+      </section>
+
+      <section class="panel-section photo-section" aria-label="Photography gallery">
+        <p class="section-number section-kicker reveal">01</p>
+        <div class="photo-grid" data-photo-gallery aria-label="Photography gallery">
+          <figure class="photo-card reveal">
+            <button class="photo-card__button" type="button" data-photo-trigger data-full="photos/full/img-5193.jpg" data-full-width="1500" data-full-height="2000" data-caption="01 / Saxophonist in afternoon light" aria-label="Open photograph 01: Saxophonist in afternoon light">
+              <img src="photos/thumb/img-5193.jpg" alt="Saxophonist in afternoon light" width="720" height="960" loading="eager" decoding="async" fetchpriority="high">
+            </button>
+            <figcaption class="photo-card__meta"><span>01</span>Saxophonist in afternoon light</figcaption>
+          </figure>
+          <figure class="photo-card reveal">
+            <button class="photo-card__button" type="button" data-photo-trigger data-full="photos/full/img-5024.jpg" data-full-width="1500" data-full-height="2000" data-caption="02 / City avenue from above" aria-label="Open photograph 02: City avenue from above">
+              <img src="photos/thumb/img-5024.jpg" alt="City avenue from above" width="720" height="960" loading="eager" decoding="async">
+            </button>
+            <figcaption class="photo-card__meta"><span>02</span>City avenue from above</figcaption>
+          </figure>
+          <figure class="photo-card reveal">
+            <button class="photo-card__button" type="button" data-photo-trigger data-full="photos/full/img-7627.jpg" data-full-width="1500" data-full-height="2000" data-caption="03 / Museum corridor vanishing point" aria-label="Open photograph 03: Museum corridor vanishing point">
+              <img src="photos/thumb/img-7627.jpg" alt="Museum corridor vanishing point" width="720" height="960" loading="lazy" decoding="async">
+            </button>
+            <figcaption class="photo-card__meta"><span>03</span>Museum corridor vanishing point</figcaption>
+          </figure>
+          <figure class="photo-card reveal">
+            <button class="photo-card__button" type="button" data-photo-trigger data-full="photos/full/img-5025.jpg" data-full-width="1500" data-full-height="2000" data-caption="04 / Hill street under blue sky" aria-label="Open photograph 04: Hill street under blue sky">
+              <img src="photos/thumb/img-5025.jpg" alt="Hill street under blue sky" width="720" height="960" loading="lazy" decoding="async">
+            </button>
+            <figcaption class="photo-card__meta"><span>04</span>Hill street under blue sky</figcaption>
+          </figure>
+          <figure class="photo-card reveal">
+            <button class="photo-card__button" type="button" data-photo-trigger data-full="photos/full/img-8868.jpg" data-full-width="1500" data-full-height="2000" data-caption="05 / Quiet courtyard bench" aria-label="Open photograph 05: Quiet courtyard bench">
+              <img src="photos/thumb/img-8868.jpg" alt="Quiet courtyard bench" width="720" height="960" loading="lazy" decoding="async">
+            </button>
+            <figcaption class="photo-card__meta"><span>05</span>Quiet courtyard bench</figcaption>
+          </figure>
+          <figure class="photo-card reveal">
+            <button class="photo-card__button" type="button" data-photo-trigger data-full="photos/full/img-2799.jpg" data-full-width="1500" data-full-height="2000" data-caption="06 / Blue plane of glass and sky" aria-label="Open photograph 06: Blue plane of glass and sky">
+              <img src="photos/thumb/img-2799.jpg" alt="Blue plane of glass and sky" width="720" height="960" loading="lazy" decoding="async">
+            </button>
+            <figcaption class="photo-card__meta"><span>06</span>Blue plane of glass and sky</figcaption>
+          </figure>
+          <figure class="photo-card reveal">
+            <button class="photo-card__button" type="button" data-photo-trigger data-full="photos/full/img-5034.jpg" data-full-width="1500" data-full-height="2000" data-caption="07 / Downtown corridor and tower grid" aria-label="Open photograph 07: Downtown corridor and tower grid">
+              <img src="photos/thumb/img-5034.jpg" alt="Downtown corridor and tower grid" width="720" height="960" loading="lazy" decoding="async">
+            </button>
+            <figcaption class="photo-card__meta"><span>07</span>Downtown corridor and tower grid</figcaption>
+          </figure>
+          <figure class="photo-card reveal">
+            <button class="photo-card__button" type="button" data-photo-trigger data-full="photos/full/img-4239.jpg" data-full-width="2000" data-full-height="1902" data-caption="08 / Corner building at the cable-car line" aria-label="Open photograph 08: Corner building at the cable-car line">
+              <img src="photos/thumb/img-4239.jpg" alt="Corner building at the cable-car line" width="960" height="913" loading="lazy" decoding="async">
+            </button>
+            <figcaption class="photo-card__meta"><span>08</span>Corner building at the cable-car line</figcaption>
+          </figure>
+          <figure class="photo-card reveal">
+            <button class="photo-card__button" type="button" data-photo-trigger data-full="photos/full/img-4371.jpg" data-full-width="1500" data-full-height="2000" data-caption="09 / Coastal road and white wake" aria-label="Open photograph 09: Coastal road and white wake">
+              <img src="photos/thumb/img-4371.jpg" alt="Coastal road and white wake" width="720" height="960" loading="lazy" decoding="async">
+            </button>
+            <figcaption class="photo-card__meta"><span>09</span>Coastal road and white wake</figcaption>
+          </figure>
+          <figure class="photo-card reveal">
+            <button class="photo-card__button" type="button" data-photo-trigger data-full="photos/full/img-4397.jpg" data-full-width="1249" data-full-height="2000" data-caption="10 / Pier lights after dark" aria-label="Open photograph 10: Pier lights after dark">
+              <img src="photos/thumb/img-4397.jpg" alt="Pier lights after dark" width="600" height="960" loading="lazy" decoding="async">
+            </button>
+            <figcaption class="photo-card__meta"><span>10</span>Pier lights after dark</figcaption>
+          </figure>
+          <figure class="photo-card reveal">
+            <button class="photo-card__button" type="button" data-photo-trigger data-full="photos/full/img-2918.jpg" data-full-width="1500" data-full-height="2000" data-caption="11 / Window, sign, and winter wall" aria-label="Open photograph 11: Window, sign, and winter wall">
+              <img src="photos/thumb/img-2918.jpg" alt="Window, sign, and winter wall" width="720" height="960" loading="lazy" decoding="async">
+            </button>
+            <figcaption class="photo-card__meta"><span>11</span>Window, sign, and winter wall</figcaption>
+          </figure>
+          <figure class="photo-card reveal">
+            <button class="photo-card__button" type="button" data-photo-trigger data-full="photos/full/img-4363.jpg" data-full-width="1500" data-full-height="2000" data-caption="12 / Green coast and pale water" aria-label="Open photograph 12: Green coast and pale water">
+              <img src="photos/thumb/img-4363.jpg" alt="Green coast and pale water" width="720" height="960" loading="lazy" decoding="async">
+            </button>
+            <figcaption class="photo-card__meta"><span>12</span>Green coast and pale water</figcaption>
+          </figure>
+          <figure class="photo-card reveal">
+            <button class="photo-card__button" type="button" data-photo-trigger data-full="photos/full/img-6212.jpg" data-full-width="1500" data-full-height="2000" data-caption="13 / Ceiling grid and central seam" aria-label="Open photograph 13: Ceiling grid and central seam">
+              <img src="photos/thumb/img-6212.jpg" alt="Ceiling grid and central seam" width="720" height="960" loading="lazy" decoding="async">
+            </button>
+            <figcaption class="photo-card__meta"><span>13</span>Ceiling grid and central seam</figcaption>
+          </figure>
+          <figure class="photo-card reveal">
+            <button class="photo-card__button" type="button" data-photo-trigger data-full="photos/full/img-5901.jpg" data-full-width="1562" data-full-height="2000" data-caption="14 / Bronze figure in motion" aria-label="Open photograph 14: Bronze figure in motion">
+              <img src="photos/thumb/img-5901.jpg" alt="Bronze figure in motion" width="750" height="960" loading="lazy" decoding="async">
+            </button>
+            <figcaption class="photo-card__meta"><span>14</span>Bronze figure in motion</figcaption>
+          </figure>
+          <figure class="photo-card reveal">
+            <button class="photo-card__button" type="button" data-photo-trigger data-full="photos/full/img-3235.jpg" data-full-width="1500" data-full-height="2000" data-caption="15 / Low light across a dark surface" aria-label="Open photograph 15: Low light across a dark surface">
+              <img src="photos/thumb/img-3235.jpg" alt="Low light across a dark surface" width="720" height="960" loading="lazy" decoding="async">
+            </button>
+            <figcaption class="photo-card__meta"><span>15</span>Low light across a dark surface</figcaption>
+          </figure>
+          <figure class="photo-card reveal">
+            <button class="photo-card__button" type="button" data-photo-trigger data-full="photos/full/img-8943.jpg" data-full-width="1500" data-full-height="2000" data-caption="16 / Capitol dome under storm cloud" aria-label="Open photograph 16: Capitol dome under storm cloud">
+              <img src="photos/thumb/img-8943.jpg" alt="Capitol dome under storm cloud" width="720" height="960" loading="lazy" decoding="async">
+            </button>
+            <figcaption class="photo-card__meta"><span>16</span>Capitol dome under storm cloud</figcaption>
+          </figure>
+          <figure class="photo-card reveal">
+            <button class="photo-card__button" type="button" data-photo-trigger data-full="photos/full/img-5903.jpg" data-full-width="1688" data-full-height="2000" data-caption="17 / Sculpture against blue sky" aria-label="Open photograph 17: Sculpture against blue sky">
+              <img src="photos/thumb/img-5903.jpg" alt="Sculpture against blue sky" width="810" height="960" loading="lazy" decoding="async">
+            </button>
+            <figcaption class="photo-card__meta"><span>17</span>Sculpture against blue sky</figcaption>
+          </figure>
+          <figure class="photo-card reveal">
+            <button class="photo-card__button" type="button" data-photo-trigger data-full="photos/full/img-5916.jpg" data-full-width="1370" data-full-height="2000" data-caption="18 / Blue sky between brick and ivy" aria-label="Open photograph 18: Blue sky between brick and ivy">
+              <img src="photos/thumb/img-5916.jpg" alt="Blue sky between brick and ivy" width="657" height="960" loading="lazy" decoding="async">
+            </button>
+            <figcaption class="photo-card__meta"><span>18</span>Blue sky between brick and ivy</figcaption>
+          </figure>
+          <figure class="photo-card reveal">
+            <button class="photo-card__button" type="button" data-photo-trigger data-full="photos/full/img-4771.jpg" data-full-width="1500" data-full-height="2000" data-caption="19 / Bay sunset and distant ridge" aria-label="Open photograph 19: Bay sunset and distant ridge">
+              <img src="photos/thumb/img-4771.jpg" alt="Bay sunset and distant ridge" width="720" height="960" loading="lazy" decoding="async">
+            </button>
+            <figcaption class="photo-card__meta"><span>19</span>Bay sunset and distant ridge</figcaption>
+          </figure>
+          <figure class="photo-card reveal">
+            <button class="photo-card__button" type="button" data-photo-trigger data-full="photos/full/img-0269.jpg" data-full-width="1500" data-full-height="2000" data-caption="20 / Patterned arch and ornamental ceiling" aria-label="Open photograph 20: Patterned arch and ornamental ceiling">
+              <img src="photos/thumb/img-0269.jpg" alt="Patterned arch and ornamental ceiling" width="720" height="960" loading="lazy" decoding="async">
+            </button>
+            <figcaption class="photo-card__meta"><span>20</span>Patterned arch and ornamental ceiling</figcaption>
+          </figure>
+          <figure class="photo-card reveal">
+            <button class="photo-card__button" type="button" data-photo-trigger data-full="photos/full/img-0294.jpg" data-full-width="1500" data-full-height="2000" data-caption="21 / Solitary figure on the cliff edge" aria-label="Open photograph 21: Solitary figure on the cliff edge">
+              <img src="photos/thumb/img-0294.jpg" alt="Solitary figure on the cliff edge" width="720" height="960" loading="lazy" decoding="async">
+            </button>
+            <figcaption class="photo-card__meta"><span>21</span>Solitary figure on the cliff edge</figcaption>
+          </figure>
+          <figure class="photo-card reveal">
+            <button class="photo-card__button" type="button" data-photo-trigger data-full="photos/full/img-4637.jpg" data-full-width="1500" data-full-height="2000" data-caption="22 / Columns in direct sun" aria-label="Open photograph 22: Columns in direct sun">
+              <img src="photos/thumb/img-4637.jpg" alt="Columns in direct sun" width="720" height="960" loading="lazy" decoding="async">
+            </button>
+            <figcaption class="photo-card__meta"><span>22</span>Columns in direct sun</figcaption>
+          </figure>
+          <figure class="photo-card reveal">
+            <button class="photo-card__button" type="button" data-photo-trigger data-full="photos/full/img-4622.jpg" data-full-width="1500" data-full-height="2000" data-caption="23 / Classical facade at the edge of frame" aria-label="Open photograph 23: Classical facade at the edge of frame">
+              <img src="photos/thumb/img-4622.jpg" alt="Classical facade at the edge of frame" width="720" height="960" loading="lazy" decoding="async">
+            </button>
+            <figcaption class="photo-card__meta"><span>23</span>Classical facade at the edge of frame</figcaption>
+          </figure>
+          <figure class="photo-card reveal">
+            <button class="photo-card__button" type="button" data-photo-trigger data-full="photos/full/img-4961.jpg" data-full-width="1500" data-full-height="2000" data-caption="24 / Vertical city canyon" aria-label="Open photograph 24: Vertical city canyon">
+              <img src="photos/thumb/img-4961.jpg" alt="Vertical city canyon" width="720" height="960" loading="lazy" decoding="async">
+            </button>
+            <figcaption class="photo-card__meta"><span>24</span>Vertical city canyon</figcaption>
+          </figure>
+          <figure class="photo-card reveal">
+            <button class="photo-card__button" type="button" data-photo-trigger data-full="photos/full/img-2915.jpg" data-full-width="1486" data-full-height="2000" data-caption="25 / Brick corner house and tree shadow" aria-label="Open photograph 25: Brick corner house and tree shadow">
+              <img src="photos/thumb/img-2915.jpg" alt="Brick corner house and tree shadow" width="713" height="960" loading="lazy" decoding="async">
+            </button>
+            <figcaption class="photo-card__meta"><span>25</span>Brick corner house and tree shadow</figcaption>
+          </figure>
+          <figure class="photo-card reveal">
+            <button class="photo-card__button" type="button" data-photo-trigger data-full="photos/full/img-4784.jpg" data-full-width="1500" data-full-height="2000" data-caption="26 / Figure paused against marble" aria-label="Open photograph 26: Figure paused against marble">
+              <img src="photos/thumb/img-4784.jpg" alt="Figure paused against marble" width="720" height="960" loading="lazy" decoding="async">
+            </button>
+            <figcaption class="photo-card__meta"><span>26</span>Figure paused against marble</figcaption>
+          </figure>
+          <figure class="photo-card reveal">
+            <button class="photo-card__button" type="button" data-photo-trigger data-full="photos/full/img-4962.jpg" data-full-width="1500" data-full-height="2000" data-caption="27 / Tower face from below" aria-label="Open photograph 27: Tower face from below">
+              <img src="photos/thumb/img-4962.jpg" alt="Tower face from below" width="720" height="960" loading="lazy" decoding="async">
+            </button>
+            <figcaption class="photo-card__meta"><span>27</span>Tower face from below</figcaption>
+          </figure>
+          <figure class="photo-card reveal">
+            <button class="photo-card__button" type="button" data-photo-trigger data-full="photos/full/img-2095.jpg" data-full-width="1434" data-full-height="2000" data-caption="28 / Small bird on a silver waterfront" aria-label="Open photograph 28: Small bird on a silver waterfront">
+              <img src="photos/thumb/img-2095.jpg" alt="Small bird on a silver waterfront" width="688" height="960" loading="lazy" decoding="async">
+            </button>
+            <figcaption class="photo-card__meta"><span>28</span>Small bird on a silver waterfront</figcaption>
+          </figure>
+          <figure class="photo-card reveal">
+            <button class="photo-card__button" type="button" data-photo-trigger data-full="photos/full/img-7564.jpg" data-full-width="1500" data-full-height="2000" data-caption="29 / Stairs and colonnade rhythm" aria-label="Open photograph 29: Stairs and colonnade rhythm">
+              <img src="photos/thumb/img-7564.jpg" alt="Stairs and colonnade rhythm" width="720" height="960" loading="lazy" decoding="async">
+            </button>
+            <figcaption class="photo-card__meta"><span>29</span>Stairs and colonnade rhythm</figcaption>
+          </figure>
+          <figure class="photo-card reveal">
+            <button class="photo-card__button" type="button" data-photo-trigger data-full="photos/full/img-7748.jpg" data-full-width="1500" data-full-height="2000" data-caption="30 / Tunnel of tables and light" aria-label="Open photograph 30: Tunnel of tables and light">
+              <img src="photos/thumb/img-7748.jpg" alt="Tunnel of tables and light" width="720" height="960" loading="lazy" decoding="async">
+            </button>
+            <figcaption class="photo-card__meta"><span>30</span>Tunnel of tables and light</figcaption>
+          </figure>
+          <figure class="photo-card reveal">
+            <button class="photo-card__button" type="button" data-photo-trigger data-full="photos/full/img-4902.jpg" data-full-width="1541" data-full-height="2000" data-caption="31 / Doorman in a concrete frame" aria-label="Open photograph 31: Doorman in a concrete frame">
+              <img src="photos/thumb/img-4902.jpg" alt="Doorman in a concrete frame" width="740" height="960" loading="lazy" decoding="async">
+            </button>
+            <figcaption class="photo-card__meta"><span>31</span>Doorman in a concrete frame</figcaption>
+          </figure>
+          <figure class="photo-card reveal">
+            <button class="photo-card__button" type="button" data-photo-trigger data-full="photos/full/img-4490.jpg" data-full-width="1500" data-full-height="2000" data-caption="32 / Golden Gate in heavy weather" aria-label="Open photograph 32: Golden Gate in heavy weather">
+              <img src="photos/thumb/img-4490.jpg" alt="Golden Gate in heavy weather" width="720" height="960" loading="lazy" decoding="async">
+            </button>
+            <figcaption class="photo-card__meta"><span>32</span>Golden Gate in heavy weather</figcaption>
+          </figure>
+          <figure class="photo-card reveal">
+            <button class="photo-card__button" type="button" data-photo-trigger data-full="photos/full/img-4530.jpg" data-full-width="1500" data-full-height="2000" data-caption="33 / Harbor, bridge, and pale sky" aria-label="Open photograph 33: Harbor, bridge, and pale sky">
+              <img src="photos/thumb/img-4530.jpg" alt="Harbor, bridge, and pale sky" width="720" height="960" loading="lazy" decoding="async">
+            </button>
+            <figcaption class="photo-card__meta"><span>33</span>Harbor, bridge, and pale sky</figcaption>
+          </figure>
+          <figure class="photo-card reveal">
+            <button class="photo-card__button" type="button" data-photo-trigger data-full="photos/full/img-5014.jpg" data-full-width="1500" data-full-height="2000" data-caption="34 / Pagoda roof against bright cloud" aria-label="Open photograph 34: Pagoda roof against bright cloud">
+              <img src="photos/thumb/img-5014.jpg" alt="Pagoda roof against bright cloud" width="720" height="960" loading="lazy" decoding="async">
+            </button>
+            <figcaption class="photo-card__meta"><span>34</span>Pagoda roof against bright cloud</figcaption>
+          </figure>
+          <figure class="photo-card reveal">
+            <button class="photo-card__button" type="button" data-photo-trigger data-full="photos/full/img-4294.jpg" data-full-width="1500" data-full-height="2000" data-caption="35 / Bridge tower in fog" aria-label="Open photograph 35: Bridge tower in fog">
+              <img src="photos/thumb/img-4294.jpg" alt="Bridge tower in fog" width="720" height="960" loading="lazy" decoding="async">
+            </button>
+            <figcaption class="photo-card__meta"><span>35</span>Bridge tower in fog</figcaption>
+          </figure>
+        </div>
+      </section>
+    </main>
+
+    <dialog class="photo-dialog" data-photo-dialog aria-label="Photograph viewer">
+      <div class="photo-dialog__inner">
+        <div class="photo-dialog__bar">
+          <p class="photo-dialog__caption" data-photo-caption>01 / Saxophonist in afternoon light</p>
+          <div class="photo-dialog__controls" aria-label="Photo controls">
+            <button class="photo-dialog__button" type="button" data-photo-prev aria-label="Previous photograph">&larr;</button>
+            <button class="photo-dialog__button" type="button" data-photo-next aria-label="Next photograph">&rarr;</button>
+            <button class="photo-dialog__button" type="button" data-photo-close aria-label="Close viewer">&times;</button>
+          </div>
+        </div>
+        <div class="photo-dialog__stage">
+          <img src="photos/full/img-5193.jpg" alt="Saxophonist in afternoon light" width="1500" height="2000" data-photo-full>
+        </div>
+      </div>
+    </dialog>
+
+    <footer class="site-footer">
+      <p>(c) 2026 Muhammad Umar Zafar</p>
+      <div class="footer-links" aria-label="Footer links">
+        <a href="https://substack.com/@omarzafar" target="_blank" rel="noopener noreferrer">substack</a>
+        <a href="https://github.com/Omarzaf" target="_blank" rel="noopener noreferrer">github</a>
+        <a href="https://www.linkedin.com/in/umarzafar1" target="_blank" rel="noopener noreferrer">linkedin</a>
+        <a href="#main">back to top</a>
+      </div>
+    </footer>
+    <script src="script.js?v=20260624" defer></script>
+  </body>
+</html>

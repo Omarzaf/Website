@@ -5,7 +5,7 @@
 This repository is a static personal website. Keep the root simple:
 
 - `index.html` is the homepage and primary entry point.
-- `about.html`, `work.html`, `writing.html`, and `impact.html` are standalone detail pages that share the same header, footer, stylesheet, and script.
+- `about.html`, `work.html`, `writing.html`, `projects.html`, `daadras.html`, `davis-project.html`, and `think-tank.html` are standalone detail pages that share the same header, footer, stylesheet, and script.
 - `styles.css` contains global variables, layout rules, responsive behavior, and visual treatments.
 - `script.js` controls the animated canvas background and pointer interaction.
 - `gameboy-dog-layer.css` and `gameboy-dog-layer.js` are homepage-only overlay files.

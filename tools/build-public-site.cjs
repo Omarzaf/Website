@@ -11,7 +11,12 @@ const publicFiles = [
   "about.html",
   "work.html",
   "writing.html",
-  "impact.html",
+  "resume.html",
+  "projects.html",
+  "daadras.html",
+  "davis-project.html",
+  "think-tank.html",
+  "photography.html",
   "styles.css",
   "cube-field.css",
   "cube-field.js",
@@ -20,7 +25,7 @@ const publicFiles = [
   "gameboy-dog-layer.js",
 ];
 
-const publicDirs = ["assets"];
+const publicDirs = ["assets", "photos"];
 const ignoredNames = new Set([".DS_Store"]);
 
 function copyFile(relativePath) {
