@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta
       name="description"
-      content="Think Tank / RDL Evidence Map project by Muhammad Umar Zafar: a reproducible public-record lobbying evidence map."
+      content="Mapping the gravity of power and discourse: a dedicated RDL Evidence Map case study connecting Think Tanks DC, public lobbying records, animated evidence surfaces, methodology, reports, and caveats."
     >
-    <title>Think Tank / RDL Evidence Map - Muhammad Umar Zafar</title>
+    <title>Mapping the Gravity of Power and Discourse - Muhammad Umar Zafar</title>
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23ffffff'/%3E%3Cpath d='M12 18v17c0 9 6 14 15 14s15-5 15-14V18h-8v17c0 4-3 7-7 7s-7-3-7-7V18zM46 18h8L41 49h-8z' fill='%23ffae00'/%3E%3C/svg%3E">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=20260624">
+    <link rel="stylesheet" href="styles.css?v=20260702">
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to main content</a>
@@ -75,70 +75,249 @@
     </header>
 
     <main id="main">
-      <section class="page-hero" aria-labelledby="think-tank-title">
+      <section class="page-hero rdl-hero" aria-labelledby="think-tank-title">
         <div class="page-hero-copy reveal">
-          <p class="section-number">project</p>
-          <h1 id="think-tank-title" class="page-title">Think Tank / RDL Evidence Map.</h1>
+          <p class="section-number">RDL Evidence Map</p>
+          <h1 id="think-tank-title" class="page-title">Mapping the gravity of power and discourse.</h1>
           <p class="page-body">
-            A static DC lobbying evidence map with a reproducible Python pipeline,
-            public-record-derived relationship data, confidence metadata, and model-derived
-            exploratory signals.
+            A public-record map of funding, lobbying, and revolving-door relationships. It is built
+            to answer one question clearly: where is money visible, where is scrutiny thin, and where
+            does the evidence stop?
           </p>
-          <a class="button" href="https://github.com/Omarzaf/RDL" target="_blank" rel="noopener noreferrer">
-            GitHub repository
-            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"></path></svg>
-          </a>
+          <p class="rdl-hero-note">Revolving Door Lobbying in DC</p>
+          <div class="hero-actions rdl-hero-actions">
+            <a class="button button-primary" href="https://github.com/Omarzaf/RDL" target="_blank" rel="noopener noreferrer">
+              RDL repository
+              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"></path></svg>
+            </a>
+            <a class="button" href="https://omarzaf.github.io/Think-Tanks-DC/" target="_blank" rel="noopener noreferrer">
+              Think Tanks DC
+              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"></path></svg>
+            </a>
+          </div>
+        </div>
+        <div class="rdl-hero-preview reveal" data-rdl-map-preview data-rdl-signal-visual aria-label="Simplified signal preview for the RDL Evidence Map">
+          <div class="rdl-preview-topbar">
+            <span>What the map conveys</span>
+            <span>legibility before certainty</span>
+          </div>
+          <div class="rdl-preview-canvas rdl-preview-canvas--signal">
+            <div class="rdl-signal-panel">
+              <p class="rdl-signal-question">
+                Find where money is visible and scrutiny is thin.
+              </p>
+              <div class="rdl-signal-sequence" aria-label="Question to evidence to map to guardrail">
+                <div>
+                  <span>Question</span>
+                  <strong>money + scrutiny</strong>
+                </div>
+                <div>
+                  <span>Evidence</span>
+                  <strong>public records</strong>
+                </div>
+                <div>
+                  <span>Map</span>
+                  <strong>issue-space gaps</strong>
+                </div>
+                <div>
+                  <span>Guardrail</span>
+                  <strong>inspect, do not accuse</strong>
+                </div>
+              </div>
+              <p class="rdl-signal-caption">
+                Public records become clusters, gaps, and caveats. The map points to areas to inspect,
+                not accusations to repeat.
+              </p>
+            </div>
+            <svg class="rdl-signal-map" viewBox="0 0 720 430" role="img" aria-label="Simplified relationship map showing money density, organized community, and an epistemic gap">
+              <defs>
+                <linearGradient id="rdl-link-gradient" x1="0%" x2="100%" y1="0%" y2="100%">
+                  <stop offset="0%" stop-color="#006c8d"></stop>
+                  <stop offset="48%" stop-color="#16a34a"></stop>
+                  <stop offset="100%" stop-color="#ffae00"></stop>
+                </linearGradient>
+              </defs>
+              <g class="rdl-preview-grid" aria-hidden="true">
+                <path d="M40 80H680M40 150H680M40 220H680M40 290H680M40 360H680"></path>
+                <path d="M120 42V392M240 42V392M360 42V392M480 42V392M600 42V392"></path>
+              </g>
+              <g class="rdl-signal-focus" aria-hidden="true">
+                <path d="M444 116 C526 88 636 126 656 214 C676 304 596 352 510 324 C430 298 366 210 444 116"></path>
+                <text x="522" y="210">gap zone</text>
+              </g>
+              <g class="rdl-preview-links" aria-hidden="true">
+                <path d="M134 302 C238 174 326 148 444 154"></path>
+                <path d="M196 188 C306 250 386 278 540 248"></path>
+                <path d="M444 154 C512 122 578 146 628 210"></path>
+              </g>
+              <g class="rdl-preview-arcs" aria-hidden="true">
+                <path d="M270 338 C350 418 520 374 628 210"></path>
+              </g>
+              <g class="rdl-preview-nodes">
+                <g class="rdl-node rdl-node--firm" transform="translate(134 302)">
+                  <circle r="28"></circle>
+                  <text y="5">F</text>
+                </g>
+                <g class="rdl-node rdl-node--client" transform="translate(196 188)">
+                  <circle r="20"></circle>
+                  <text y="5">C</text>
+                </g>
+                <g class="rdl-node rdl-node--lobbyist" transform="translate(270 338)">
+                  <circle r="18"></circle>
+                  <text y="5">L</text>
+                </g>
+                <g class="rdl-node rdl-node--agency" transform="translate(444 154)">
+                  <circle r="30"></circle>
+                  <text y="5">G</text>
+                </g>
+                <g class="rdl-node rdl-node--client" transform="translate(540 248)">
+                  <circle r="23"></circle>
+                  <text y="5">C</text>
+                </g>
+                <g class="rdl-node rdl-node--reference" transform="translate(628 210)">
+                  <circle r="16"></circle>
+                  <text y="5">R</text>
+                </g>
+              </g>
+            </svg>
+          </div>
+          <div class="rdl-preview-footer" aria-label="RDL preview summary">
+            <span>2018-2025 public records</span>
+            <span>2025 partial</span>
+          </div>
         </div>
       </section>
 
-      <section class="feature-section" aria-labelledby="rdl-title">
-        <div class="feature-grid">
+      <section class="feature-section rdl-summary-section" aria-labelledby="rdl-title">
+        <div class="feature-grid rdl-summary-grid">
           <div class="feature-copy reveal">
             <p class="section-number">01</p>
-            <h2 id="rdl-title">RDL Evidence Map.</h2>
+            <h2 id="rdl-title">Two public evidence surfaces, one governing question.</h2>
             <p>
-              The project maps public-record relationships around lobbying, institutions, and
-              policy movement in the U.S.-China semiconductor and AI policy space. Its active
-              surface is the V3_Epistemic pipeline and static map.
+              Think Tanks DC is the funding-transparency layer. RDL is the larger public-record
+              lobbying and revolving-door layer. Together they move the work from "who funds the
+              institutions?" to "where does money operate without an organized counterweight?"
+            </p>
+          </div>
+          <dl class="rdl-fact-grid reveal" aria-label="Think Tanks DC and RDL evidence facts">
+            <div>
+              <dt>Think Tanks DC</dt>
+              <dd>75 Washington think tanks and 149 donors</dd>
+            </div>
+            <div>
+              <dt>funding records</dt>
+              <dd>2,682 funding records from 2019-2024</dd>
+            </div>
+            <div>
+              <dt>corrected label</dt>
+              <dd>No Disclosed Government Funding</dd>
+            </div>
+            <div>
+              <dt>RDL filing scale</dt>
+              <dd>726,268 federal lobbying filings</dd>
+            </div>
+            <div>
+              <dt>RDL universe</dt>
+              <dd>$37.7B reported income and 11,395 deduplicated entities</dd>
+            </div>
+            <div>
+              <dt>relationship graph</dt>
+              <dd>nearly 150,000 relationship edges</dd>
+            </div>
+          </dl>
+        </div>
+      </section>
+
+      <section class="panel-section" aria-labelledby="origin-title">
+        <p class="section-number section-kicker reveal">02</p>
+        <div class="section-title reveal">
+          <h2 id="origin-title">The origin question.</h2>
+        </div>
+        <div class="split-layout">
+          <div class="stack reveal">
+            <p class="large-statement">
+              Know the ideology, the expertise, and the money behind the institution before you trust
+              the argument.
+            </p>
+          </div>
+          <div class="rich-copy reveal">
+            <p>
+              The first artifact was Think Tanks DC: a public interactive dataset mapping funding
+              relationships between Washington policy institutions and donors, built from IRS 990
+              filings through ProPublica Nonprofit Explorer, USASpending.gov, OpenSecrets, and
+              self-disclosed funding pages.
+            </p>
+            <p>
+              Its six panels made opacity visible: a funding heatmap, ideology-versus-funding chart,
+              triple-funded institutions, transparency scatter plot, donor network graph, and
+              rankings table. It did not prove capture. It made asymmetry inspectable.
             </p>
           </div>
         </div>
       </section>
 
       <section class="panel-section" aria-labelledby="surface-title">
-        <p class="section-number section-kicker reveal">02</p>
+        <p class="section-number section-kicker reveal">03</p>
         <div class="section-title reveal">
-          <h2 id="surface-title">Public surface and pipeline.</h2>
+          <h2 id="surface-title">How the RDL system works.</h2>
         </div>
-        <div class="section-content entry-list">
+        <div class="section-content entry-list rdl-evidence-ledger">
           <article class="entry-row reveal">
-            <span class="entry-label">active surface</span>
+            <span class="entry-label">evidence boundary</span>
             <div>
-              <strong class="entry-title">V3_Epistemic</strong>
+              <strong class="entry-title">Raw Data to canonical IDs</strong>
               <p class="entry-body">
-                The current release surface centers on the V3_Epistemic workspace, with frontend
-                chunks and a static map generated from the strict pipeline.
+                The active RDL repository treats <code>Raw Data/</code> as the evidence boundary and
+                resolves public exports for firms, clients, lobbyists, government entities, filings,
+                contracts comparisons, issue mappings, text analysis, and revolving-door records.
               </p>
             </div>
-            <span class="entry-meta">repo</span>
+            <span class="entry-meta">source</span>
           </article>
           <article class="entry-row reveal">
-            <span class="entry-label">map artifact</span>
+            <span class="entry-label">data model</span>
+            <div>
+              <strong class="entry-title">Canonical entity and edge universe</strong>
+              <p class="entry-body">
+                Stage 02 writes the canonical entity and edge universe. Later stages derive issue
+                profiles, embeddings, graph metrics, communities, gap leads, and revolving-door
+                vectors from that shared base rather than from disconnected tables.
+              </p>
+            </div>
+            <span class="entry-meta">model</span>
+          </article>
+          <article class="entry-row reveal">
+            <span class="entry-label">gravity model</span>
+            <div>
+              <strong class="entry-title">UMAP, Louvain, KDE, and gap score</strong>
+              <p class="entry-body">
+                UMAP gives the 2D issue space, Louvain finds graph communities, and spending-weighted
+                KDE is compared against entity-count density. A high gap score means high money with
+                a thinner organized community, not proof of capture.
+              </p>
+            </div>
+            <span class="entry-meta">analysis</span>
+          </article>
+          <article class="entry-row reveal">
+            <span class="entry-label">map surface</span>
             <div>
               <strong class="entry-title">V3_Epistemic/output/reliable_influence_map.html</strong>
               <p class="entry-body">
-                The static map is the primary inspection surface for the public release.
+                The repository's active static map artifact loads chunked frontend payloads:
+                <code>scene_payload.json</code>, <code>search_index.json</code>,
+                <code>adjacency_topk.json</code>, and <code>frontend_manifest.json</code>.
               </p>
             </div>
-            <span class="entry-meta">HTML</span>
+            <span class="entry-meta">Three.js</span>
           </article>
           <article class="entry-row reveal">
-            <span class="entry-label">strict run</span>
+            <span class="entry-label">release command</span>
             <div>
-              <strong class="entry-title">python -m V3_Epistemic.pipeline.cli run</strong>
+              <strong class="entry-title">python -m V3_Epistemic.pipeline.cli run --strict</strong>
               <p class="entry-body">
-                The canonical pipeline uses <code>--raw-dir "Raw Data"</code>,
-                <code>--out-dir V3_Epistemic/data</code>, and <code>--strict</code>.
+                The canonical strict run uses <code>--raw-dir "Raw Data"</code> and
+                <code>--out-dir V3_Epistemic/data</code>, then validates reliable outputs, frontend
+                manifest paths, and strict pipeline validation before release.
               </p>
             </div>
             <span class="entry-meta">Python</span>
@@ -146,76 +325,112 @@
         </div>
       </section>
 
-      <section class="panel-section" aria-labelledby="validation-title">
-        <p class="section-number section-kicker reveal">03</p>
+      <section class="panel-section rdl-animation-section" aria-labelledby="animation-title">
+        <p class="section-number section-kicker reveal">04</p>
         <div class="section-title reveal">
-          <h2 id="validation-title">Release checks.</h2>
+          <h2 id="animation-title">What the animation is showing.</h2>
         </div>
         <div class="split-layout">
           <div class="stack reveal">
             <p class="large-statement">
-              Built as an evidence-weighted map, not a rhetorical diagram.
+              The animation is an explanation layer for the project, not a substitute for the full map.
             </p>
           </div>
           <div class="rich-copy reveal">
             <p>
-              The local release certificate records a passing public preflight, 7 passing tests,
-              strict pipeline validation, resolved frontend manifest paths, and an active map that
-              loads from a local HTTP server.
+              The hero visual compresses two things: the completed Think Tanks DC transparency
+              surface and the RDL issue-space graph. It shows how sources become records, records
+              become canonical entities, and entities become searchable relationships with visible
+              uncertainty.
             </p>
             <p>
-              The public-use caveat is explicit: the map is exploratory and correlational. It is not
-              a causal claim, not a claim about intent or wrongdoing, and not evidence that missing
-              relationships do not exist.
+              Revolving-door arcs represent resolved career-transition records. Node size reflects
+              observed spend or filing volume where available, while government nodes use target-side
+              lobbying exposure rather than agency spending.
             </p>
           </div>
         </div>
       </section>
 
-      <section class="panel-section" aria-labelledby="use-title">
-        <p class="section-number section-kicker reveal">04</p>
+      <section class="panel-section" aria-labelledby="report-title">
+        <p class="section-number section-kicker reveal">05</p>
         <div class="section-title reveal">
-          <h2 id="use-title">What it is useful for.</h2>
+          <h2 id="report-title">Reports, artifacts, and public context.</h2>
         </div>
         <div class="section-content entry-list">
           <article class="entry-row reveal">
-            <span class="entry-label">inspection</span>
+            <span class="entry-label">public essay</span>
             <div>
-              <strong class="entry-title">Relationship prominence</strong>
+              <strong class="entry-title">Why I Mapped Washington's Money</strong>
               <p class="entry-body">
-                The map helps readers inspect which relationships are visible in the collected
-                records and how confidence metadata shapes prominence.
+                The LinkedIn post explains the intellectual arc from Think Tanks DC to the RDL/DC
+                Epistemic Gravity Map, including the self-audit that corrected the funding label.
               </p>
             </div>
-            <span class="entry-meta">evidence</span>
+            <a class="source-link" href="https://www.linkedin.com/posts/umarzafar1_think-opensecrets-python-ugcPost-7467654452020297728-fIsA/" target="_blank" rel="noopener noreferrer">
+              open post
+              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"></path></svg>
+            </a>
           </article>
           <article class="entry-row reveal">
-            <span class="entry-label">research workflow</span>
+            <span class="entry-label">uploaded report</span>
             <div>
-              <strong class="entry-title">Reproducible static release</strong>
+              <strong class="entry-title">Google Drive report</strong>
               <p class="entry-body">
-                The pipeline, tests, and static artifacts make the work easier to audit, rerun, and
-                publish without a fragile application server.
+                A fuller report and visual context file for the Washington money-mapping work.
+                Public access is controlled by Google Drive.
               </p>
             </div>
-            <span class="entry-meta">release</span>
+            <a class="source-link" href="https://drive.google.com/file/d/1QXtP1EtB2T1tWEDOz5qtcDoxzyRGrbdn/view" target="_blank" rel="noopener noreferrer">
+              open report
+              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"></path></svg>
+            </a>
           </article>
           <article class="entry-row reveal">
-            <span class="entry-label">limits</span>
+            <span class="entry-label">release report</span>
             <div>
-              <strong class="entry-title">Temporal caveat</strong>
+              <strong class="entry-title">PUBLIC_RELEASE_CERTIFICATE.md</strong>
               <p class="entry-body">
-                The 2025 coverage is partial unless refreshed, so the map should be treated as a
-                documented research surface rather than a live definitive database.
+                Records the certified public surface, the latest known checks, the static map and
+                payload files, and the caveats that govern public interpretation.
               </p>
             </div>
-            <span class="entry-meta">scope</span>
+            <a class="source-link" href="https://github.com/Omarzaf/RDL/blob/main/PUBLIC_RELEASE_CERTIFICATE.md" target="_blank" rel="noopener noreferrer">
+              release notes
+              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"></path></svg>
+            </a>
           </article>
         </div>
       </section>
 
+      <section class="panel-section" aria-labelledby="limits-title">
+        <p class="section-number section-kicker reveal">06</p>
+        <div class="section-title reveal">
+          <h2 id="limits-title">How to read it responsibly.</h2>
+        </div>
+        <div class="split-layout">
+          <div class="stack reveal">
+            <p class="large-statement">
+              The release caveats are part of the product, not a footnote under it.
+            </p>
+          </div>
+          <div class="rich-copy reveal">
+            <p>
+              The map is exploratory and correlational. A high gap score means high money and lower
+              organized community density in the modeled space; it does not prove influence,
+              causality, intent, coordination, corruption, or wrongdoing.
+            </p>
+            <p>
+              Government target-side exposure is not government spending. Revolving-door records are
+              transition records or events unless deduplication proves unique people. The 2025 slice
+              remains partial unless refreshed source exports and validation reports say otherwise.
+            </p>
+          </div>
+        </div>
+      </section>
+
       <section class="contact-section" aria-labelledby="contact-title">
-        <p class="section-number reveal">05</p>
+        <p class="section-number reveal">07</p>
         <div class="contact-copy reveal">
           <h2 id="contact-title">For policy systems that need inspectable evidence.</h2>
           <p>
