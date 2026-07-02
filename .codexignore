@@ -9,6 +9,7 @@ coverage/
 .vercel/
 .env*
 review-artifacts/
+audits/
 Website Launch Hardening Recap.pdf
 *.png
 *.jpg

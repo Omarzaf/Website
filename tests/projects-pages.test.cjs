@@ -8,7 +8,6 @@ const publicPages = [
   "about.html",
   "work.html",
   "writing.html",
-  "resume.html",
   "projects.html",
   "daadras.html",
   "davis-project.html",
@@ -40,6 +39,11 @@ assert.match(projects, /href="think-tank\.html"/, "projects hub should link to t
 assert.match(projects, /Daadras Foundation/, "projects hub should list Daadras");
 assert.match(projects, /Davis Projects for Peace/, "projects hub should list Davis");
 assert.match(projects, /RDL Evidence Map/, "projects hub should list the Think Tank GitHub project");
+assert.match(
+  projects,
+  /class="contact-section contact-section--left"[\s\S]*class="contact-copy contact-copy--left reveal"/,
+  "projects hub contact text should use the left-aligned contact modifier"
+);
 
 const daadras = fs.readFileSync(path.join(root, "daadras.html"), "utf8");
 assert.match(daadras, /Project Salam/, "Daadras page should cover Project Salam");
@@ -49,11 +53,21 @@ assert.match(
   "Daadras page should use a direct local-trust tagline"
 );
 assert.match(daadras, /data-impact-milestone/g, "Daadras page should keep the milestone timeline");
+assert.match(
+  daadras,
+  /class="contact-section contact-section--left"[\s\S]*class="contact-copy contact-copy--left reveal"/,
+  "Daadras contact text should use the left-aligned contact modifier"
+);
 
 const davis = fs.readFileSync(path.join(root, "davis-project.html"), "utf8");
 assert.match(davis, /Davis Projects for Peace/, "Davis page should identify the project");
 assert.match(davis, /Pashtun and Punjabi youth/, "Davis page should describe the communities");
 assert.match(davis, /public performance/, "Davis page should include the public performance deliverable");
+assert.match(
+  davis,
+  /class="contact-section contact-section--left"[\s\S]*class="contact-copy contact-copy--left reveal"/,
+  "Davis contact text should use the left-aligned contact modifier"
+);
 
 const thinkTank = fs.readFileSync(path.join(root, "think-tank.html"), "utf8");
 assert.match(thinkTank, /RDL Evidence Map/, "Think Tank page should use the local project title");
@@ -78,6 +92,11 @@ assert.match(thinkTank, /strict pipeline validation/, "Think Tank page should in
 assert.match(thinkTank, /correlational/, "Think Tank page should include public-use caveats");
 assert.match(thinkTank, /data-rdl-map-preview/, "Think Tank page should include the RDL animated map preview hook");
 assert.match(thinkTank, /PUBLIC_RELEASE_CERTIFICATE\.md/, "Think Tank page should link to the public release certificate");
+assert.match(
+  thinkTank,
+  /class="contact-section contact-section--left"[\s\S]*class="contact-copy contact-copy--left reveal"/,
+  "Think Tank contact text should use the left-aligned contact modifier"
+);
 assert.doesNotMatch(thinkTank, /docs\/METHODOLOGY\.md/, "Think Tank page should omit the methodology report row");
 assert.doesNotMatch(thinkTank, /docs\/DATA_PROVENANCE\.md/, "Think Tank page should omit the data provenance report row");
 assert.doesNotMatch(thinkTank, /docs\/INTERPRETATION_GUIDE\.md/, "Think Tank page should omit the interpretation guide report row");
@@ -86,7 +105,8 @@ assert.match(thinkTank, /Revolving-door arcs/, "Think Tank page should explain t
 
 const index = fs.readFileSync(path.join(root, "index.html"), "utf8");
 assert.match(index, /href="projects\.html"[\s\S]*view projects/, "homepage field-work CTA should point to projects");
-assert.match(index, /class="hero-cv-button" href="resume\.html">view CV<\/a>/, "homepage dog area should link to the CV page");
+assert.match(index, /href="assets\/G-Resume_2\.pdf"[\s\S]*Open for Work - CV/, "homepage availability chip should link to the CV PDF");
+assert.doesNotMatch(index, /href="resume\.html"|hero-cv-button|>view CV<\/a>/, "homepage should remove the standalone CV page route");
 assert.doesNotMatch(index, /href="impact\.html"[\s\S]*view impact/, "homepage should not keep the old impact CTA");
 
 const writing = fs.readFileSync(path.join(root, "writing.html"), "utf8");
@@ -97,18 +117,28 @@ for (const slug of ["tokenmaxxer", "wholesale-production-of-english", "philosoph
 assert.doesNotMatch(writing, /<strong class="entry-title">personal<\/strong>/, "writing voice rows should be replaced by article cards");
 
 const buildTool = fs.readFileSync(path.join(root, "tools/build-public-site.cjs"), "utf8");
-for (const page of ["resume.html", "projects.html", "daadras.html", "davis-project.html", "think-tank.html"]) {
+for (const page of ["projects.html", "daadras.html", "davis-project.html", "think-tank.html"]) {
   assert.match(buildTool, new RegExp(`"${page}"`), `build should copy ${page}`);
 }
+assert.doesNotMatch(buildTool, /"resume\.html"/, "build should no longer publish the removed CV page");
 assert.doesNotMatch(buildTool, /"impact\.html"/, "build should no longer publish impact.html");
 
 const staticCheck = fs.readFileSync(path.join(root, "tools/check-static-site.cjs"), "utf8");
-for (const page of ["resume.html", "projects.html", "daadras.html", "davis-project.html", "think-tank.html"]) {
+for (const page of ["projects.html", "daadras.html", "davis-project.html", "think-tank.html"]) {
   assert.match(staticCheck, new RegExp(`"${page}"`), `static checker should allow ${page}`);
 }
+assert.doesNotMatch(staticCheck, /"resume\.html"/, "static checker should no longer allow the removed CV page");
 assert.doesNotMatch(staticCheck, /"impact\.html"/, "static checker should no longer allow impact.html");
 
 const styles = fs.readFileSync(path.join(root, "styles.css"), "utf8");
+assert.match(writing, /<div class="filter-list reveal" aria-label="Filter writing by topic">[\s\S]*data-filter-control="postcolonial">postcolonial<\/button>/, "writing filters should use the compact base filter list");
+assert.doesNotMatch(writing, /filter-list--visual[\s\S]*Filter writing by topic/, "writing filters should not inherit the work-page visual photo column");
+assert.match(styles, /\.filter-list\s*\{[\s\S]*align-content:\s*start;[\s\S]*\}/, "base filter lists should stay compact");
+assert.match(styles, /\.filter-list--visual\s*\{[\s\S]*grid-template-rows:\s*repeat\(5,\s*auto\) minmax\(360px,\s*1fr\)/, "only visual filter lists should stretch to reserve photo space");
+assert.match(styles, /\.contact-copy--left\s*\{[\s\S]*grid-column:\s*1 \/ 3;[\s\S]*justify-self:\s*start/, "project contact copy should be able to align left");
+assert.match(styles, /\.nav-menu--projects \.nav-menu__panel\s*\{[\s\S]*min-width:\s*218px/, "projects dropdown should stay compact while fitting named project links");
+assert.match(styles, /\.nav-menu__panel a\s*\{[\s\S]*font-size:\s*12px/, "dropdown rows should use smaller text");
+assert.match(styles, /\.nav-menu__panel a\s*\{[\s\S]*white-space:\s*nowrap/, "dropdown rows should avoid awkward project-name wraps");
 assert.match(
   styles,
   /@media \(max-width: 720px\)[\s\S]*\.nav-menu--projects \.nav-menu__panel\s*\{[\s\S]*right:\s*auto;[\s\S]*left:\s*0;/,

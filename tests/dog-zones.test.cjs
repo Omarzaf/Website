@@ -8,7 +8,6 @@ const htmlFiles = [
   "about.html",
   "work.html",
   "writing.html",
-  "resume.html",
   "projects.html",
   "daadras.html",
   "davis-project.html",

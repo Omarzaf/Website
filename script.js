@@ -8,7 +8,14 @@
   const themeToggles = Array.from(document.querySelectorAll("[data-theme-toggle]"));
   const themeStorageKey = "uz-theme";
   const policyGlobeStates = [];
+  const contactFieldStates = [];
   const degree = Math.PI / 180;
+  const contactFieldClusters = [
+    { x: 0.56, y: 0.32, radius: 78, spokes: 34, color: "accent", phase: 0.1 },
+    { x: 0.46, y: 0.53, radius: 88, spokes: 42, color: "muted", phase: 1.7 },
+    { x: 0.67, y: 0.51, radius: 104, spokes: 28, color: "green", phase: 2.8 },
+    { x: 0.55, y: 0.69, radius: 70, spokes: 16, color: "muted", phase: 4.2 },
+  ];
 
   const field = {
     active: false,
@@ -78,11 +85,13 @@
     if (document.hidden) {
       pauseSignalField();
       pausePolicyGlobes();
+      pauseContactFields();
       return;
     }
 
     requestSignalFrame();
     restartPolicyGlobes();
+    restartContactFields();
   }
 
   function getStoredTheme() {
@@ -122,6 +131,7 @@
     root.dataset.theme = nextTheme;
     updateThemeControls(nextTheme);
     updateCursorGold();
+    restartContactFields();
   }
 
   function initThemeToggle() {
@@ -427,6 +437,24 @@
   function initNavMenus() {
     const menus = Array.from(document.querySelectorAll(".nav-menu"));
 
+    const closeMenu = (menu) => {
+      const trigger = menu.querySelector(".nav-menu__trigger");
+
+      menu.classList.remove("is-open");
+
+      if (trigger) {
+        trigger.setAttribute("aria-expanded", "false");
+      }
+    };
+
+    const closeOtherMenus = (activeMenu) => {
+      menus.forEach((menu) => {
+        if (menu !== activeMenu) {
+          closeMenu(menu);
+        }
+      });
+    };
+
     menus.forEach((menu) => {
       const trigger = menu.querySelector(".nav-menu__trigger");
 
@@ -435,6 +463,11 @@
       }
 
       const setExpanded = (isExpanded) => {
+        if (isExpanded) {
+          closeOtherMenus(menu);
+        }
+
+        menu.classList.toggle("is-open", isExpanded);
         trigger.setAttribute("aria-expanded", String(isExpanded));
       };
 
@@ -452,6 +485,37 @@
           setExpanded(false);
           trigger.blur();
         }
+      });
+    });
+
+    document.addEventListener("pointerdown", (event) => {
+      if (menus.some((menu) => menu.contains(event.target))) {
+        return;
+      }
+
+      menus.forEach(closeMenu);
+    });
+  }
+
+  function initLogoBannerControls() {
+    const banners = Array.from(document.querySelectorAll(".logo-banner"));
+
+    banners.forEach((banner) => {
+      const control = banner.querySelector("[data-logo-banner-toggle]");
+      const track = banner.querySelector(".logo-banner__track");
+
+      if (!control || !track) {
+        return;
+      }
+
+      const setPaused = (isPaused) => {
+        banner.classList.toggle("is-paused", isPaused);
+        control.setAttribute("aria-pressed", String(isPaused));
+        control.textContent = isPaused ? "play" : "pause";
+      };
+
+      control.addEventListener("click", () => {
+        setPaused(!banner.classList.contains("is-paused"));
       });
     });
   }
@@ -554,6 +618,64 @@
       });
 
       activate(nodes.find((node) => node.classList.contains("is-active")) || nodes[0]);
+    });
+  }
+
+  function initAcademicProgressionCharts() {
+    const charts = Array.from(document.querySelectorAll("[data-academic-progression]"));
+
+    charts.forEach((chart) => {
+      const keys = Array.from(chart.querySelectorAll("[data-progression-field]"));
+      const series = Array.from(chart.querySelectorAll("[data-progression-series]"));
+      const summary = chart.querySelector(".progression-summary");
+      const defaultSummary = summary ? summary.textContent.trim() : "";
+      let pinnedField = "";
+
+      if (!keys.length || !series.length) {
+        return;
+      }
+
+      function render(field) {
+        chart.classList.toggle("has-active", Boolean(field));
+
+        series.forEach((line) => {
+          line.classList.toggle("is-active", line.dataset.progressionSeries === field);
+        });
+
+        keys.forEach((key) => {
+          const isActive = key.dataset.progressionField === field;
+          key.classList.toggle("is-active", isActive);
+          key.setAttribute("aria-pressed", String(Boolean(pinnedField) && isActive));
+        });
+
+        if (summary) {
+          const activeKey = keys.find((key) => key.dataset.progressionField === field);
+          summary.textContent = activeKey?.dataset.progressionNote || defaultSummary;
+        }
+      }
+
+      function preview(field) {
+        render(field || pinnedField);
+      }
+
+      function clearPreview() {
+        render(pinnedField);
+      }
+
+      keys.forEach((key) => {
+        const field = key.dataset.progressionField || "";
+
+        key.addEventListener("pointerenter", () => preview(field));
+        key.addEventListener("focus", () => preview(field));
+        key.addEventListener("pointerleave", clearPreview);
+        key.addEventListener("blur", clearPreview);
+        key.addEventListener("click", () => {
+          pinnedField = pinnedField === field ? "" : field;
+          render(pinnedField);
+        });
+      });
+
+      render("");
     });
   }
 
@@ -1003,6 +1125,173 @@
     });
   }
 
+  function readContactFieldColors() {
+    const styles = window.getComputedStyle(root);
+    const read = (name, fallback) => styles.getPropertyValue(name).trim() || fallback;
+
+    return {
+      accent: read("--accent", "#ffb31a"),
+      green: read("--availability-green", "#9fcd72"),
+      line: read("--muted", "#aeb4ad"),
+      muted: read("--faint", "#8a8a8a"),
+      node: read("--text", "#f7f3ea"),
+    };
+  }
+
+  function resizeContactField(state) {
+    const rect = state.canvas.getBoundingClientRect();
+    const ratio = Math.min(window.devicePixelRatio || 1, 2);
+    const fallbackWidth = state.canvas.parentElement ? state.canvas.parentElement.clientWidth : 320;
+    const fallbackHeight = state.canvas.parentElement ? state.canvas.parentElement.clientHeight : 360;
+
+    state.width = Math.max(320, Math.round(rect.width || fallbackWidth || 320));
+    state.height = Math.max(360, Math.round(rect.height || fallbackHeight || 360));
+    state.canvas.width = Math.round(state.width * ratio);
+    state.canvas.height = Math.round(state.height * ratio);
+    state.context.setTransform(ratio, 0, 0, ratio, 0, 0);
+  }
+
+  function drawContactNode(drawing, x, y, size, color, alpha) {
+    drawing.globalAlpha = alpha;
+    drawing.fillStyle = color;
+    drawing.beginPath();
+    drawing.arc(x, y, size, 0, Math.PI * 2);
+    drawing.fill();
+  }
+
+  function drawContactCluster(state, cluster, colors, elapsed) {
+    const drawing = state.context;
+    const scale = Math.min(state.width, state.height) / 900;
+    const centerX = state.width * cluster.x + Math.sin(elapsed * 0.16 + cluster.phase) * 12;
+    const centerY = state.height * cluster.y + Math.cos(elapsed * 0.13 + cluster.phase) * 10;
+    const radius = cluster.radius * Math.max(0.76, Math.min(1.2, scale + 0.44));
+    const clusterColor = colors[cluster.color] || colors.accent;
+
+    drawContactNode(drawing, centerX, centerY, cluster.color === "accent" ? 6.5 : 5.5, colors.muted, 0.68);
+
+    for (let index = 0; index < cluster.spokes; index += 1) {
+      const unit = index / cluster.spokes;
+      const angle = unit * Math.PI * 2 + elapsed * 0.08 + cluster.phase;
+      const wobble = Math.sin(elapsed * 0.7 + index * 1.9) * 0.12;
+      const distance = radius * (0.44 + ((index * 17) % 41) / 56 + wobble);
+      const x = centerX + Math.cos(angle) * distance;
+      const y = centerY + Math.sin(angle) * distance;
+      const color = index % 5 === 0 ? colors.green : clusterColor;
+      const alpha = cluster.color === "accent" ? 0.9 : 0.62;
+
+      drawing.globalAlpha = 0.14;
+      drawing.strokeStyle = colors.line;
+      drawing.lineWidth = 1;
+      drawing.beginPath();
+      drawing.moveTo(centerX, centerY);
+      drawing.lineTo(x, y);
+      drawing.stroke();
+
+      if (index % 4 === 0) {
+        const nextAngle = angle + 0.54;
+        const nextX = centerX + Math.cos(nextAngle) * distance * 0.86;
+        const nextY = centerY + Math.sin(nextAngle) * distance * 0.86;
+
+        drawing.globalAlpha = 0.12;
+        drawing.beginPath();
+        drawing.moveTo(x, y);
+        drawing.lineTo(nextX, nextY);
+        drawing.stroke();
+      }
+
+      drawContactNode(drawing, x, y, index % 7 === 0 ? 2.3 : 1.9, color, alpha);
+    }
+  }
+
+  function drawContactField(state, timestamp) {
+    if (!reduceMotion.matches && timestamp - state.lastDraw < 32) {
+      state.frame = window.requestAnimationFrame((nextTimestamp) => drawContactField(state, nextTimestamp));
+      return;
+    }
+
+    const drawing = state.context;
+    const elapsed = reduceMotion.matches ? 4 : (timestamp - state.startedAt) / 1000;
+    const colors = readContactFieldColors();
+
+    state.frame = 0;
+    state.lastDraw = timestamp;
+    drawing.clearRect(0, 0, state.width, state.height);
+
+    drawing.globalAlpha = 0.035;
+    drawing.fillStyle = colors.accent;
+    drawing.fillRect(state.width * 0.42, 0, state.width * 0.58, state.height);
+    drawing.globalAlpha = 1;
+
+    contactFieldClusters.forEach((cluster) => drawContactCluster(state, cluster, colors, elapsed));
+    drawing.globalAlpha = 1;
+
+    if (!reduceMotion.matches && !document.hidden) {
+      state.frame = window.requestAnimationFrame((nextTimestamp) => drawContactField(state, nextTimestamp));
+    }
+  }
+
+  function startContactField(state) {
+    if (state.frame) {
+      window.cancelAnimationFrame(state.frame);
+      state.frame = 0;
+    }
+
+    resizeContactField(state);
+    state.startedAt = window.performance.now();
+    state.lastDraw = 0;
+    drawContactField(state, state.startedAt);
+  }
+
+  function pauseContactFields() {
+    contactFieldStates.forEach((state) => {
+      if (!state.frame) {
+        return;
+      }
+
+      window.cancelAnimationFrame(state.frame);
+      state.frame = 0;
+    });
+  }
+
+  function restartContactFields() {
+    contactFieldStates.forEach(startContactField);
+  }
+
+  function initContactFields() {
+    const contactCanvases = Array.from(document.querySelectorAll("[data-contact-field]"));
+
+    contactCanvases.forEach((contactCanvas) => {
+      const drawing = contactCanvas.getContext("2d");
+
+      if (!drawing) {
+        return;
+      }
+
+      const state = {
+        canvas: contactCanvas,
+        context: drawing,
+        frame: 0,
+        height: 0,
+        lastDraw: 0,
+        observer: null,
+        startedAt: window.performance.now(),
+        width: 0,
+      };
+
+      if (typeof ResizeObserver === "function") {
+        state.observer = new ResizeObserver(() => startContactField(state));
+        state.observer.observe(contactCanvas);
+      }
+
+      contactFieldStates.push(state);
+      startContactField(state);
+    });
+
+    if (contactFieldStates.length && typeof ResizeObserver !== "function") {
+      window.addEventListener("resize", restartContactFields);
+    }
+  }
+
   function bindMotionSetting() {
     const restart = () => {
       if (reduceMotion.matches && field.animationId) {
@@ -1013,6 +1302,7 @@
       }
 
       restartPolicyGlobes();
+      restartContactFields();
     };
 
     if (typeof reduceMotion.addEventListener === "function") {
@@ -1027,9 +1317,12 @@
   initReveals();
   initFilterGroups();
   initNavMenus();
+  initLogoBannerControls();
   initTabs();
   initEducationMaps();
+  initAcademicProgressionCharts();
   initPhotoGallery();
   initPolicyGlobes();
+  initContactFields();
   bindMotionSetting();
 })();

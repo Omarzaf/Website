@@ -9,7 +9,6 @@ const logoTrackRule = styles.match(/\.logo-banner__track\s*\{([\s\S]*?)\n\}/)?.[
 const logoTileRule = styles.match(/\.logo-tile\s*\{([\s\S]*?)\n\}/)?.[1] ?? "";
 const logoMarkRule = styles.match(/\.logo-tile__mark\s*\{([\s\S]*?)\n\}/)?.[1] ?? "";
 const logoMarkImageRule = styles.match(/\.logo-tile__mark img\s*\{([\s\S]*?)\n\}/)?.[1] ?? "";
-const heroCvButtonRule = styles.match(/\.hero-cv-button\s*\{([\s\S]*?)\n\}/)?.[1] ?? "";
 const logoAssets = [
   "assets/logos/sais.png",
   "assets/logos/snf-agora.jpg",
@@ -23,20 +22,20 @@ const logoAssets = [
 
 assert.match(
   source,
-  /<a class="availability-status" href="assets\/G-Resume_2\.pdf"[^>]*>[\s\S]*class="availability-light"[\s\S]*Open for Work[\s\S]*<\/a>/,
-  "homepage hero should link the availability status to the CV"
+  /<a class="availability-status" href="assets\/G-Resume_2\.pdf"[^>]*aria-label="Open CV PDF"[^>]*>[\s\S]*class="availability-light"[\s\S]*Open for Work - CV[\s\S]*<\/a>/,
+  "homepage hero should link the availability status to the CV PDF"
 );
 
-assert.match(
+assert.doesNotMatch(
   source,
-  /<div class="hero-actions" aria-label="Primary actions">[\s\S]*<\/div>\s*<a class="hero-cv-button" href="resume\.html">view CV<\/a>/,
-  "homepage hero copy should include a compact left-aligned link to the CV page"
+  /hero-cv-button|href="resume\.html"|>view CV<\/a>/,
+  "homepage hero should remove the standalone CV page button and route"
 );
 
 assert.match(
   source,
   /<aside class="hero-visual reveal" aria-hidden="true">[\s\S]*data-dog-zone="hero"/,
-  "homepage dog visual should remain decorative after the CV link"
+  "homepage dog visual should remain decorative after the primary actions"
 );
 
 assert.match(
@@ -70,20 +69,14 @@ assert.match(
 );
 
 assert.doesNotMatch(
-  heroCvButtonRule,
-  /position:\s*absolute|left:\s*0|top:\s*0/,
-  "homepage CV button should not anchor to the right-side dog visual"
-);
-
-assert.match(
-  heroCvButtonRule,
-  /width:\s*max-content[\s\S]*margin-top:\s*10px/,
-  "homepage CV button should sit as a compact left hero action"
+  styles,
+  /\.hero-cv-button\b/,
+  "stylesheet should not keep the removed standalone CV button style"
 );
 
 assert.match(
   source,
-  /<section class="logo-banner reveal" aria-label="Network and association logos">[\s\S]*Johns Hopkins SAIS[\s\S]*Daadras Foundation[\s\S]*Forman Christian College/,
+  /<section class="logo-banner reveal" aria-label="Network and association logos">[\s\S]*data-logo-banner-toggle[\s\S]*Johns Hopkins SAIS[\s\S]*Daadras Foundation[\s\S]*Forman Christian College/,
   "homepage should replace the proof line with a named association logo banner"
 );
 
@@ -148,6 +141,24 @@ assert.match(
   logoTrackRule,
   /animation:\s*logo-roll 56s linear infinite/,
   "homepage logo banner should continuously roll"
+);
+
+assert.match(
+  styles,
+  /\.logo-banner\.is-paused \.logo-banner__track\s*\{[\s\S]*animation-play-state:\s*paused/,
+  "homepage logo banner should expose a user-controlled pause state"
+);
+
+assert.match(
+  styles,
+  /\.logo-banner__control\s*\{[\s\S]*min-height:\s*28px/,
+  "homepage logo banner pause control should be compact but visible"
+);
+
+assert.match(
+  fs.readFileSync(path.join(__dirname, "..", "script.js"), "utf8"),
+  /function initLogoBannerControls\(\)[\s\S]*data-logo-banner-toggle[\s\S]*aria-pressed[\s\S]*initLogoBannerControls\(\);/,
+  "script should wire the logo banner pause/play control"
 );
 
 assert.match(

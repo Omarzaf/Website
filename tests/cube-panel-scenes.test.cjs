@@ -30,10 +30,13 @@ for (const file of htmlFiles) {
 
   const canvasTags = Array.from(source.matchAll(/<canvas\b[^>]*>/gi)).map((match) => match[0]);
   const unexpectedCanvases = canvasTags.filter(
-    (tag) => !tag.includes('id="signal-canvas"') && !tag.includes("data-policy-globe")
+    (tag) =>
+      !tag.includes('id="signal-canvas"') &&
+      !tag.includes("data-policy-globe") &&
+      !tag.includes("data-contact-field")
   );
 
-  assert.equal(unexpectedCanvases.length, 0, `${file} should not add panel cube canvases`);
+  assert.equal(unexpectedCanvases.length, 0, `${file} should not add panel cube canvases outside shared decorative layers`);
   assert.match(source, /<canvas id="signal-canvas" aria-hidden="true"><\/canvas>/, `${file} should keep the signal canvas`);
 
   if (file !== "work.html") {

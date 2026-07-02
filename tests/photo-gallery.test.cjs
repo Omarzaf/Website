@@ -8,7 +8,6 @@ const pages = [
   "about.html",
   "work.html",
   "writing.html",
-  "resume.html",
   "projects.html",
   "daadras.html",
   "davis-project.html",
@@ -120,7 +119,7 @@ assert.match(styles, /scroll-padding-top:\s*calc\(var\(--header-height\) \+ 24px
 assert.match(styles, /\.photo-grid/, "styles should define the photo grid");
 assert.match(styles, /\.photo-dialog/, "styles should define the lightbox dialog");
 assert.match(styles, /\.site-nav\s*\{[\s\S]*grid-template-columns:\s*repeat\(3, minmax\(68px, 1fr\)\)/, "site nav should reserve three top-level columns after combining work and writing");
-assert.match(styles, /\.nav-menu:hover \.nav-menu__panel,[\s\S]*\.nav-menu:focus-within \.nav-menu__panel[\s\S]*opacity:\s*1/, "research menu should open on hover and keyboard focus");
+assert.match(styles, /html:not\(\.js\) \.nav-menu:hover \.nav-menu__panel,[\s\S]*\.nav-menu\.is-open \.nav-menu__panel[\s\S]*opacity:\s*1/, "research menu should open through controlled state with a no-js hover fallback");
 assert.match(styles, /\.nav-menu__panel\s*\{[\s\S]*position:\s*absolute/, "research menu should render as an anchored dropdown");
 assert.match(styles, /\.header-social-link--photography\s*\{[\s\S]*background:\s*var\(--signal\)/, "photography icon button should use the yellow signal background");
 assert.match(styles, /\.header-social-link--photography\s*\{[\s\S]*border-color:\s*var\(--signal\)/, "photography icon button should use a yellow border");

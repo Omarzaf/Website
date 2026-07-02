@@ -86,34 +86,37 @@
         </div>
       </section>
 
-      <section class="panel-section" aria-labelledby="bio-title">
+      <section class="panel-section bio-section" aria-labelledby="bio-title">
         <p class="section-number section-kicker reveal">01</p>
         <div class="section-title reveal">
           <h2 id="bio-title">Bio.</h2>
         </div>
-        <div class="split-layout">
-          <div class="stack reveal">
-            <p class="large-statement">
-              Institutions are not abstract to me; they are schools, cities, programs, and the
-              habits they leave behind.
-            </p>
-          </div>
+        <div class="split-layout bio-layout">
+          <figure class="bio-photo reveal">
+            <img
+              src="assets/bio-graduation-family.jpg"
+              alt="Umar Zafar in graduation robes standing with his mentor Lana outdoors."
+              width="876"
+              height="1000"
+              loading="lazy"
+              decoding="async"
+            >
+            <figcaption>I am Umar; next to me is my kind mentor Lana.</figcaption>
+          </figure>
           <div class="rich-copy reveal">
             <p>
-              I completed an MA in International Relations at Johns Hopkins SAIS with a focus on
-              Technology and Innovation Policy. My work connects export controls, cybersecurity,
-              infrastructure resilience, and program design.
+              I completed an MA in International Relations at Johns Hopkins SAIS after moving
+              through political theory, human rights, development, and sustainability. That range
+              gave me one durable question: how institutions decide whose lives become visible,
+              protected, and worth planning around.
             </p>
             <p>
-              Before Washington, I grew up between Pakistani institutions that made education feel
-              both fragile and necessary. That experience shaped the way I read power: through law,
+              At SAIS and through Daadras, that question moved into technology and innovation
+              policy: export controls, cybersecurity, infrastructure resilience, AI governance, and
+              program design. Before Washington, I grew up between Pakistani institutions that made
+              education feel both fragile and necessary, shaping the way I read power through law,
               class, colonial inheritance, organizational incentives, and the lived consequences of
               institutional failure.
-            </p>
-            <p>
-              I do not treat research, writing, and building as separate identities. Research gives
-              language, writing keeps the human cost visible, and prototypes test whether an idea can
-              survive contact with use.
             </p>
           </div>
         </div>
@@ -172,19 +175,80 @@
               The coursework moves from political theory and sociology into applied methods,
               regional security, AI policy, and systems analysis.
             </p>
-            <div class="coursework-mentors" aria-label="Faculty and instructors">
-              <span>Henry Farrell</span>
-              <span>Dipali Mukhopadhyay</span>
-              <span>Jeanette Manfra</span>
-              <span>Anna Broughel</span>
-              <span>Obiora Okafor</span>
-              <span>Ian McCulloh</span>
-              <span>Adam Auerbach</span>
-              <span>Jennifer R. Cole</span>
-              <span>Jonathan Cook</span>
-              <span>Christopher Sands</span>
-              <span>Omer Taspinar</span>
-              <span>Vali Nasr</span>
+            <div class="academic-progression" data-academic-progression aria-labelledby="academic-progression-title">
+              <div class="academic-progression__header">
+                <p class="entry-label">Realms of Knowledge</p>
+                <h3 id="academic-progression-title">Fields over time.</h3>
+              </div>
+              <div class="progression-chart" role="img" aria-labelledby="academic-progression-chart-title academic-progression-summary">
+                <svg viewBox="0 0 540 230" focusable="false">
+                  <title id="academic-progression-chart-title">Realms of Knowledge across fields from 2019 to 2026</title>
+                  <g class="progression-grid" aria-hidden="true">
+                    <line x1="54" y1="44" x2="496" y2="44"></line>
+                    <line x1="54" y1="82" x2="496" y2="82"></line>
+                    <line x1="54" y1="120" x2="496" y2="120"></line>
+                    <line x1="54" y1="158" x2="496" y2="158"></line>
+                  </g>
+                  <g class="progression-axis" aria-hidden="true">
+                    <line x1="54" y1="176" x2="496" y2="176"></line>
+                    <text x="54" y="202">2019</text>
+                    <text x="162" y="202">2020-23</text>
+                    <text x="270" y="202">2021-25</text>
+                    <text x="378" y="202">2024-25</text>
+                    <text x="496" y="202" text-anchor="end">2025-26</text>
+                  </g>
+                  <g class="progression-series progression-series--theory" data-progression-series="theory" aria-label="Political theory">
+                    <path class="progression-line" d="M54 78 C90 64 126 53 162 53 C198 53 234 75 270 83 C306 91 342 98 378 101 C414 104 450 108 486 110"></path>
+                    <circle class="progression-point" cx="54" cy="78" r="3"></circle>
+                    <circle class="progression-point" cx="162" cy="53" r="3"></circle>
+                    <circle class="progression-point" cx="270" cy="83" r="3"></circle>
+                    <circle class="progression-point" cx="378" cy="101" r="3"></circle>
+                    <circle class="progression-point" cx="486" cy="110" r="3"></circle>
+                  </g>
+                  <g class="progression-series progression-series--society" data-progression-series="society" aria-label="Institutions and society">
+                    <path class="progression-line" d="M54 109 C90 94 126 61 162 59 C198 57 234 69 270 71 C306 73 342 88 378 92 C414 96 450 96 486 98"></path>
+                    <circle class="progression-point" cx="54" cy="109" r="3"></circle>
+                    <circle class="progression-point" cx="162" cy="59" r="3"></circle>
+                    <circle class="progression-point" cx="270" cy="71" r="3"></circle>
+                    <circle class="progression-point" cx="378" cy="92" r="3"></circle>
+                    <circle class="progression-point" cx="486" cy="98" r="3"></circle>
+                  </g>
+                  <g class="progression-series progression-series--methods" data-progression-series="methods" aria-label="Methods and evidence">
+                    <path class="progression-line" d="M54 149 C90 143 126 130 162 128 C198 126 234 62 270 53 C306 44 342 70 378 71 C414 72 450 63 486 62"></path>
+                    <circle class="progression-point" cx="54" cy="149" r="3"></circle>
+                    <circle class="progression-point" cx="162" cy="128" r="3"></circle>
+                    <circle class="progression-point" cx="270" cy="53" r="3"></circle>
+                    <circle class="progression-point" cx="378" cy="71" r="3"></circle>
+                    <circle class="progression-point" cx="486" cy="62" r="3"></circle>
+                  </g>
+                  <g class="progression-series progression-series--security" data-progression-series="security" aria-label="Security and order">
+                    <path class="progression-line" d="M54 158 C90 153 126 141 162 139 C198 137 234 126 270 122 C306 118 342 60 378 53 C414 46 450 62 486 65"></path>
+                    <circle class="progression-point" cx="54" cy="158" r="3"></circle>
+                    <circle class="progression-point" cx="162" cy="139" r="3"></circle>
+                    <circle class="progression-point" cx="270" cy="122" r="3"></circle>
+                    <circle class="progression-point" cx="378" cy="53" r="3"></circle>
+                    <circle class="progression-point" cx="486" cy="65" r="3"></circle>
+                  </g>
+                  <g class="progression-series progression-series--systems" data-progression-series="systems" aria-label="AI and systems">
+                    <path class="progression-line" d="M54 169 C90 167 126 162 162 161 C198 160 234 145 270 140 C306 135 342 91 378 83 C414 75 450 52 486 44"></path>
+                    <circle class="progression-point" cx="54" cy="169" r="3"></circle>
+                    <circle class="progression-point" cx="162" cy="161" r="3"></circle>
+                    <circle class="progression-point" cx="270" cy="140" r="3"></circle>
+                    <circle class="progression-point" cx="378" cy="83" r="3"></circle>
+                    <circle class="progression-point" cx="486" cy="44" r="3"></circle>
+                  </g>
+                </svg>
+              </div>
+              <div class="progression-legend" aria-label="Academic fields">
+                <button class="progression-key progression-key--theory" type="button" data-progression-field="theory" data-progression-note="Theory peaks early and remains the institutional lens under later policy work." aria-pressed="false">theory</button>
+                <button class="progression-key progression-key--society" type="button" data-progression-field="society" data-progression-note="Society becomes the bridge from Lahore coursework into policy analysis." aria-pressed="false">society</button>
+                <button class="progression-key progression-key--methods" type="button" data-progression-field="methods" data-progression-note="Methods turn argument into evidence through design, statistics, R, and fieldwork." aria-pressed="false">methods</button>
+                <button class="progression-key progression-key--security" type="button" data-progression-field="security" data-progression-note="Security grows through cyberpolicy, world order, rights, and regional strategy." aria-pressed="false">security</button>
+                <button class="progression-key progression-key--systems" type="button" data-progression-field="systems" data-progression-note="AI systems carry the governance, energy, climate, and infrastructure layer." aria-pressed="false">AI systems</button>
+              </div>
+              <p id="academic-progression-summary" class="progression-summary" data-progression-summary aria-live="polite">
+                Theory and society form the base; methods, security, and AI systems rise.
+              </p>
             </div>
           </div>
 
@@ -377,8 +441,11 @@
         </div>
       </section>
 
-      <section class="contact-section contact-mosaic" aria-labelledby="contact-title">
+      <section class="contact-section contact-mosaic" aria-labelledby="contact-title" data-contact-animation>
         <p class="section-number reveal">04</p>
+        <div class="contact-field" aria-hidden="true">
+          <canvas data-contact-field></canvas>
+        </div>
         <div class="contact-copy contact-mosaic-copy reveal">
           <h2 id="contact-title">For research, writing, and public-purpose work.</h2>
           <p>

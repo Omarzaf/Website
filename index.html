@@ -88,9 +88,9 @@
       <section class="hero" aria-labelledby="hero-title">
         <div class="hero-copy reveal">
           <p class="section-number">00</p>
-          <a class="availability-status" href="assets/G-Resume_2.pdf" target="_blank" rel="noopener noreferrer" aria-label="Open CV">
+          <a class="availability-status" href="assets/G-Resume_2.pdf" target="_blank" rel="noopener noreferrer" aria-label="Open CV PDF">
             <span class="availability-light" aria-hidden="true"></span>
-            <span>Open for Work</span>
+            <span>Open for Work - CV</span>
           </a>
           <h1 id="hero-title">I study how <br class="mobile-break">technical systems <br class="mobile-break">become political <br class="mobile-break">institutions.</h1>
           <p class="hero-body">
@@ -111,7 +111,6 @@
               </svg>
             </a>
           </div>
-          <a class="hero-cv-button" href="resume.html">view CV</a>
         </div>
         <aside class="hero-visual reveal" aria-hidden="true">
           <div class="dog-zone dog-zone--hero" data-dog-zone="hero" aria-hidden="true"></div>
@@ -119,6 +118,7 @@
       </section>
 
       <section class="logo-banner reveal" aria-label="Network and association logos">
+        <button class="logo-banner__control" type="button" data-logo-banner-toggle aria-pressed="false">pause</button>
         <div class="logo-banner__viewport">
           <div class="logo-banner__track">
             <div class="logo-banner__group">
@@ -166,7 +166,7 @@
                 <span class="logo-tile__mark"><img src="assets/logos/fccu.png" alt=""></span>
                 <span class="logo-tile__copy"><strong>Forman Christian College</strong><em>Pakistan</em></span>
               </a>
-              <a class="logo-tile" href="resume.html">
+              <a class="logo-tile" href="about.html#education-title">
                 <span class="logo-tile__mark logo-tile__mark--text">PEEF</span>
                 <span class="logo-tile__copy"><strong>PEEF</strong><em>Merit-cum-Need Scholar</em></span>
               </a>
@@ -174,7 +174,7 @@
                 <span class="logo-tile__mark logo-tile__mark--text">PSF</span>
                 <span class="logo-tile__copy"><strong>Public Service Fellow</strong><em>Johns Hopkins SAIS</em></span>
               </a>
-              <a class="logo-tile" href="resume.html">
+              <a class="logo-tile" href="work.html">
                 <span class="logo-tile__mark logo-tile__mark--text">TR</span>
                 <span class="logo-tile__copy"><strong>Telophase Risk Advisory</strong><em>analysis</em></span>
               </a>
@@ -304,8 +304,11 @@
         </div>
       </section>
 
-      <section id="contact" class="contact-section" aria-labelledby="contact-title">
+      <section id="contact" class="contact-section" aria-labelledby="contact-title" data-contact-animation>
         <p class="section-number reveal">07</p>
+        <div class="contact-field" aria-hidden="true">
+          <canvas data-contact-field></canvas>
+        </div>
         <div class="contact-copy reveal">
           <h2 id="contact-title">Open for work</h2>
           <p>
