@@ -20,6 +20,7 @@ const publicFiles = new Set([
   "styles.css",
   "cube-field.css",
   "cube-field.js",
+  "theme-boot.js",
   "script.js",
   "gameboy-dog-layer.css",
   "gameboy-dog-layer.js",
@@ -31,6 +32,10 @@ const publicRoots = ["assets", "photos"];
 const errors = [];
 const requiredVercelHeaders = {
   "/(.*)": {
+    "Content-Security-Policy":
+      "default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests",
+    "X-Frame-Options": "DENY",
+    "Strict-Transport-Security": "max-age=63072000; includeSubDomains",
     "X-Content-Type-Options": "nosniff",
     "Referrer-Policy": "strict-origin-when-cross-origin",
     "Permissions-Policy": "camera=(), microphone=(), geolocation=(), payment=(), usb=()",

@@ -4,7 +4,8 @@ Static personal website with no runtime backend and no package dependencies. The
 
 ## Source Layers
 
-- `*.html`, `styles.css`, `script.js`: the public static site shell, styling, canvas background, dark mode, tabs, and interaction states.
+- `*.html`, `styles.css`, `script.js`: the public static site shell, styling, canvas background, dark mode, and interaction states.
+- `theme-boot.js`: tiny render-blocking head script that applies the stored or system color scheme before first paint.
 - `gameboy-dog-layer.css`, `gameboy-dog-layer.js`: optional homepage interactive layer and its exported helper functions for tests.
 - `assets/`: public images referenced by the HTML pages.
 - `tests/`: Node assertion tests for stable interactive-layer helpers.
@@ -22,6 +23,7 @@ Open `http://127.0.0.1:8765/`.
 ## Verification
 
 ```bash
+node --check theme-boot.js
 node --check script.js
 node --check gameboy-dog-layer.js
 node --check tools/generate-brand-artifacts.cjs

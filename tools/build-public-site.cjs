@@ -19,6 +19,7 @@ const publicFiles = [
   "styles.css",
   "cube-field.css",
   "cube-field.js",
+  "theme-boot.js",
   "script.js",
   "gameboy-dog-layer.css",
   "gameboy-dog-layer.js",
