@@ -3,6 +3,7 @@
 
   const root = document.documentElement;
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const systemDark = window.matchMedia("(prefers-color-scheme: dark)");
   const canvas = document.querySelector("#signal-canvas");
   const context = canvas ? canvas.getContext("2d") : null;
   const themeToggles = Array.from(document.querySelectorAll("[data-theme-toggle]"));
@@ -134,8 +135,18 @@
     restartContactFields();
   }
 
+  function getSystemTheme() {
+    return systemDark.matches ? "dark" : "light";
+  }
+
+  function handleSystemThemeChange() {
+    if (!getStoredTheme()) {
+      applyTheme(getSystemTheme());
+    }
+  }
+
   function initThemeToggle() {
-    applyTheme(getStoredTheme() || "light");
+    applyTheme(root.dataset.theme || getStoredTheme() || getSystemTheme());
 
     themeToggles.forEach((toggle) => {
       toggle.addEventListener("click", () => {
@@ -145,6 +156,12 @@
         storeTheme(nextTheme);
       });
     });
+
+    if (typeof systemDark.addEventListener === "function") {
+      systemDark.addEventListener("change", handleSystemThemeChange);
+    } else if (typeof systemDark.addListener === "function") {
+      systemDark.addListener(handleSystemThemeChange);
+    }
   }
 
   function setTension(value) {
@@ -462,6 +479,8 @@
         return;
       }
 
+      let suppressFocusOpen = false;
+
       const setExpanded = (isExpanded) => {
         if (isExpanded) {
           closeOtherMenus(menu);
@@ -473,18 +492,28 @@
 
       menu.addEventListener("mouseenter", () => setExpanded(true));
       menu.addEventListener("mouseleave", () => setExpanded(false));
-      menu.addEventListener("focusin", () => setExpanded(true));
+      menu.addEventListener("focusin", () => {
+        if (!suppressFocusOpen) {
+          setExpanded(true);
+        }
+      });
       menu.addEventListener("focusout", () => {
         window.setTimeout(() => {
           setExpanded(menu.contains(document.activeElement));
         }, 0);
       });
 
-      trigger.addEventListener("keydown", (event) => {
-        if (event.key === "Escape") {
-          setExpanded(false);
-          trigger.blur();
+      menu.addEventListener("keydown", (event) => {
+        if (event.key !== "Escape" || !menu.classList.contains("is-open")) {
+          return;
         }
+
+        suppressFocusOpen = true;
+        setExpanded(false);
+        trigger.focus();
+        window.setTimeout(() => {
+          suppressFocusOpen = false;
+        }, 0);
       });
     });
 
@@ -517,57 +546,6 @@
       control.addEventListener("click", () => {
         setPaused(!banner.classList.contains("is-paused"));
       });
-    });
-  }
-
-  function initTabs() {
-    const tabLists = Array.from(document.querySelectorAll("[data-tabs]"));
-
-    tabLists.forEach((tabList) => {
-      const tabs = Array.from(tabList.querySelectorAll("[data-tab-control]"));
-      const panels = Array.from(tabList.querySelectorAll("[data-tab-panel]"));
-
-      if (!tabs.length || !panels.length) {
-        return;
-      }
-
-      function activate(index) {
-        tabs.forEach((tab, tabIndex) => {
-          const isActive = tabIndex === index;
-          tab.classList.toggle("is-active", isActive);
-          tab.setAttribute("aria-selected", String(isActive));
-          tab.tabIndex = isActive ? 0 : -1;
-        });
-
-        panels.forEach((panel, panelIndex) => {
-          panel.hidden = panelIndex !== index;
-        });
-
-        tabList.dispatchEvent(new CustomEvent("site:tabchange", {
-          bubbles: true,
-          detail: { index, panel: panels[index] },
-        }));
-      }
-
-      tabs.forEach((tab, index) => {
-        tab.addEventListener("click", () => activate(index));
-        tab.addEventListener("keydown", (event) => {
-          if (!["ArrowDown", "ArrowRight", "ArrowUp", "ArrowLeft", "Home", "End"].includes(event.key)) {
-            return;
-          }
-
-          const direction = event.key === "ArrowDown" || event.key === "ArrowRight" ? 1 : -1;
-          const next =
-            event.key === "Home" ? 0 :
-            event.key === "End" ? tabs.length - 1 :
-            (index + direction + tabs.length) % tabs.length;
-
-          activate(next);
-          tabs[next].focus();
-        });
-      });
-
-      activate(Math.max(0, tabs.findIndex((tab) => tab.classList.contains("is-active"))));
     });
   }
 
@@ -1318,7 +1296,6 @@
   initFilterGroups();
   initNavMenus();
   initLogoBannerControls();
-  initTabs();
   initEducationMaps();
   initAcademicProgressionCharts();
   initPhotoGallery();

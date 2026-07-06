@@ -7,6 +7,7 @@ This repository is a static personal website. Keep the root simple:
 - `index.html` is the homepage and primary entry point.
 - `about.html`, `work.html`, `writing.html`, `projects.html`, `daadras.html`, `davis-project.html`, and `think-tank.html` are standalone detail pages that share the same header, footer, stylesheet, and script.
 - `styles.css` contains global variables, layout rules, responsive behavior, and visual treatments.
+- `theme-boot.js` is a render-blocking head script that applies the stored or system theme before first paint.
 - `script.js` controls the animated canvas background and pointer interaction.
 - `gameboy-dog-layer.css` and `gameboy-dog-layer.js` are homepage-only overlay files.
 - `assets/` contains public images referenced by the HTML pages.
@@ -30,6 +31,7 @@ Then open `http://127.0.0.1:8765/`.
 Validate JavaScript syntax before shipping changes:
 
 ```bash
+node --check theme-boot.js
 node --check script.js
 node --check gameboy-dog-layer.js
 node --check tools/generate-brand-artifacts.cjs
