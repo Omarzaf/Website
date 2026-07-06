@@ -68,12 +68,15 @@ assert.match(photography, /data-photo-next/, "lightbox should include next contr
 assert.match(photography, /data-photo-close/, "lightbox should include close control");
 assert.doesNotMatch(photography, /Downloads\/Claude\/Photos/, "public HTML should not reference source photos");
 assert.doesNotMatch(photography, /IMG_5916 2/i, "gallery should omit the duplicate IMG_5916 variant");
+assert.doesNotMatch(photography, /img-5025\.jpg/, "gallery should remove the repeated street-view photo");
+assert.match(photography, /<figcaption class="photo-card__meta"><span>\/001<\/span>Azul<\/figcaption>/, "gallery captions should use slash-prefixed three-digit numbering and one-word names");
+assert.match(photography, /data-caption="\/034 \/ Boreal"/, "gallery captions should stay renumbered after duplicate removal");
 
 const triggers = photography.match(/data-photo-trigger/g) || [];
-assert.equal(triggers.length, 35, "gallery should render the 35 selected optimized photos");
+assert.equal(triggers.length, 34, "gallery should render the 34 selected optimized photos after duplicate removal");
 
 const imgTags = photography.match(/<img\b[^>]*>/g) || [];
-assert.equal(imgTags.length, 36, "gallery plus lightbox should contain 36 image elements");
+assert.equal(imgTags.length, 35, "gallery plus lightbox should contain 35 image elements");
 
 for (const tag of imgTags) {
   assert.match(tag, /\bwidth="\d+"/, "photo images should declare width");
@@ -83,7 +86,7 @@ for (const tag of imgTags) {
 
 const photoRefs = [...photography.matchAll(/(?:src|href|data-full)=["'](photos\/(?:thumb|full)\/[^"']+\.jpg)["']/g)]
   .map((match) => match[1]);
-assert.ok(photoRefs.length >= 70, "gallery should reference thumb and full photo derivatives");
+assert.equal(photoRefs.length, 69, "gallery should reference 34 thumb/full pairs plus the lightbox image");
 
 for (const ref of photoRefs) {
   assert.ok(fs.existsSync(path.join(root, ref)), `missing generated photo derivative ${ref}`);
@@ -117,6 +120,8 @@ assert.doesNotMatch(script, /preventDefault\(\)/, "photo gallery should not requ
 const styles = fs.readFileSync(path.join(root, "styles.css"), "utf8");
 assert.match(styles, /scroll-padding-top:\s*calc\(var\(--header-height\) \+ 24px\)/, "anchor jumps should account for the sticky header height");
 assert.match(styles, /\.photo-grid/, "styles should define the photo grid");
+assert.match(styles, /\.photo-grid\s*\{[\s\S]*grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/, "photo grid should render three images per desktop row");
+assert.match(styles, /\.photo-card__button img\s*\{[\s\S]*aspect-ratio:\s*3 \/ 4/, "photo thumbnails should keep a portrait crop in the three-column layout");
 assert.match(styles, /\.photo-dialog/, "styles should define the lightbox dialog");
 assert.match(styles, /\.site-nav\s*\{[\s\S]*grid-template-columns:\s*repeat\(3, minmax\(68px, 1fr\)\)/, "site nav should reserve three top-level columns after combining work and writing");
 assert.match(styles, /html:not\(\.js\) \.nav-menu:hover \.nav-menu__panel,[\s\S]*\.nav-menu\.is-open \.nav-menu__panel[\s\S]*opacity:\s*1/, "research menu should open through controlled state with a no-js hover fallback");
