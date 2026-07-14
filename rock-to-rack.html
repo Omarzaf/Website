@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="How Muhammad Umar Zafar used frontier AI models to turn a semiconductor supply-chain idea into the playable browser game Rock to Rack in 40 minutes."
+    >
+    <title>Rock to Rack - Muhammad Umar Zafar</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23ffffff'/%3E%3Cpath d='M12 18v17c0 9 6 14 15 14s15-5 15-14V18h-8v17c0 4-3 7-7 7s-7-3-7-7V18zM46 18h8L41 49h-8z' fill='%23ffae00'/%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <script src="theme-boot.js?v=20260706"></script>
+    <link rel="stylesheet" href="styles.css?v=20260714">
+    <link rel="stylesheet" href="rock-to-rack.css?v=20260714">
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to main content</a>
+    <div class="grid-field" aria-hidden="true"></div>
+    <canvas id="signal-canvas" aria-hidden="true"></canvas>
+    <div class="column-rules" aria-hidden="true"><span></span><span></span><span></span></div>
+
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="Muhammad Umar Zafar home">
+        <span class="brand-mark" aria-hidden="true">UZ</span>
+        <span>umar zafar</span>
+      </a>
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="about.html">about</a>
+        <div class="nav-menu nav-menu--research">
+          <button class="nav-menu__trigger" type="button" aria-haspopup="true" aria-expanded="false">research</button>
+          <div class="nav-menu__panel" role="menu" aria-label="Research pages">
+            <a role="menuitem" href="work.html">work</a>
+            <a role="menuitem" href="writing.html">writing</a>
+          </div>
+        </div>
+        <div class="nav-menu nav-menu--projects">
+          <button class="nav-menu__trigger" type="button" aria-haspopup="true" aria-expanded="false">projects</button>
+          <div class="nav-menu__panel" role="menu" aria-label="Project pages">
+            <a role="menuitem" href="projects.html">overview</a>
+            <a role="menuitem" href="daadras.html">Daadras Foundation</a>
+            <a role="menuitem" href="davis-project.html">Davis Projects for Peace</a>
+            <a role="menuitem" href="think-tank.html">Think Tank / RDL</a>
+            <a role="menuitem" href="rock-to-rack.html" aria-current="page">Rock to Rack</a>
+          </div>
+        </div>
+      </nav>
+      <div class="header-social" aria-label="Social links">
+        <a class="header-social-link" href="https://substack.com/@omarzafar" target="_blank" rel="noopener noreferrer" aria-label="Substack">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 5h16v2H4zM4 9h16v2H4zM4 13h16v6l-8-4-8 4z"></path></svg>
+        </a>
+        <a class="header-social-link header-social-link--photography" href="photography.html" aria-label="Photography">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 8h3l1.6-2h6.8L17 8h3v10H4zM6 10v6h12v-6h-2.1l-1.6-2H9.7L8.1 10z"></path><circle cx="12" cy="13" r="3.2"></circle></svg>
+        </a>
+        <a class="header-social-link" href="https://github.com/Omarzaf" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.58 2 12.24c0 4.52 2.86 8.35 6.83 9.71.5.09.68-.22.68-.49v-1.9c-2.78.62-3.37-1.22-3.37-1.22-.45-1.18-1.11-1.49-1.11-1.49-.91-.64.07-.63.07-.63 1 .07 1.53 1.06 1.53 1.06.9 1.56 2.35 1.11 2.92.85.09-.66.35-1.11.64-1.37-2.22-.26-4.55-1.14-4.55-5.06 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.71 0 0 .84-.28 2.75 1.05A9.26 9.26 0 0 1 12 6.95c.85 0 1.7.12 2.5.35 1.9-1.33 2.74-1.05 2.74-1.05.55 1.41.2 2.45.1 2.71.64.72 1.03 1.63 1.03 2.75 0 3.93-2.34 4.8-4.57 5.05.36.32.68.94.68 1.9v2.8c0 .27.18.59.69.49A10.13 10.13 0 0 0 22 12.24C22 6.58 17.52 2 12 2z"></path></svg>
+        </a>
+        <a class="header-social-link" href="https://www.linkedin.com/in/umarzafar1" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 9h3v10H5zM6.5 4.8a1.8 1.8 0 1 1 0 3.6 1.8 1.8 0 0 1 0-3.6zM10 9h2.9v1.4h.1c.4-.8 1.4-1.7 3-1.7 3.2 0 3.8 2.1 3.8 4.9V19h-3v-4.8c0-1.2 0-2.7-1.7-2.7s-1.9 1.3-1.9 2.6V19H10z"></path></svg>
+        </a>
+      </div>
+      <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode" aria-pressed="false">
+        <span class="theme-toggle-icon" aria-hidden="true"></span>
+        <span data-theme-label>dark</span>
+      </button>
+      <a class="header-action" href="mailto:mumerzafer@gmail.com">email</a>
+    </header>
+
+    <main id="main">
+      <section class="page-hero game-story-hero" aria-labelledby="game-story-title">
+        <div class="page-hero-copy reveal">
+          <p class="section-number">game / build note / 2026</p>
+          <h1 id="game-story-title" class="page-title">I built a semiconductor supply-chain game in 40 minutes.</h1>
+          <p class="page-body">
+            Frontier models made the first playable version astonishingly fast. The harder work was
+            deciding what the game should mean.
+          </p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="https://rock-to-rack.vercel.app/" target="_blank" rel="noopener noreferrer">
+              play Rock to Rack
+              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"></path></svg>
+            </a>
+            <a class="button" href="https://github.com/Omarzaf/rock-to-rack" target="_blank" rel="noopener noreferrer">
+              view source
+              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"></path></svg>
+            </a>
+          </div>
+        </div>
+        <figure class="game-story-hero__media reveal">
+          <img src="assets/rock-to-rack/screenshot-crisis.png" alt="Rock to Rack Crisis Run showing a powered and cooled data-center grid during play" width="1280" height="720">
+          <figcaption><span>Crisis Run</span> Bring Nova online before the city goes dark.</figcaption>
+        </figure>
+      </section>
+
+      <section class="game-story-stats" aria-label="Rock to Rack project summary">
+        <div><span>prototype</span><strong>40 minutes</strong></div>
+        <div><span>campaign</span><strong>6 stages</strong></div>
+        <div><span>play paths</span><strong>2 modes</strong></div>
+        <div><span>format</span><strong>browser game</strong></div>
+      </section>
+
+      <article class="game-story-article">
+        <section class="game-story-section reveal" aria-labelledby="why-game-title">
+          <p class="section-number">01 / why a game</p>
+          <div class="game-story-copy">
+            <h2 id="why-game-title">AI appears weightless on a screen. It is not.</h2>
+            <p class="game-story-lede">
+              Behind every prompt is a physical chain: minerals pulled from the earth, silicon
+              refined to extraordinary purity, crystals grown and sliced into wafers, circuits
+              fabricated, chips tested and packaged, then racks powered, cooled, and connected.
+            </p>
+            <p>
+              We usually hide that chain behind one frictionless word: <em>cloud</em>. I built
+              <strong>Rock to Rack</strong> because I wanted to make the chain visible—not as another
+              diagram or policy memo, but as something a player could touch, manage, and occasionally
+              break.
+            </p>
+            <p>
+              I work on technology, governance, and power. Semiconductors sit inside all three: they
+              are commercial products, strategic assets, diplomatic pressure points, environmental
+              loads, and the material foundation of the AI boom. An essay could explain that system.
+              A game could make the player depend on it.
+            </p>
+            <blockquote>A diagram can show sequence. A game can make dependency hurt.</blockquote>
+          </div>
+        </section>
+
+        <section class="game-story-section game-story-section--split reveal" aria-labelledby="forty-title">
+          <p class="section-number">02 / the first 40 minutes</p>
+          <div class="game-story-copy">
+            <h2 id="forty-title">I used frontier models as a compressed game studio.</h2>
+            <p>
+              I did not begin with “make me a semiconductor game.” I defined a player role, a crisis,
+              the industrial stages, the verbs available in each stage, and the idea the player should
+              understand by the end.
+            </p>
+            <ol class="game-story-loop" aria-label="Prototype loop">
+              <li><span>01</span>Describe the experience.</li>
+              <li><span>02</span>Generate a playable interpretation.</li>
+              <li><span>03</span>Run it and find what feels inert.</li>
+              <li><span>04</span>Revise the rules and interface.</li>
+              <li><span>05</span>Test again.</li>
+            </ol>
+            <p>
+              Within 40 minutes, the idea crossed the line from explanation into a playable browser
+              game. That result was the playable spine—not every refinement in the version online
+              today. It proved that a player could move from the material supply chain to the
+              operational problem of bringing compute online.
+            </p>
+            <blockquote>Forty minutes did not eliminate authorship. It moved authorship into framing, judgment, and subtraction.</blockquote>
+          </div>
+          <figure class="game-story-figure">
+            <img src="assets/rock-to-rack/screenshot-chain.png" alt="Rock to Rack mining stage with resource deposits, miners, objectives, and the supply-chain HUD" width="1280" height="900">
+            <figcaption><span>Mine</span> The campaign begins with the materials beneath the abstraction.</figcaption>
+          </figure>
+        </section>
+
+        <section class="game-story-section reveal" aria-labelledby="built-title">
+          <p class="section-number">03 / what I built</p>
+          <div class="game-story-copy">
+            <h2 id="built-title">Mine → Refine → Grow → Fab → Package → Power</h2>
+            <p>
+              Rock to Rack now has two paths. <strong>Crisis Run</strong> opens with the city dark and
+              asks the player to place racks, power, cooling, network infrastructure, and batteries,
+              install a chip, and bring Nova—a public-interest AI workload—online before time runs out.
+            </p>
+            <p>
+              <strong>Learn the Chain</strong> is the deeper campaign: mine quartz, copper, lithium,
+              cobalt, and rare earths; refine usable inputs; grow and slice a silicon crystal;
+              fabricate circuits; dice, test, bin, and package chips; then install them inside a
+              powered, cooled, networked data center.
+            </p>
+            <p>
+              Each stage turns an industrial process into a playable verb. The model is deliberately
+              simplified, but the dependency is real: no single object called “AI” arrives by magic.
+              The system only works when the entire chain works.
+            </p>
+          </div>
+        </section>
+
+        <figure class="game-story-wide-figure reveal">
+          <img src="assets/rock-to-rack/screenshot-fab.png" alt="Rock to Rack fabrication stage showing coat, expose, etch, and dope stations" width="1280" height="900">
+          <figcaption><span>Fabricate</span> A complex industrial process becomes a sequence of consequential actions.</figcaption>
+        </figure>
+
+        <section class="game-story-section reveal" aria-labelledby="models-title">
+          <p class="section-number">04 / what the models changed</p>
+          <div class="game-story-copy">
+            <h2 id="models-title">The models made options cheap. Taste remained expensive.</h2>
+            <p>
+              Frontier models helped turn broad concepts into scenes, rules, interfaces, and working
+              TypeScript. They accelerated simulation logic, responsive layouts, replay behavior,
+              result cards, local saves, and automated checks.
+            </p>
+            <p>
+              Speed created its own danger. When another panel, mechanic, or explanation can appear in
+              seconds, a project accumulates features simply because features are inexpensive. Early
+              versions sometimes felt like an interactive textbook. The data-center finale risked
+              becoming a dashboard. Helpful fact cards interrupted the play they were meant to support.
+            </p>
+            <p>
+              The solution was editorial judgment: lead with a crisis, give each scene one strong
+              action, remove what diluted the experience, and make every explanation earn the player’s
+              attention.
+            </p>
+          </div>
+        </section>
+
+        <section class="game-story-section reveal" aria-labelledby="learned-title">
+          <p class="section-number">05 / what I learned</p>
+          <div class="game-story-copy">
+            <h2 id="learned-title">The real acceleration was getting from an idea to evidence.</h2>
+            <p>
+              I did not have to spend weeks wondering whether a semiconductor supply-chain game could
+              work. I could play the argument almost immediately. Weak ideas failed sooner. Strong
+              ideas became concrete enough to criticize.
+            </p>
+            <p>
+              The burden of responsibility remained human. I still had to decide what the game
+              claimed, where it simplified reality, which generated ideas deserved to survive, and
+              whether the result worked for someone who had not watched it being made.
+            </p>
+            <p class="game-story-closing">The machine accelerated production. It did not supply the reason for building. That part was mine.</p>
+          </div>
+        </section>
+
+        <aside class="game-story-note reveal" aria-labelledby="transparency-title">
+          <p class="section-number">transparency note</p>
+          <h2 id="transparency-title">What “40 minutes” means.</h2>
+          <p>
+            The 40-minute figure refers to the initial concept-to-playable session, not every hour
+            behind the public version. I later refined the six-stage campaign, interface, Crisis Run
+            replay, responsive behavior, tests, documentation, and deployment. The models generated
+            and modified code under my direction; I defined the concept and constraints, selected or
+            rejected their output, tested the game, and remain responsible for the result.
+          </p>
+        </aside>
+      </article>
+
+      <section class="contact-section contact-section--left game-story-cta" aria-labelledby="play-title">
+        <p class="section-number reveal">play</p>
+        <div class="contact-copy contact-copy--left reveal">
+          <h2 id="play-title">Can you bring Nova online?</h2>
+          <p>Start with the fast Crisis Run, or trace the full chain from rock to rack.</p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="https://rock-to-rack.vercel.app/" target="_blank" rel="noopener noreferrer">
+              play the game
+              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"></path></svg>
+            </a>
+            <a class="button" href="projects.html">
+              all projects
+              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"></path></svg>
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; 2026 Muhammad Umar Zafar</p>
+      <div class="footer-links" aria-label="Footer links">
+        <a href="https://substack.com/@omarzafar" target="_blank" rel="noopener noreferrer">substack</a>
+        <a href="https://github.com/Omarzaf" target="_blank" rel="noopener noreferrer">github</a>
+        <a href="https://www.linkedin.com/in/umarzafar1" target="_blank" rel="noopener noreferrer">linkedin</a>
+        <a href="#main">back to top</a>
+      </div>
+    </footer>
+    <script src="script.js?v=20260706" defer></script>
+  </body>
+</html>
