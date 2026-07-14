@@ -16,6 +16,8 @@ const publicFiles = new Set([
   "daadras.html",
   "davis-project.html",
   "think-tank.html",
+  "rock-to-rack.html",
+  "rock-to-rack.css",
   "photography.html",
   "styles.css",
   "cube-field.css",
