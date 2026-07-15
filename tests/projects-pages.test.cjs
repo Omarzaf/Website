@@ -104,7 +104,7 @@ assert.match(thinkTank, /canonical entity and edge universe/, "Think Tank page s
 assert.match(thinkTank, /Revolving-door arcs/, "Think Tank page should explain the project animation semantics");
 
 const index = fs.readFileSync(path.join(root, "index.html"), "utf8");
-assert.match(index, /href="projects\.html"[\s\S]*view projects/, "homepage field-work CTA should point to projects");
+assert.match(index, /<h2 id="projects-title">Projects<\/h2>[\s\S]*href="daadras\.html"[\s\S]*href="davis-project\.html"[\s\S]*href="rock-to-rack\.html"/, "homepage projects cards should link to the featured project pages");
 assert.match(index, /href="assets\/G-Resume_2\.pdf"[\s\S]*Open for Work - CV/, "homepage availability chip should link to the CV PDF");
 assert.doesNotMatch(index, /href="resume\.html"|hero-cv-button|>view CV<\/a>/, "homepage should remove the standalone CV page route");
 assert.doesNotMatch(index, /href="impact\.html"[\s\S]*view impact/, "homepage should not keep the old impact CTA");

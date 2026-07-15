@@ -4,6 +4,7 @@ const path = require("node:path");
 
 const source = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
 const styles = fs.readFileSync(path.join(__dirname, "..", "styles.css"), "utf8");
+const logoBannerMarkup = source.match(/<section class="logo-banner reveal"[\s\S]*?<\/section>/)?.[0] ?? "";
 const logoBannerRule = styles.match(/\.logo-banner\s*\{([\s\S]*?)\n\}/)?.[1] ?? "";
 const logoTrackRule = styles.match(/\.logo-banner__track\s*\{([\s\S]*?)\n\}/)?.[1] ?? "";
 const logoTileRule = styles.match(/\.logo-tile\s*\{([\s\S]*?)\n\}/)?.[1] ?? "";
@@ -92,7 +93,7 @@ for (const asset of logoAssets) {
 }
 
 assert.equal(
-  (source.match(/<img src="assets\/logos\//g) || []).length,
+  (logoBannerMarkup.match(/<img src="assets\/logos\//g) || []).length,
   16,
   "homepage logo banner should use sourced image marks for the primary and duplicate logo rows"
 );
@@ -120,7 +121,7 @@ assert.doesNotMatch(
 );
 
 assert.doesNotMatch(
-  source,
+  logoBannerMarkup,
   /davis-middlebury-shield|Project Salam<\/strong><em>Pakistan<\/em><\/span><\/span>[\s\S]*assets\/logos\/daadras\.svg/,
   "Project Salam and Davis should not use borrowed logo assets without standalone verified marks"
 );
@@ -231,6 +232,59 @@ assert.doesNotMatch(
   source,
   /id="research-title"|A practical agenda for technical power|Research focus areas|id="research-tab-1"/,
   "homepage practical agenda section should be removed"
+);
+
+for (const [title, sectionNumber] of [["Projects", "02"], ["Writings", "05"], ["Ongoing projects", "06"]]) {
+  assert.match(
+    source,
+    new RegExp(`<section class="editorial-section"[^>]*>[\\s\\S]*?<p class="section-number">${sectionNumber}<\\/p>[\\s\\S]*?<h2[^>]*>${title}<\\/h2>`),
+    `homepage should render the ${title} editorial section with its stable section number`
+  );
+}
+
+assert.equal(
+  (source.match(/<article class="editorial-card reveal">/g) || []).length,
+  9,
+  "homepage editorial sections should display three cards each"
+);
+
+assert.equal(
+  (source.match(/<figure class="editorial-card__media/g) || []).length,
+  9,
+  "every homepage editorial card should have a local image surface"
+);
+
+assert.doesNotMatch(
+  source.match(/<section class="editorial-section"[\s\S]*?<section id="contact"/)?.[0] ?? "",
+  /<img[^>]+src="https?:\/\//,
+  "homepage editorial cards should use existing local image assets"
+);
+
+for (const asset of [
+  "assets/logos/daadras.svg",
+  "assets/impact-systems-map.png",
+  "assets/rock-to-rack/screenshot-chain.png",
+  "assets/work/work-gallery-dc.jpg",
+  "assets/work/work-gallery-room.jpg",
+  "assets/work/work-gallery-painting.jpg",
+  "assets/policy-systems-map.png",
+  "assets/impact-systems-map.png",
+  "assets/rock-to-rack/screenshot-fab.png",
+]) {
+  assert.match(source, new RegExp(`src="${asset.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}"`), `${asset} should appear in a homepage editorial card`);
+  assert.ok(fs.existsSync(path.join(__dirname, "..", asset)), `${asset} should exist locally`);
+}
+
+assert.match(
+  styles,
+  /\.editorial-card-grid\s*\{[\s\S]*grid-template-columns:\s*repeat\(3, minmax\(0, 1fr\)\)/,
+  "homepage editorial cards should use a three-column desktop grid"
+);
+
+assert.match(
+  styles,
+  /@media \(max-width: 980px\)[\s\S]*\.editorial-card-grid\s*\{[\s\S]*grid-template-columns:\s*1fr/,
+  "homepage editorial cards should stack at compact widths"
 );
 
 console.log("homepage sections ok");
