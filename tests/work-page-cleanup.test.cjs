@@ -39,8 +39,8 @@ assert.match(styles, /\.work-globe__stage\s*\{[\s\S]*border:\s*0;[\s\S]*backgrou
 assert.match(styles, /@keyframes policy-globe-hover/, "work globe should have a subtle hover animation");
 
 const filterList = work.match(/<div class="filter-list filter-list--visual reveal"[\s\S]*?<\/div>\s*<\/div>\s*<div class="filtered-grid">/)?.[0] || "";
-const filterImages = [...filterList.matchAll(/<img\b[^>]*\bsrc="(assets\/[^"]+\.(?:png|jpe?g|webp))"[^>]*>/g)];
-assert.equal(filterImages.length, 3, "filter panel should include three work photo assets");
+const filterImages = [...filterList.matchAll(/<img\b[^>]*\bsrc="((?:assets|photos\/thumb)\/[^"]+\.(?:png|jpe?g|webp))"[^>]*>/g)];
+assert.equal(filterImages.length, 3, "filter panel should include three locally optimized photo assets");
 for (const [, src] of filterImages) {
   assert.ok(fs.existsSync(path.join(root, src)), `missing filter panel asset ${src}`);
 }

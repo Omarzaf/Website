@@ -264,9 +264,9 @@ for (const asset of [
   "assets/logos/daadras.svg",
   "assets/impact-systems-map.png",
   "assets/rock-to-rack/screenshot-chain.png",
-  "assets/work/work-gallery-dc.jpg",
-  "assets/work/work-gallery-room.jpg",
-  "assets/work/work-gallery-painting.jpg",
+  "photos/thumb/img-5193.jpg",
+  "photos/thumb/img-5024.jpg",
+  "photos/thumb/img-7627.jpg",
   "assets/policy-systems-map.png",
   "assets/impact-systems-map.png",
   "assets/rock-to-rack/screenshot-fab.png",
@@ -279,6 +279,12 @@ assert.match(
   styles,
   /\.editorial-card-grid\s*\{[\s\S]*grid-template-columns:\s*repeat\(3, minmax\(0, 1fr\)\)/,
   "homepage editorial cards should use a three-column desktop grid"
+);
+
+assert.match(
+  styles,
+  /@media \(min-width: 1181px\)\s*\{[\s\S]*?\.editorial-card-grid\s*\{[\s\S]*?width:\s*min\(84%, 1500px\);[\s\S]*?margin-inline:\s*auto/,
+  "homepage editorial cards should use a centered, compact desktop grid"
 );
 
 assert.match(

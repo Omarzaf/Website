@@ -198,6 +198,10 @@ function checkDist() {
     }
 
     if (publicRoots.some((rootName) => file.startsWith(`${rootName}/`))) {
+      if (file.startsWith("photos/") && !file.startsWith("photos/full/") && !file.startsWith("photos/thumb/")) {
+        addError(`dist/: raw photo master leaked into public build: ${file}`);
+      }
+
       if (!isAllowedAsset(file)) {
         addError(`dist/: unexpected asset type: ${file}`);
       }

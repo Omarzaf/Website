@@ -1072,6 +1072,13 @@ h3 {
   gap: var(--gutter);
 }
 
+@media (min-width: 1181px) {
+  .editorial-card-grid {
+    width: min(84%, 1500px);
+    margin-inline: auto;
+  }
+}
+
 .editorial-card {
   display: grid;
   grid-template-rows: auto 1fr auto;

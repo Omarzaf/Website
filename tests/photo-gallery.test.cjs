@@ -70,13 +70,13 @@ assert.doesNotMatch(photography, /Downloads\/Claude\/Photos/, "public HTML shoul
 assert.doesNotMatch(photography, /IMG_5916 2/i, "gallery should omit the duplicate IMG_5916 variant");
 assert.doesNotMatch(photography, /img-5025\.jpg/, "gallery should remove the repeated street-view photo");
 assert.match(photography, /<figcaption class="photo-card__meta"><span>\/001<\/span>Azul<\/figcaption>/, "gallery captions should use slash-prefixed three-digit numbering and one-word names");
-assert.match(photography, /data-caption="\/034 \/ Boreal"/, "gallery captions should stay renumbered after duplicate removal");
+assert.match(photography, /data-caption="\/073 \/ Turn signal"/, "gallery captions should include the final imported photograph");
 
 const triggers = photography.match(/data-photo-trigger/g) || [];
-assert.equal(triggers.length, 34, "gallery should render the 34 selected optimized photos after duplicate removal");
+assert.equal(triggers.length, 73, "gallery should render 34 existing and 39 newly imported photographs");
 
 const imgTags = photography.match(/<img\b[^>]*>/g) || [];
-assert.equal(imgTags.length, 35, "gallery plus lightbox should contain 35 image elements");
+assert.equal(imgTags.length, 74, "gallery plus lightbox should contain 74 image elements");
 
 for (const tag of imgTags) {
   assert.match(tag, /\bwidth="\d+"/, "photo images should declare width");
@@ -86,7 +86,7 @@ for (const tag of imgTags) {
 
 const photoRefs = [...photography.matchAll(/(?:src|href|data-full)=["'](photos\/(?:thumb|full)\/[^"']+\.jpg)["']/g)]
   .map((match) => match[1]);
-assert.equal(photoRefs.length, 69, "gallery should reference 34 thumb/full pairs plus the lightbox image");
+assert.equal(photoRefs.length, 147, "gallery should reference 73 thumb/full pairs plus the lightbox image");
 
 for (const ref of photoRefs) {
   assert.ok(fs.existsSync(path.join(root, ref)), `missing generated photo derivative ${ref}`);
@@ -94,12 +94,14 @@ for (const ref of photoRefs) {
 
 const buildTool = fs.readFileSync(path.join(root, "tools/build-public-site.cjs"), "utf8");
 assert.match(buildTool, /"photography\.html"/, "build should copy photography.html");
-assert.match(buildTool, /"photos"/, "build should copy generated photo derivatives");
+assert.match(buildTool, /"photos\/full", "photos\/thumb"/, "build should copy only generated photo derivatives");
+assert.doesNotMatch(buildTool, /publicDirs\s*=\s*\[[^\]]*"photos"\s*\]/, "build should not publish top-level photo masters");
 
 const staticCheck = fs.readFileSync(path.join(root, "tools/check-static-site.cjs"), "utf8");
 assert.match(staticCheck, /"photography\.html"/, "static checker should allow photography.html");
 assert.match(staticCheck, /"photos"/, "static checker should allow generated photo derivatives");
 assert.match(staticCheck, /data-full/, "static checker should validate lightbox full-size photo references");
+assert.match(staticCheck, /raw photo master leaked into public build/, "static checker should reject raw photo masters");
 
 const script = fs.readFileSync(path.join(root, "script.js"), "utf8");
 assert.match(script, /function initNavMenus\(/, "script should initialize dropdown menu state");
