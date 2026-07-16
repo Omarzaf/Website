@@ -27,7 +27,7 @@ const publicFiles = [
   "gameboy-dog-layer.js",
 ];
 
-const publicDirs = ["assets", "photos"];
+const publicDirs = ["assets", "photos/full", "photos/thumb"];
 const ignoredNames = new Set([".DS_Store"]);
 
 function copyFile(relativePath) {

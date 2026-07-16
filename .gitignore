@@ -10,6 +10,9 @@ coverage/
 .env*
 !.env.example
 
+# Keep original photo masters local; publish only optimized derivatives.
+/photos/*.JPG
+
 # Local/generated agent artifacts; keep out of a public GitHub push.
 DESIGN-IS-*/
 docs/superpowers/
